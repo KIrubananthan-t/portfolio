@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kirubanathan T | Portfolio</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="./responsive.css" />
+
+    <style>
+      .footer-menu-list {
+        list-style: none;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        padding: 0;
+        margin: 20px 0;
+      }
+
+      .footer-menu-list li {
+        display: inline-block;
+      }
+
+      .footer-links {
+        text-decoration: none;
+        color: white;
+        background-color: #35af83;
+        padding: 10px 14px;
+        border-radius: 50%;
+        font-size: 16px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .footer-links:hover {
+        background-color: #0056b3;
+        transform: scale(1.1);
+      }
+
+      /* Optional: dark background footer */
+      footer {
+        background-color: #222;
+        padding: 40px 0;
+        color: white;
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Navbar -->
+    <header class="header">
+      <nav class="navbar">
+        <div class="logo">
+          <h2 class="logo-heading">Kirubanathan T</h2>
+        </div>
+        <div class="hamburger" id="hamburger">
+          <i class="fas fa-bars hamburger-icon"></i>
+          <i class="fas fa-times cross-icon"></i>
+        </div>
+        <ul
+          style="
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+          "
+        >
+          <li>
+            <a
+              href="#home"
+              style="
+                text-decoration: none;
+                color: #ffffff;
+                font-weight: bold;
+                font-size: 16px;
+                transition: color 0.3s;
+              "
+              >Home</a
+            >
+          </li>
+          <li>
+            <a
+              href="#portfolio"
+              style="
+                text-decoration: none;
+                color: #ffffff;
+                font-weight: bold;
+                font-size: 16px;
+                transition: color 0.3s;
+              "
+              >Portfolio</a
+            >
+          </li>
+          <li>
+            <a
+              href="#about"
+              style="
+                text-decoration: none;
+                color: #ffffff;
+                font-weight: bold;
+                font-size: 16px;
+                transition: color 0.3s;
+              "
+              >About</a
+            >
+          </li>
+          <li>
+            <a
+              href="#services"
+              style="
+                text-decoration: none;
+                color: #ffffff;
+                font-weight: bold;
+                font-size: 16px;
+                transition: color 0.3s;
+              "
+              >Services</a
+            >
+          </li>
+          <li>
+            <a
+              href="#contact"
+              style="
+                text-decoration: none;
+                color: #ffffff;
+                font-weight: bold;
+                margin-right: 40px;
+                font-size: 16px;
+                transition: color 0.3s;
+              "
+              >Contact Me</a
+            >
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+      <div class="intro">
+        <div class="headings">
+          <h3 class="greet-heading">Hello, I'm</h3>
+          <h1 class="my-heading">Kirubanathan T</h1>
+          <h4 class="sub-heading">
+            A Software Engineer with 1 Year of Experience
+          </h4>
+        </div>
+        <div class="intro-buttons">
+          <button class="btn common-btn">Hire Me</button>
+          <button class="btn ghost-btn">Get Resume</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="portfolio">
+      <h1 class="my-heading text-center">Featured Portfolio</h1>
+      <div class="portfolio-content">
+        <div class="my-row">
+          <div class="my-col">
+            <div class="my-card port-card">
+              <div class="image">
+                <img src="./images/4.jpg" alt="Web Design Project" />
+              </div>
+              <h3 class="greet-heading blue-text">Web Design</h3>
+              <p class="small-para blue-text">Designing</p>
+            </div>
+          </div>
+          <div class="my-col">
+            <div class="my-card port-card">
+              <div class="image">
+                <img src="./images/3.jpg" alt="Web Development Project" />
+              </div>
+              <h3 class="greet-heading blue-text">Web Development</h3>
+              <p class="small-para blue-text">Development</p>
+            </div>
+          </div>
+          <div class="my-col">
+            <div class="my-card port-card">
+              <div class="image">
+                <img
+                  src="https://tse2.mm.bing.net/th?id=OIP.WhGxMBFYAS-mwM6NtVseIAHaC7&pid=Api&P=0&h=180"
+                  alt="Back-End Development Project"
+                />
+              </div>
+              <h3 class="greet-heading blue-text">Back End</h3>
+              <p class="small-para blue-text">Development</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+      <div class="about-text">
+        <h1 class="my-heading">About Me</h1>
+        <p class="lead-para">
+          Hello! I'm Kirubanathan, a recent postgraduate in Computer Science &
+          Engineering from Anna University. I'm eager to start a fulfilling
+          career in the IT field and bring a combination of strong theoretical
+          knowledge and a passion for web development.
+        </p>
+      </div>
+      <div class="about-image">
+        <img src="./images/1.jpg" alt="Profile Picture" />
+      </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+      <h1 class="my-heading text-center">My Services</h1>
+      <div class="services-content">
+        <div class="my-row">
+          <div class="my-col">
+            <div class="my-card">
+              <div class="icon">
+                <i class="fas fa-paint-brush"></i>
+              </div>
+              <h3 class="greet-heading blue-text">Web Design</h3>
+              <p class="small-para">
+                Creating visually appealing, user-friendly layouts using modern
+                design principles.
+              </p>
+            </div>
+          </div>
+          <div class="my-col">
+            <div class="my-card">
+              <div class="icon">
+                <i class="fa-solid fa-code"></i>
+              </div>
+              <h3 class="greet-heading blue-text">Web Development</h3>
+              <p class="small-para">
+                Building responsive and interactive websites with strong
+                front-end and back-end functionality.
+              </p>
+            </div>
+          </div>
+          <div class="my-col">
+            <div class="my-card">
+              <div class="icon">
+                <i class="fas fa-server"></i>
+              </div>
+              <h3 class="greet-heading blue-text">Back End</h3>
+              <p class="small-para">
+                Developing robust server-side logic, APIs, and database
+                structures for scalable applications.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+      <h1 class="my-heading text-center">Contact Me</h1>
+      <div class="contact-content">
+        <div class="contact-form-container">
+          <h1 class="greet-heading">Get In Touch</h1>
+          <form class="contact-form">
+            <input
+              class="form-controls"
+              type="text"
+              placeholder="Your Name"
+              required
+            />
+            <input
+              class="form-controls"
+              type="email"
+              placeholder="Your Email"
+              required
+            />
+            <input
+              class="form-controls"
+              type="tel"
+              placeholder="Your Phone"
+              required
+            />
+            <textarea
+              class="form-controls"
+              placeholder="Write your message"
+              rows="5"
+              required
+            ></textarea>
+            <input
+              class="form-btn btn common-btn"
+              type="submit"
+              value="Send Message"
+            />
+          </form>
+        </div>
+        <div class="contact-details">
+          <h1 class="greet-heading">My Contact Details</h1>
+          <div class="details">
+            <h5 class="contact-heading">Email</h5>
+            <p class="contact-text">kirubathangam232@gmail.com</p>
+          </div>
+          <div class="details">
+            <h5 class="contact-heading">Phone</h5>
+            <p class="contact-text">+91 8220772090</p>
+          </div>
+          <div class="details">
+            <h5 class="contact-heading">Address</h5>
+            <p class="contact-text">Adaiyur, Adaiyur (PO)</p>
+            <p>Edappadi (TK), Salem (DT)</p>
+            <p>636501</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content text-center">
+        <ul class="footer-menu-list">
+          <li>
+            <a class="footer-links" href="#"
+              ><i class="fab fa-facebook-f"></i
+            ></a>
+          </li>
+          <li>
+            <a class="footer-links" href="#"><i class="fab fa-twitter"></i></a>
+          </li>
+          <li>
+            <a class="footer-links" href="#"
+              ><i class="fab fa-instagram"></i
+            ></a>
+          </li>
+          <li>
+            <a class="footer-links" href="#"
+              ><i class="fab fa-linkedin-in"></i
+            ></a>
+          </li>
+        </ul>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"
+      integrity="sha512-uKQ39gEGiyUJl4AI6L+ekBdGKpGw4xJ55+xyJG7YFlJokPNYegn9KwQ3P8A7aFQAUtUsAQHep+d/lrGqrbPIDQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="script.js"></script>
+  </body>
+</html>
