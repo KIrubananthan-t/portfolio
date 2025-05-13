@@ -94,6 +94,7 @@ body {
 .about .about-image img {
   height: 200px;
   width: 200px;
+ border-radius: 20px;
   padding: 5rem 5rem 5rem 1rem;
 }
 
