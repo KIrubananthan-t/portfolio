@@ -92,11 +92,12 @@ body {
 }
 
 .about .about-image img {
-     height: 300px;
+    height: 300px;
     width: 300px;
     border-radius: 200px;
- margin-right: 200px
+    margin-right: 200px;
 }
+
 
 /* Portfolio section styles */
 .portfolio {
