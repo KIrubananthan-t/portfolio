@@ -1,362 +1,278 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kirubanathan T | Portfolio</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-      integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <link rel="stylesheet" href="style.css" >
-    <link rel="stylesheet" href="responsive.css" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kirubananthan T | Full-Stack Developer</title>
+  <meta
+    name="description"
+    content="Portfolio of Kirubananthan T, Full-Stack Developer focused on secure and scalable web and mobile products."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="backdrop backdrop-one" aria-hidden="true"></div>
+  <div class="backdrop backdrop-two" aria-hidden="true"></div>
 
-    <style>
-      .footer-menu-list {
-        list-style: none;
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        padding: 0;
-        margin: 20px 0;
-      }
-
-      .footer-menu-list li {
-        display: inline-block;
-      }
-
-      .footer-links {
-        text-decoration: none;
-        color: white;
-        background-color: #35af83;
-        padding: 10px 14px;
-        border-radius: 50%;
-        font-size: 16px;
-        transition: background-color 0.3s ease, transform 0.3s ease;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .footer-links:hover {
-        background-color: #0056b3;
-        transform: scale(1.1);
-      }
-
-      /* Optional: dark background footer */
-      footer {
-        background-color: #222;
-        padding: 40px 0;
-        color: white;
-        text-align: center;
-      }
-    </style>
-  </head>
-
-  <body>
-    <!-- Navbar -->
-    <header class="header">
-      <nav class="navbar">
-        <div class="logo">
-          <h2 class="logo-heading">Kirubanathan T</h2>
-        </div>
-        <div class="hamburger" id="hamburger">
-          <i class="fas fa-bars hamburger-icon"></i>
-          <i class="fas fa-times cross-icon"></i>
-        </div>
-        <ul
-          style="
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            font-family: Arial, sans-serif;
-          "
-        >
-          <li>
-            <a
-              href="#home"
-              style="
-                text-decoration: none;
-                color: #ffffff;
-                font-weight: bold;
-                font-size: 16px;
-                transition: color 0.3s;
-              "
-              >Home</a
-            >
-          </li>
-          <li>
-            <a
-              href="#portfolio"
-              style="
-                text-decoration: none;
-                color: #ffffff;
-                font-weight: bold;
-                font-size: 16px;
-                transition: color 0.3s;
-              "
-              >Portfolio</a
-            >
-          </li>
-          <li>
-            <a
-              href="#about"
-              style="
-                text-decoration: none;
-                color: #ffffff;
-                font-weight: bold;
-                font-size: 16px;
-                transition: color 0.3s;
-              "
-              >About</a
-            >
-          </li>
-          <li>
-            <a
-              href="#services"
-              style="
-                text-decoration: none;
-                color: #ffffff;
-                font-weight: bold;
-                font-size: 16px;
-                transition: color 0.3s;
-              "
-              >Services</a
-            >
-          </li>
-          <li>
-            <a
-              href="#contact"
-              style="
-                text-decoration: none;
-                color: #ffffff;
-                font-weight: bold;
-                margin-right: 40px;
-                font-size: 16px;
-                transition: color 0.3s;
-              "
-              >Contact Me</a
-            >
-          </li>
-        </ul>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a href="#home" class="brand">KT</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="site-nav" id="siteNav">
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#experience">Experience</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
       </nav>
-    </header>
+      <a
+        class="header-linkedin"
+        href="https://www.linkedin.com/in/kirubananthan-t-825372273/"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Visit LinkedIn profile"
+      >in</a>
+    </div>
+  </header>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-      <div class="intro">
-        <div class="headings">
-          <h3 class="greet-heading">Hello, I'm</h3>
-          <h1 class="my-heading">Kirubanathan T</h1>
-          <h4 class="sub-heading">
-            A Software Engineer with 1 Year of Experience
-          </h4>
+  <main>
+    <section class="hero section" id="home">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Full-Stack Developer | Chennai, India</p>
+          <h1>Kirubananthan T</h1>
+          <p class="lead">
+            Results-driven engineer building secure and scalable applications with PHP, MySQL, Flutter, and JavaScript.
+            I deliver production systems with strong backend architecture, clean UX, and practical business impact.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#projects">View Projects</a>
+            <a class="btn btn-secondary" href="mailto:kirubathangam232@gmail.com">Hire Me</a>
+            <a class="btn btn-secondary" href="https://www.linkedin.com/in/kirubananthan-t-825372273/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          </div>
+          <div class="metrics">
+            <article>
+              <h3>4+</h3>
+              <p>Major systems delivered</p>
+            </article>
+            <article>
+              <h3>1+ Year</h3>
+              <p>Hands-on full-stack execution</p>
+            </article>
+            <article>
+              <h3>Web + Mobile</h3>
+              <p>Production-ready product development</p>
+            </article>
+          </div>
         </div>
-        <div class="intro-buttons">
-          <button class="btn common-btn">Hire Me</button>
-          <button class="btn ghost-btn">Get Resume</button>
-        </div>
+
+        <aside class="hero-panel">
+          <img src="1.jpeg" alt="Kirubananthan profile" />
+          <div class="panel-content">
+            <h2>Core Focus</h2>
+            <ul>
+              <li>Authentication, RBAC, and secure session workflows</li>
+              <li>REST APIs and relational database architecture</li>
+              <li>Payment integrations with Razorpay and email automation</li>
+              <li>Deployments and maintenance on cPanel environments</li>
+            </ul>
+          </div>
+        </aside>
       </div>
     </section>
 
-    <!-- Portfolio Section -->
-    <section id="portfolio" class="portfolio">
-      <h1 class="my-heading text-center">Featured Portfolio</h1>
-      <div class="portfolio-content">
-        <div class="my-row">
-          <div class="my-col">
-            <div class="my-card port-card">
-              <div class="image">
-                <img src="4.jpg" alt="Web Design Project" />
-              </div>
-              <h3 class="greet-heading blue-text">Web Design</h3>
-              <p class="small-para blue-text">Designing</p>
-            </div>
-          </div>
-          <div class="my-col">
-            <div class="my-card port-card">
-              <div class="image">
-                <img src="3.jpg" alt="Web Development Project" />
-              </div>
-              <h3 class="greet-heading blue-text">Web Development</h3>
-              <p class="small-para blue-text">Development</p>
-            </div>
-          </div>
-          <div class="my-col">
-            <div class="my-card port-card">
-              <div class="image">
-                <img
-                  src="https://tse2.mm.bing.net/th?id=OIP.WhGxMBFYAS-mwM6NtVseIAHaC7&pid=Api&P=0&h=180"
-                  alt="Back-End Development Project"
-                />
-              </div>
-              <h3 class="greet-heading blue-text">Back End</h3>
-              <p class="small-para blue-text">Development</p>
-            </div>
-          </div>
+    <section class="section" id="about">
+      <div class="container section-shell">
+        <div class="section-head">
+          <p class="eyebrow">Profile</p>
+          <h2>Professional Summary</h2>
         </div>
-      </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="about">
-      <div class="about-text">
-        <h1 class="my-heading">About Me</h1>
-        <p class="lead-para">
-          Hello! I'm Kirubanathan, a recent postgraduate in Computer Science &
-          Engineering from Anna University. I'm eager to start a fulfilling
-          career in the IT field and bring a combination of strong theoretical
-          knowledge and a passion for web development.
+        <p class="body-text">
+          Full-Stack Developer experienced in building booking systems, dashboards, and role-based admin platforms.
+          My approach combines backend reliability, practical UI delivery, and production-focused security best practices.
+        </p>
+        <p class="body-text">
+          I have implemented OTP login, dynamic pricing workflows, API-based architecture, form and server-side validation,
+          and hardened deployment configurations across both web and mobile products.
         </p>
       </div>
-      <div class="about-image">
-     <img src="https://pandssa.com/wp-content/uploads/2025/04/2-5.png" alt="Profile Picture" />
-
-      </div>
     </section>
 
-    <!-- Services Section -->
-    <section id="services" class="services">
-      <h1 class="my-heading text-center">My Services</h1>
-      <div class="services-content">
-        <div class="my-row">
-          <div class="my-col">
-            <div class="my-card">
-              <div class="icon">
-                <i class="fas fa-paint-brush"></i>
-              </div>
-              <h3 class="greet-heading blue-text">Web Design</h3>
-              <p class="small-para">
-                Creating visually appealing, user-friendly layouts using modern
-                design principles.
-              </p>
-            </div>
-          </div>
-          <div class="my-col">
-            <div class="my-card">
-              <div class="icon">
-                <i class="fa-solid fa-code"></i>
-              </div>
-              <h3 class="greet-heading blue-text">Web Development</h3>
-              <p class="small-para">
-                Building responsive and interactive websites with strong
-                front-end and back-end functionality.
-              </p>
-            </div>
-          </div>
-          <div class="my-col">
-            <div class="my-card">
-              <div class="icon">
-                <i class="fas fa-server"></i>
-              </div>
-              <h3 class="greet-heading blue-text">Back End</h3>
-              <p class="small-para">
-                Developing robust server-side logic, APIs, and database
-                structures for scalable applications.
-              </p>
-            </div>
-          </div>
+    <section class="section" id="skills">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Capabilities</p>
+          <h2>Technical Skills</h2>
+        </div>
+        <div class="skill-grid">
+          <article class="card">
+            <h3>Languages</h3>
+            <p>PHP, JavaScript, Dart (Flutter), HTML5, CSS3</p>
+          </article>
+          <article class="card">
+            <h3>Frameworks & Libraries</h3>
+            <p>Flutter, jQuery, Leaflet.js, Google Maps integrations</p>
+          </article>
+          <article class="card">
+            <h3>Backend & Database</h3>
+            <p>MySQL, REST API development, server-side validation, session management, schema design</p>
+          </article>
+          <article class="card">
+            <h3>Payments & Integrations</h3>
+            <p>Razorpay integration, PHPMailer, SMTP configuration, geolocation and radius search</p>
+          </article>
+          <article class="card">
+            <h3>Architecture</h3>
+            <p>RBAC, authentication and authorization, dynamic price calculation, secure CRUD workflows</p>
+          </article>
+          <article class="card">
+            <h3>Tools</h3>
+            <p>XAMPP, VS Code, Git, Android Studio, cPanel</p>
+          </article>
         </div>
       </div>
     </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-      <h1 class="my-heading text-center">Contact Me</h1>
-      <div class="contact-content">
-        <div class="contact-form-container">
-          <h1 class="greet-heading">Get In Touch</h1>
-          <form class="contact-form">
-            <input
-              class="form-controls"
-              type="text"
-              placeholder="Your Name"
-              required
-            />
-            <input
-              class="form-controls"
-              type="email"
-              placeholder="Your Email"
-              required
-            />
-            <input
-              class="form-controls"
-              type="tel"
-              placeholder="Your Phone"
-              required
-            />
-            <textarea
-              class="form-controls"
-              placeholder="Write your message"
-              rows="5"
-              required
-            ></textarea>
-            <input
-              class="form-btn btn common-btn"
-              type="submit"
-              value="Send Message"
-            />
-          </form>
+    <section class="section" id="experience">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Career</p>
+          <h2>Work Experience</h2>
         </div>
-        <div class="contact-details">
-          <h1 class="greet-heading">My Contact Details</h1>
-          <div class="details">
-            <h5 class="contact-heading">Email</h5>
-            <p class="contact-text">kirubathangam232@gmail.com</p>
-          </div>
-          <div class="details">
-            <h5 class="contact-heading">Phone</h5>
-            <p class="contact-text">+91 8220772090</p>
-          </div>
-          <div class="details">
-            <h5 class="contact-heading">Address</h5>
-            <p class="contact-text">Adaiyur, Adaiyur (PO)</p>
-            <p>Edappadi (TK), Salem (DT)</p>
-            <p>636501</p>
-          </div>
+        <div class="timeline">
+          <article class="timeline-item">
+            <div class="timeline-top">
+              <h3>Full-Stack Developer | Pandssa Web Media</h3>
+              <p>Present</p>
+            </div>
+            <ul>
+              <li>Built scalable web platforms with PHP, MySQL, HTML, CSS, and JavaScript.</li>
+              <li>Architected RBAC systems for Admin, Vendor, and User journeys.</li>
+              <li>Implemented secure authentication including OTP login and hardened session management.</li>
+              <li>Delivered production applications including SpotMyStudio and BinBux ecosystems.</li>
+              <li>Integrated Razorpay payments, API workflows, and deployment pipelines on cPanel.</li>
+            </ul>
+          </article>
+
+          <article class="timeline-item">
+            <div class="timeline-top">
+              <h3>Flutter Developer Intern | Redcaso Solutions</h3>
+              <p>Aug 2024 - Jan 2025</p>
+            </div>
+            <ul>
+              <li>Developed mobile UI screens using Flutter and Dart fundamentals.</li>
+              <li>Implemented form validation and API integration support.</li>
+              <li>Assisted debugging, testing, and mobile application quality checks.</li>
+            </ul>
+          </article>
+
+          <article class="timeline-item">
+            <div class="timeline-top">
+              <h3>PHP Developer Intern | Qadiri IT</h3>
+              <p>Jan 2025 - Mar 2025</p>
+            </div>
+            <ul>
+              <li>Built CRUD applications using core PHP and MySQL.</li>
+              <li>Implemented backend business logic, session handling, and validation.</li>
+              <li>Supported database operations and day-to-day development tasks.</li>
+            </ul>
+          </article>
         </div>
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-      <div class="footer-content text-center">
-        <ul class="footer-menu-list">
-          <li>
-            <a class="footer-links" href="#"
-              ><i class="fab fa-facebook-f"></i
-            ></a>
-          </li>
-          <li>
-            <a class="footer-links" href="#"><i class="fab fa-twitter"></i></a>
-          </li>
-          <li>
-            <a class="footer-links" href="#"
-              ><i class="fab fa-instagram"></i
-            ></a>
-          </li>
-          <li>
-            <a class="footer-links" href="#"
-              ><i class="fab fa-linkedin-in"></i
-            ></a>
-          </li>
-        </ul>
-      </div>
-    </footer>
+    <section class="section" id="projects">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Portfolio</p>
+          <h2>Featured Projects</h2>
+        </div>
+        <div class="project-grid">
+          <article class="project-card">
+            <h3>SpotMyStudio</h3>
+            <p>Online studio booking platform with role-based dashboards, dynamic pricing, and secure payment workflow.</p>
+            <p class="stack">PHP | MySQL | JavaScript | Razorpay | Google Maps API</p>
+            <a href="https://www.spotmystudio.com/" target="_blank" rel="noopener noreferrer">Visit Live Site</a>
+          </article>
 
-    <!-- Scripts -->
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"
-      integrity="sha512-uKQ39gEGiyUJl4AI6L+ekBdGKpGw4xJ55+xyJG7YFlJokPNYegn9KwQ3P8A7aFQAUtUsAQHep+d/lrGqrbPIDQ=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
-    <script src="script.js"></script>
-  </body>
+          <article class="project-card">
+            <h3>BinBux</h3>
+            <p>Smart scrap pickup platform combining web and mobile experiences with backend API-driven architecture.</p>
+            <p class="stack">Flutter | Dart | PHP | MySQL | REST API</p>
+            <a href="https://binbux.in/" target="_blank" rel="noopener noreferrer">Visit Website</a>
+          </article>
+
+          <article class="project-card">
+            <h3>Task & Time Tracking Tool</h3>
+            <p>Role-based project and task management system with real-time task timers and workflow visibility.</p>
+            <p class="stack">PHP | MySQL | JavaScript</p>
+           <a href="https://www.task.spotmystudio.com/" target="_blank" rel="noopener noreferrer">Visit Live Site</a>
+          </article>
+          <article class="project-card">
+            <h3>HR Management System</h3>
+            <p>Internal employee portal for attendance, leave approvals, and downloadable automated payslip generation.</p>
+            <p class="stack">PHP | MySQL | JavaScript</p>
+            <span class="muted-link">Internal Product</span>
+          </article>
+
+          
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="education">
+      <div class="container split">
+        <article class="card">
+          <h3>Education</h3>
+          <p class="inline-head">B.E. Computer Science and Engineering</p>
+          <p>M. Kumarasamy College of Engineering (2019 - 2023)</p>
+          <p>CGPA: 7.6 | Tamil Nadu, India</p>
+        </article>
+        <article class="card">
+          <h3>Languages & Interests</h3>
+          <p class="inline-head">Languages:</p>
+          <p>Tamil, English</p>
+          <p class="inline-head">Interests:</p>
+          <p>Reading books, learning new technologies, self improvement, strategy games</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section contact-shell" id="contact">
+      <div class="container contact-grid">
+        <div>
+          <p class="eyebrow">Let us build together</p>
+          <h2>Contact</h2>
+          <p class="body-text">
+            Open to full-time opportunities and impactful freelance projects where secure architecture and smooth user experiences matter.
+          </p>
+        </div>
+        <div class="contact-card">
+          <p><strong>Email:</strong> <a href="mailto:kirubathangam232@gmail.com">kirubathangam232@gmail.com</a></p>
+          <p><strong>Phone:</strong> <a href="tel:+918220772090">+91 8220772090</a></p>
+          <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/kirubananthan-t-825372273/" target="_blank" rel="noopener noreferrer">kirubananthan-t-825372273</a></p>
+          <p><strong>Location:</strong> Chennai, Tamil Nadu, India</p>
+          <p><strong>Play Store:</strong> <a href="https://play.google.com/store/apps/details?id=com.kiruba.first&hl=en_IN" target="_blank" rel="noopener noreferrer">BinBux App</a></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-wrap">
+      <p>&copy; <span id="currentYear"></span> Kirubananthan T. Built with performance and clarity in mind.</p>
+    </div>
+  </footer>
+
+  <script src="project pot.js"></script>
+</body>
 </html>
