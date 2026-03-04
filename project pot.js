@@ -1,17 +1,25 @@
-const hamburger = document.getElementById('hamburger'); 
-const menu = document.querySelector('.menu'); 
-  
-hamburger.addEventListener('click', function () { 
-    const hamIcon = this.querySelector('.hamburger-icon'); 
-    const crossIcon = this.querySelector('.cross-icon'); 
-    if (hamIcon.style.display === "none") { 
-        hamIcon.style.display = "inline-block"
-        menu.style.display = "none"
-        crossIcon.style.display = "none"
-    } 
-    else { 
-        crossIcon.style.display = "inline-block"
-        hamIcon.style.display = "none"
-        menu.style.display = "block"
-    } 
-});
+const menuToggle = document.getElementById("menuToggle");
+const siteNav = document.getElementById("siteNav");
+const navLinks = siteNav ? siteNav.querySelectorAll("a") : [];
+const currentYear = document.getElementById("currentYear");
+
+if (menuToggle && siteNav) {
+  menuToggle.addEventListener("click", () => {
+    const expanded = menuToggle.getAttribute("aria-expanded") === "true";
+    menuToggle.setAttribute("aria-expanded", String(!expanded));
+    menuToggle.classList.toggle("active");
+    siteNav.classList.toggle("open");
+  });
+
+  navLinks.forEach((link) => {
+    link.addEventListener("click", () => {
+      menuToggle.setAttribute("aria-expanded", "false");
+      menuToggle.classList.remove("active");
+      siteNav.classList.remove("open");
+    });
+  });
+}
+
+if (currentYear) {
+  currentYear.textContent = String(new Date().getFullYear());
+}
