@@ -6,23 +6,24 @@
   <title>Kirubananthan T | Full-Stack Developer</title>
   <meta
     name="description"
-    content="Portfolio of Kirubananthan T, Full-Stack Developer focused on secure and scalable web and mobile products."
+    content="Portfolio of Kirubananthan T, Full-Stack Developer building secure, scalable web and mobile products with PHP, MySQL, Flutter, and JavaScript."
   />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap"
     rel="stylesheet"
   />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="backdrop backdrop-one" aria-hidden="true"></div>
-  <div class="backdrop backdrop-two" aria-hidden="true"></div>
+  <div class="page-glow glow-one" aria-hidden="true"></div>
+  <div class="page-glow glow-two" aria-hidden="true"></div>
+  <div class="grid-overlay" aria-hidden="true"></div>
 
   <header class="site-header">
     <div class="container nav-wrap">
-      <a href="#home" class="brand">KT</a>
+      <a href="#home" class="brand" aria-label="Go to homepage">KT</a>
       <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
@@ -34,155 +35,192 @@
         <a href="#contact">Contact</a>
       </nav>
       <a
-        class="header-linkedin"
+        class="header-link"
         href="https://www.linkedin.com/in/kirubananthan-t-825372273/"
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Visit LinkedIn profile"
-      >in</a>
+      >LinkedIn</a>
     </div>
   </header>
 
   <main>
     <section class="hero section" id="home">
       <div class="container hero-grid">
-        <div class="hero-copy">
-          <p class="eyebrow">Full-Stack Developer | Chennai, India</p>
-          <h1>Kirubananthan T</h1>
+        <div class="hero-copy reveal">
+          <p class="eyebrow">Full-Stack Developer || Chennai, India</p><br>
+          <div class="hero-badge">Available for full-time work</div><br><br>
+          <h1>Building secure products that feel polished, fast, and ready for real users.</h1>
           <p class="lead">
-            Results-driven engineer building secure and scalable applications with PHP, MySQL, Flutter, and JavaScript.
-            I deliver production systems with strong backend architecture, clean UX, and practical business impact.
+            I am Kirubananthan T, a full-stack developer focused on PHP, MySQL, Flutter, and JavaScript. I build booking systems,
+            admin dashboards, payment workflows, and mobile-connected platforms that solve practical business problems.
           </p>
           <div class="hero-actions">
-            <a class="btn btn-primary" href="#projects">View Projects</a>
-            <a class="btn btn-secondary" href="mailto:kirubathangam232@gmail.com">Hire Me</a>
+            <a class="btn btn-primary" href="#projects">Explore Projects</a>
             <a class="btn btn-secondary" href="https://www.linkedin.com/in/kirubananthan-t-825372273/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a class="btn btn-tertiary" href="mailto:kirubathangam232@gmail.com">Hire Me</a>
           </div>
-          <div class="metrics">
-            <article>
-              <h3>4+</h3>
-              <p>Major systems delivered</p>
-            </article>
-            <article>
-              <h3>1+ Year</h3>
-              <p>Hands-on full-stack execution</p>
-            </article>
-            <article>
-              <h3>Web + Mobile</h3>
-              <p>Production-ready product development</p>
-            </article>
+          <div class="trust-row">
+            <span>PHP & MySQL</span>
+            <span>Flutter Apps</span>
+            <span>Razorpay</span>
+            <span>RBAC Systems</span>
           </div>
         </div>
 
-        <aside class="hero-panel">
-          <img src="1.jpeg" alt="Kirubananthan profile" />
-          <div class="panel-content">
-            <h2>Core Focus</h2>
-            <ul>
-              <li>Authentication, RBAC, and secure session workflows</li>
-              <li>REST APIs and relational database architecture</li>
-              <li>Payment integrations with Razorpay and email automation</li>
-              <li>Deployments and maintenance on cPanel environments</li>
-            </ul>
+        <aside class="hero-panel reveal">
+          <div class="hero-panel-top">
+            <img src="1.jpeg" alt="Kirubananthan profile" />
+            <div>
+              <p class="mini-label">Profile Snapshot</p>
+              <h1>Kirubananthan T</h1>
+              <p class="panel-role">Full-Stack Developer</p>
+            </div>
+          </div>
+
+          <div class="hero-stats">
+            <article>
+              <strong>4+</strong>
+              <span>Production systems delivered</span>
+            </article>
+            <article>
+              <strong>1.5+ years</strong>
+              <span>Hands-on development experience</span>
+            </article>
+            <article>
+              <strong>Web + Mobile</strong>
+              <span>Cross-platform product execution</span>
+            </article>
+          </div>
+
+          <div class="focus-list">
+            <div>
+              <span>Security</span>
+              <p>Authentication, OTP login, RBAC, validation, and hardened session workflows.</p>
+            </div>
+            <div>
+              <span>Architecture</span>
+              <p>REST APIs, database design, dynamic pricing logic, and scalable admin operations.</p>
+            </div>
+            <div>
+              <span>Delivery</span>
+              <p>cPanel deployments, payment integration, business automation, and practical UX improvements.</p>
+            </div>
           </div>
         </aside>
       </div>
     </section>
 
     <section class="section" id="about">
-      <div class="container section-shell">
-        <div class="section-head">
-          <p class="eyebrow">Profile</p>
-          <h2>Professional Summary</h2>
-        </div>
-        <p class="body-text">
-          Full-Stack Developer experienced in building booking systems, dashboards, and role-based admin platforms.
-          My approach combines backend reliability, practical UI delivery, and production-focused security best practices.
-        </p>
-        <p class="body-text">
-          I have implemented OTP login, dynamic pricing workflows, API-based architecture, form and server-side validation,
-          and hardened deployment configurations across both web and mobile products.
-        </p>
+      <div class="container feature-strip reveal">
+        <article>
+          <p class="mini-label">What I bring</p>
+          <h3>Business-first engineering</h3>
+          <p>I focus on features that improve operations, reduce manual work, and make products easier to manage.</p>
+        </article>
+        <article>
+          <p class="mini-label">How I work</p>
+          <h3>Clean execution</h3>
+          <p>I combine backend reliability with thoughtful interfaces so products feel stable and easy to use.</p>
+        </article>
+        <article>
+          <p class="mini-label">Why teams trust me</p>
+          <h3>Production mindset</h3>
+          <p>I think beyond screens, covering security, workflows, integrations, and deployment readiness.</p>
+        </article>
       </div>
     </section>
 
     <section class="section" id="skills">
-      <div class="container">
-        <div class="section-head">
-          <p class="eyebrow">Capabilities</p>
-          <h2>Technical Skills</h2>
+      <div class="container section-shell reveal">
+        <div class="section-head split-head">
+          <div>
+            <p class="eyebrow">Capabilities</p>
+            <h2>Technical Skills</h2>
+          </div>
+          <p class="body-text compact">
+            My stack is centered around robust backend development, secure business logic, and responsive web and mobile interfaces.
+          </p>
         </div>
         <div class="skill-grid">
-          <article class="card">
+          <article class="card skill-card">
             <h3>Languages</h3>
-            <p>PHP, JavaScript, Dart (Flutter), HTML5, CSS3</p>
+            <p>PHP, JavaScript, Dart, HTML5, CSS3</p>
           </article>
-          <article class="card">
+          <article class="card skill-card">
             <h3>Frameworks & Libraries</h3>
             <p>Flutter, jQuery, Leaflet.js, Google Maps integrations</p>
           </article>
-          <article class="card">
+          <article class="card skill-card">
             <h3>Backend & Database</h3>
-            <p>MySQL, REST API development, server-side validation, session management, schema design</p>
+            <p>MySQL, REST API development, schema design, session management, validation</p>
           </article>
-          <article class="card">
-            <h3>Payments & Integrations</h3>
-            <p>Razorpay integration, PHPMailer, SMTP configuration, geolocation and radius search</p>
+          <article class="card skill-card">
+            <h3>Payments & Messaging</h3>
+            <p>Razorpay integration, PHPMailer, SMTP configuration, transactional notifications</p>
           </article>
-          <article class="card">
-            <h3>Architecture</h3>
-            <p>RBAC, authentication and authorization, dynamic price calculation, secure CRUD workflows</p>
+          <article class="card skill-card">
+            <h3>Product Architecture</h3>
+            <p>RBAC, secure CRUD flows, OTP authentication, geolocation and radius-based features</p>
           </article>
-          <article class="card">
-            <h3>Tools</h3>
-            <p>XAMPP, VS Code, Git, Android Studio, cPanel</p>
+          <article class="card skill-card">
+            <h3>Tools & Delivery</h3>
+            <p>XAMPP, VS Code, Git, Android Studio, cPanel deployment</p>
           </article>
         </div>
       </div>
     </section>
 
     <section class="section" id="experience">
-      <div class="container">
+      <div class="container reveal">
         <div class="section-head">
           <p class="eyebrow">Career</p>
-          <h2>Work Experience</h2>
+          <h2>Experience That Converts Ideas Into Working Systems</h2>
         </div>
         <div class="timeline">
           <article class="timeline-item">
             <div class="timeline-top">
-              <h3>Full-Stack Developer | Pandssa Web Media</h3>
-              <p>Present</p>
+              <div>
+                <h3>Full-Stack Developer | Pandssa Web Media</h3>
+                <p class="timeline-location">Chennai, India</p>
+              </div>
+              <p>Current Role</p>
             </div>
             <ul>
-              <li>Built scalable web platforms with PHP, MySQL, HTML, CSS, and JavaScript.</li>
-              <li>Architected RBAC systems for Admin, Vendor, and User journeys.</li>
-              <li>Implemented secure authentication including OTP login and hardened session management.</li>
-              <li>Delivered production applications including SpotMyStudio and BinBux ecosystems.</li>
-              <li>Integrated Razorpay payments, API workflows, and deployment pipelines on cPanel.</li>
+              <li>Built scalable web platforms using PHP, MySQL, HTML, CSS, and JavaScript.</li>
+              <li>Designed RBAC journeys for Admin, Vendor, and User roles across business platforms.</li>
+              <li>Implemented secure authentication with OTP login, validation, and stronger session handling.</li>
+              <li>Delivered SpotMyStudio, BinBux, and internal systems with payment and API workflows.</li>
+              <li>Managed deployment and maintenance on cPanel-based environments.</li>
             </ul>
           </article>
 
           <article class="timeline-item">
             <div class="timeline-top">
-              <h3>Flutter Developer Intern | Redcaso Solutions</h3>
-              <p>Aug 2024 - Jan 2025</p>
+              <div>
+                <h3>PHP Developer Intern | Qadiri IT</h3>
+                <p class="timeline-location">Jan 2025 - Mar 2025</p>
+              </div>
+              <p>Internship</p>
             </div>
             <ul>
-              <li>Developed mobile UI screens using Flutter and Dart fundamentals.</li>
-              <li>Implemented form validation and API integration support.</li>
-              <li>Assisted debugging, testing, and mobile application quality checks.</li>
+              <li>Built CRUD applications in core PHP with MySQL-backed data handling.</li>
+              <li>Worked on business logic, session management, and server-side validation.</li>
+              <li>Supported daily development tasks and database operations in live workflows.</li>
             </ul>
           </article>
 
           <article class="timeline-item">
             <div class="timeline-top">
-              <h3>PHP Developer Intern | Qadiri IT</h3>
-              <p>Jan 2025 - Mar 2025</p>
+              <div>
+                <h3>Flutter Developer Intern | Redcaso Solutions</h3>
+                <p class="timeline-location">Aug 2024 - Jan 2025</p>
+              </div>
+              <p>Internship</p>
             </div>
             <ul>
-              <li>Built CRUD applications using core PHP and MySQL.</li>
-              <li>Implemented backend business logic, session handling, and validation.</li>
-              <li>Supported database operations and day-to-day development tasks.</li>
+              <li>Developed Flutter UI screens and assisted with app-side API integration.</li>
+              <li>Improved form validation, testing, and bug resolution for mobile flows.</li>
+              <li>Strengthened practical understanding of app delivery and frontend quality.</li>
             </ul>
           </article>
         </div>
@@ -190,70 +228,111 @@
     </section>
 
     <section class="section" id="projects">
-      <div class="container">
-        <div class="section-head">
-          <p class="eyebrow">Portfolio</p>
-          <h2>Featured Projects</h2>
+      <div class="container reveal">
+        <div class="section-head split-head">
+          <div>
+            <p class="eyebrow">Portfolio</p>
+            <h2>Featured Projects</h2>
+          </div>
+          <p class="body-text compact">
+            These projects reflect my work across booking, waste management, team productivity, and internal operations.
+          </p>
         </div>
+
         <div class="project-grid">
-          <article class="project-card">
+          <article class="project-card featured-project">
+            <div class="project-topline">
+              <span class="project-tag">Flagship</span>
+              <span class="project-status">Live</span>
+            </div>
             <h3>SpotMyStudio</h3>
-            <p>Online studio booking platform with role-based dashboards, dynamic pricing, and secure payment workflow.</p>
+            <p>
+              Online studio booking platform with role-based dashboards, dynamic pricing, secure booking workflows,
+              and integrated payment handling.
+            </p>
             <p class="stack">PHP | MySQL | JavaScript | Razorpay | Google Maps API</p>
-            <a href="https://www.spotmystudio.com/" target="_blank" rel="noopener noreferrer">Visit Live Site</a>
+            <div class="project-links">
+              <a href="https://www.spotmystudio.com/" target="_blank" rel="noopener noreferrer">Live Site</a>
+            </div>
           </article>
 
-          <article class="project-card">
+          <article class="project-card featured-project">
+            <div class="project-topline">
+              <span class="project-tag">Web + App</span>
+              <span class="project-status">Live</span>
+            </div>
             <h3>BinBux</h3>
-            <p>Smart scrap pickup platform combining web and mobile experiences with backend API-driven architecture.</p>
+            <p>
+              Smart scrap pickup platform built across web and mobile, with API-driven architecture, pickup workflows,
+              and user-facing app support.
+            </p>
             <p class="stack">Flutter | Dart | PHP | MySQL | REST API</p>
-            <a href="https://binbux.in/" target="_blank" rel="noopener noreferrer">Visit Website</a>
+            <div class="project-links">
+              <a href="https://binbux.in/" target="_blank" rel="noopener noreferrer">Website</a>
+              <a href="https://play.google.com/store/apps/details?id=com.kiruba.first&hl=en_IN" target="_blank" rel="noopener noreferrer">Play Store</a>
+            </div>
           </article>
 
           <article class="project-card">
+            <div class="project-topline">
+              <span class="project-tag">Productivity</span>
+              <span class="project-status">Live</span>
+            </div>
             <h3>Task & Time Tracking Tool</h3>
-            <p>Role-based project and task management system with real-time task timers and workflow visibility.</p>
+            <p>
+              Role-based task and project tracking system with task timers, visibility across teams, and better workflow monitoring.
+            </p>
             <p class="stack">PHP | MySQL | JavaScript</p>
-           <a href="https://www.task.spotmystudio.com/" target="_blank" rel="noopener noreferrer">Visit Live Site</a>
-          </article>
-          <article class="project-card">
-            <h3>HR Management System</h3>
-            <p>Internal employee portal for attendance, leave approvals, and downloadable automated payslip generation.</p>
-            <p class="stack">PHP | MySQL | JavaScript</p>
-            <span class="muted-link">Internal Product</span>
+            <div class="project-links">
+              <a href="https://www.task.spotmystudio.com/" target="_blank" rel="noopener noreferrer">Live Site</a>
+            </div>
           </article>
 
-          
+          <article class="project-card">
+            <div class="project-topline">
+              <span class="project-tag">Internal System</span>
+              <span class="project-status muted-status">Private</span>
+            </div>
+            <h3>HR Management System</h3>
+            <p>
+              Employee management portal for attendance, leave approvals, and automated payslip generation used for internal operations.
+            </p>
+            <p class="stack">PHP | MySQL | JavaScript</p>
+            <div class="project-links">
+              <span class="muted-link">Internal Product</span>
+            </div>
           </article>
         </div>
       </div>
     </section>
 
     <section class="section" id="education">
-      <div class="container split">
-        <article class="card">
-          <h3>Education</h3>
-          <p class="inline-head">B.E. Computer Science and Engineering</p>
-          <p>M. Kumarasamy College of Engineering (2019 - 2023)</p>
+      <div class="container split reveal">
+        <article class="card info-card">
+          <p class="eyebrow">Education</p>
+          <h3>B.E. Computer Science and Engineering</h3>
+          <p class="inline-head">M. Kumarasamy College of Engineering</p>
+          <p>2019 - 2023</p>
           <p>CGPA: 7.6 | Tamil Nadu, India</p>
         </article>
-        <article class="card">
-          <h3>Languages & Interests</h3>
-          <p class="inline-head">Languages:</p>
+        <article class="card info-card">
+          <p class="eyebrow">Languages & Interests</p>
+          <h3>Beyond the code</h3>
+          <p class="inline-head">Languages</p>
           <p>Tamil, English</p>
-          <p class="inline-head">Interests:</p>
+          <p class="inline-head">Interests</p>
           <p>Reading books, learning new technologies, self improvement, strategy games</p>
         </article>
       </div>
     </section>
 
     <section class="section contact-shell" id="contact">
-      <div class="container contact-grid">
+      <div class="container contact-grid reveal">
         <div>
           <p class="eyebrow">Let us build together</p>
-          <h2>Contact</h2>
+          <h2>Open to impactful work</h2>
           <p class="body-text">
-            Open to full-time opportunities and impactful freelance projects where secure architecture and smooth user experiences matter.
+            I am looking for opportunities where secure backend systems, practical UX, and reliable delivery make a visible difference.
           </p>
         </div>
         <div class="contact-card">
@@ -261,7 +340,6 @@
           <p><strong>Phone:</strong> <a href="tel:+918220772090">+91 8220772090</a></p>
           <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/kirubananthan-t-825372273/" target="_blank" rel="noopener noreferrer">kirubananthan-t-825372273</a></p>
           <p><strong>Location:</strong> Chennai, Tamil Nadu, India</p>
-          <p><strong>Play Store:</strong> <a href="https://play.google.com/store/apps/details?id=com.kiruba.first&hl=en_IN" target="_blank" rel="noopener noreferrer">BinBux App</a></p>
         </div>
       </div>
     </section>
@@ -269,7 +347,7 @@
 
   <footer class="site-footer">
     <div class="container footer-wrap">
-      <p>&copy; <span id="currentYear"></span> Kirubananthan T. Built with performance and clarity in mind.</p>
+      <p>&copy; <span id="currentYear"></span> Kirubananthan T. Crafted to present work with clarity, proof, and polish.</p>
     </div>
   </footer>
 
