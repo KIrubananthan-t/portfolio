@@ -9,10 +9,11 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="Kirubananthan T | Full-Stack Product Developer">
   <meta property="og:description" content="I build and ship complete business products across backend, frontend, mobile, integrations, security and production delivery.">
+  <meta property="og:url" content="https://kirubananthan-t.github.io/portfolio/">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Kirubananthan T | Full-Stack Product Developer">
   <meta name="twitter:description" content="Production web and mobile products built across the complete delivery lifecycle.">
-  <!-- TODO: Add canonical URL, og:url, og:image and twitter:image after the final domain and real social image are supplied. -->
+  <link rel="canonical" href="https://kirubananthan-t.github.io/portfolio/">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,7 +21,7 @@
   <link rel="stylesheet" href="style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
-  <script src="project pot.js" defer></script>
+  <script src="portfolio.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -79,11 +80,9 @@
               <p class="hero-summary hero-summary-secondary">My work spans PHP, MySQL, JavaScript, Flutter, REST APIs, Meta integrations, automation, security and production deployment.</p>
               <div class="hero-actions">
                 <a class="button button-primary magnetic" href="#projects">View my work <span aria-hidden="true">↓</span></a>
+                <a class="button button-secondary magnetic" href="resume.pdf" target="_blank" rel="noopener noreferrer">Download resume <span aria-hidden="true">↗</span></a>
+                <a class="text-link magnetic" href="https://github.com/KIrubananthan-t" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
                 <a class="text-link magnetic" href="https://www.linkedin.com/in/kirubananthan-t-825372273/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
-                <!-- TODO: Replace with a real anchor when the GitHub profile URL is supplied. -->
-                <span class="text-link unavailable-link">GitHub <small>URL required</small></span>
-                <!-- TODO: Replace with a download anchor when the resume PDF is supplied. -->
-                <span class="text-link unavailable-link">Resume <small>PDF required</small></span>
               </div>
             </div>
           </div>
@@ -95,8 +94,7 @@
               <p class="portrait-index mono" aria-hidden="true">PRODUCT ENGINEER / 01</p>
 
               <div class="portrait-frame" id="portraitFrame">
-                <div class="portrait-shine" id="portraitShine" aria-hidden="true"></div>
-                <img id="portraitImage" src="profile.png" alt="Kirubananthan T, Full-Stack Product Developer" width="960" height="1088" fetchpriority="high">
+                <img id="portraitImage" src="profile.png" alt="Kirubananthan T, Full-Stack Product Developer" width="1086" height="1448" fetchpriority="high">
                 <div class="portrait-caption"><span>Kirubananthan T</span><span>Chennai, India</span></div>
               </div>
 
@@ -138,13 +136,9 @@
           <div class="project-slides">
             <article class="project-slide is-first" data-project="01">
               <div class="project-visual project-glow project-spot">
-                <!-- TODO: Add a real SpotMyStudio production screenshot here. -->
-                <div class="shot-frame" role="img" aria-label="SpotMyStudio screenshot to be supplied">
+                <div class="shot-frame project-shot-frame">
                   <div class="browser-chrome" aria-hidden="true"><i></i><i></i><i></i><span>spotmystudio.com</span></div>
-                  <div class="shot-canvas">
-                    <span class="shot-code mono">SMS / PLATFORM</span><strong>SpotMyStudio</strong>
-                    <div class="shot-architecture" aria-hidden="true"><span>Discover</span><i></i><span>Book</span><i></i><span>Verify</span><i></i><span>Pay</span></div>
-                  </div>
+                  <img class="project-screenshot project-screenshot-wide" src="assets/projects/spotmystudio/dashboard.png" alt="SpotMyStudio studio booking dashboard" width="1895" height="865" loading="lazy" decoding="async">
                 </div>
                 <div class="project-annotations" aria-hidden="true"><span>Real-time availability</span><span>Role-based dashboards</span><span>Transaction-safe booking</span></div>
               </div>
@@ -165,11 +159,15 @@
 
             <article class="project-slide" data-project="02">
               <div class="project-visual project-glow project-meta-crm">
-                <!-- TODO: Add real Meta Lead CRM screenshots when available. -->
-                <div class="shot-frame workflow-frame" role="img" aria-label="Meta Lead CRM workflow diagram; product screenshots to be supplied">
+                <div class="meta-proof">
+                  <div class="meta-device-frame">
+                    <img class="project-screenshot project-screenshot-mobile" src="assets/projects/meta-crm/dashboard.png" alt="Meta Lead CRM lead management dashboard" width="1080" height="2424" loading="lazy" decoding="async">
+                  </div>
+                  <div class="workflow-frame" aria-label="Meta Lead CRM integration workflow">
                   <span class="shot-code mono">META / CRM CONNECTION</span>
                   <div class="workflow-diagram">
                     <span>Facebook Lead Ads</span><i>↓</i><span>Meta OAuth</span><i>↓</i><span>Facebook Page</span><i>↓</i><span>Instant Lead Form</span><i>↓</i><span>Lead Retrieval</span><i>↓</i><span>CRM</span><i>↓</i><span>Lead Assignment</span><i>↓</i><span>Follow-Up Workflow</span>
+                  </div>
                   </div>
                 </div>
               </div>
@@ -190,10 +188,10 @@
 
             <article class="project-slide" data-project="03">
               <div class="project-visual project-glow project-binbux">
-                <!-- TODO: Add authentic BinBux mobile and web screenshots here. -->
-                <div class="phone-composition" role="img" aria-label="BinBux mobile application screenshots to be supplied">
-                  <div class="phone-frame phone-back"><span class="shot-code mono">WEB / API</span><strong>BinBux</strong></div>
-                  <div class="phone-frame phone-front"><span class="phone-notch"></span><span class="shot-code mono">FLUTTER / APP</span><strong>BB</strong><small>Smart Scrap Pickup</small></div>
+                <div class="phone-composition">
+                  <div class="phone-frame phone-proof-frame">
+                    <img class="project-screenshot project-screenshot-mobile" src="assets/projects/binbux/mobile.png" alt="BinBux Flutter mobile application" width="1080" height="2424" loading="lazy" decoding="async">
+                  </div>
                 </div>
               </div>
               <div class="project-copy">
@@ -210,29 +208,28 @@
 
             <article class="project-slide" data-project="04">
               <div class="project-visual project-glow project-task">
-                <!-- TODO: Add a real Task & Time Management Platform screenshot here. -->
-                <div class="shot-frame" role="img" aria-label="Task and Time Management Platform screenshot to be supplied">
-                  <div class="browser-chrome" aria-hidden="true"><i></i><i></i><i></i><span>task.spotmystudio.com</span></div>
-                  <div class="task-canvas" aria-hidden="true"><aside><b>Workspace</b><span>Projects</span><span>Teams</span><span>Reports</span></aside><div><span class="task-line wide"></span><span class="task-line"></span><span class="task-line mid"></span><span class="task-timer">01:24:38</span></div></div>
+                <div class="shot-frame project-shot-frame">
+                  <div class="browser-chrome" aria-hidden="true"><i></i><i></i><i></i><span>zentrow.app</span></div>
+                  <img class="project-screenshot project-screenshot-wide" src="assets/projects/task-manager/dashboard.png" alt="Zentrow project and task management dashboard" width="1892" height="906" loading="lazy" decoding="async">
                 </div>
               </div>
               <div class="project-copy">
                 <div class="project-status"><span>SaaS / Business productivity</span><span class="live-dot">Live</span></div>
-                <p class="project-subtitle">Multi-User Productivity Platform</p>
-                <h3>Task &amp; Time Management</h3>
+                <p class="project-subtitle">Project &amp; Team Workflow Platform</p>
+                <h3>Zentrow</h3>
                 <p>A role-based organization, project, task, communication and reporting system used by 10+ team members for over 6 months.</p>
+                <div class="project-metric"><strong>10+</strong><span>Team members · 6+ months usage</span></div>
                 <ul class="feature-list"><li>Organizations, projects, tasks, Table and Board views</li><li>Assignments, live timers and manual time entries</li><li>Owner / Admin / Manager / Member permissions</li><li>Team chat, direct messaging and email invitations</li><li>Daily, weekly and monthly reporting</li><li>Google authentication and productivity workflows</li><li>Organization isolation and timer synchronization</li></ul>
-                <ul class="stack-list" aria-label="Task platform stack"><li>PHP</li><li>MySQL</li><li>JavaScript</li><li>REST APIs</li></ul>
-                <a class="project-link magnetic" href="https://www.task.spotmystudio.com/" target="_blank" rel="noopener noreferrer">Visit live website <span aria-hidden="true">↗</span></a>
+                <ul class="stack-list" aria-label="Zentrow stack"><li>PHP</li><li>MySQL</li><li>JavaScript</li><li>REST APIs</li></ul>
+                <a class="project-link magnetic" href="https://zentrow.app/" target="_blank" rel="noopener noreferrer">Visit Zentrow <span aria-hidden="true">↗</span></a>
               </div>
             </article>
 
             <article class="project-slide" data-project="05">
               <div class="project-visual project-glow project-hr">
-                <!-- TODO: Add authentic HR Management System screenshots here. -->
-                <div class="shot-frame" role="img" aria-label="Private HR Management System screenshots to be supplied">
+                <div class="shot-frame project-shot-frame">
                   <div class="browser-chrome" aria-hidden="true"><i></i><i></i><i></i><span>Internal operations</span></div>
-                  <div class="hr-canvas" aria-hidden="true"><span class="shot-code mono">HR / OPERATIONS</span><strong>People. Attendance. Payroll.</strong><div><i></i><i></i><i></i><i></i></div></div>
+                  <img class="project-screenshot project-screenshot-wide" src="assets/projects/hr-system/dashboard.png" alt="HR Management System administration dashboard" width="1887" height="866" loading="lazy" decoding="async">
                 </div>
               </div>
               <div class="project-copy">
@@ -328,7 +325,6 @@
             <span>WordPress</span><span>Elementor</span><span>Elementor Pro</span><span>Responsive Design</span><span>Custom CSS</span><span>Corporate Websites</span><span>WooCommerce</span><span>Reusable Headers / Footers</span><span>Plugin Troubleshooting</span><span>Website Migration</span><span>Hosting Migration</span><span>SSL</span><span>DNS</span><span>Performance Troubleshooting</span><span>WordPress Recovery</span><span>Plugin / Core Compatibility</span>
           </div>
         </div>
-        <!-- TODO: Add authentic WordPress project screenshots when supplied. -->
       </div>
     </section>
 
@@ -376,8 +372,10 @@
         <h2 class="contact-title reveal" id="contact-title"><span class="text-mask"><span>Let’s build</span></span><span class="text-mask"><span>something</span></span><span class="text-mask"><span class="title-outline">useful.</span></span></h2>
         <div class="contact-grid reveal">
           <a class="contact-link magnetic" href="mailto:kirubathangam232@gmail.com"><span>Email</span><strong>kirubathangam232@gmail.com</strong><i aria-hidden="true">↗</i></a>
-          <a class="contact-link magnetic" href="tel:+918220772090"><span>Phone</span><strong>+91 8220772090</strong><i aria-hidden="true">↗</i></a>
           <a class="contact-link magnetic" href="https://www.linkedin.com/in/kirubananthan-t-825372273/" target="_blank" rel="noopener noreferrer"><span>LinkedIn</span><strong>Kirubananthan T</strong><i aria-hidden="true">↗</i></a>
+          <a class="contact-link magnetic" href="https://github.com/KIrubananthan-t" target="_blank" rel="noopener noreferrer"><span>GitHub</span><strong>KIrubananthan-t</strong><i aria-hidden="true">↗</i></a>
+          <a class="contact-link magnetic" href="resume.pdf" target="_blank" rel="noopener noreferrer"><span>Resume</span><strong>View PDF</strong><i aria-hidden="true">↗</i></a>
+          <a class="contact-link magnetic" href="tel:+918220772090"><span>Phone</span><strong>+91 8220772090</strong><i aria-hidden="true">↗</i></a>
           <div class="contact-link static"><span>Location</span><strong>Chennai, Tamil Nadu, India</strong></div>
         </div>
       </div>
