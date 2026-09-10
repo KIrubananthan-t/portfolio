@@ -467,12 +467,13 @@ a.text-link:hover { border-color: var(--cyan); color: var(--cyan); }
   .section-heading { grid-template-columns:1fr; gap:1.5rem; }.section-heading h2 { font-size:clamp(3.2rem,13vw,5.5rem); }.section-heading > p { max-width:31rem; }
   #bgCanvas { display:none; }.hero-pin { min-height:auto; padding:8rem 0 4.5rem; }.hero-layout { grid-template-columns:1fr; gap:4rem; }.hero-message { min-height:clamp(13.5rem,43vw,18rem); }.hero-title { font-size:clamp(4.2rem,16vw,6.5rem); }.hero-title-secondary,.hero-transition { display:none; }.hero-detail { opacity:1; transform:none; }.portrait-stage { width:min(100%,31rem); justify-self:center; perspective:900px; }.portrait-interactive,.portrait-frame { transform-style:preserve-3d; }.portrait-frame img { transform:scale(1.045); }.tech-php,.tech-js { left:0; }.tech-mysql,.tech-api { right:0; }.hero-scroll { display:none; }
   .gsap-ready .hero-pin { height:100svh; min-height:40rem; padding:5.25rem 0 1.5rem; }
-  .gsap-ready .hero-layout { position:relative; display:block; height:100%; }
-  .gsap-ready .hero-copy { height:100%; }
+  .gsap-ready .hero-layout { position:relative; display:grid; grid-template-rows:auto minmax(0,1fr); align-content:start; gap:clamp(1.5rem,3vh,2rem); height:100%; }
+  .gsap-ready .hero-copy { height:auto; }
   .gsap-ready .availability { margin-bottom:.7rem; }
-  .gsap-ready .hero-message { position:absolute; top:5.6rem; right:0; left:0; min-height:clamp(11rem,43vw,18rem); }
+  .gsap-ready .hero-message { position:relative; top:auto; right:auto; left:auto; min-height:0; }
+  .gsap-ready .hero-title-primary { position:relative; }
   .gsap-ready .hero-detail { position:absolute; z-index:4; top:clamp(17rem,45vh,22rem); right:0; left:0; opacity:0; transform:translateY(1.5rem); }
-  .gsap-ready .portrait-stage { position:absolute; right:0; bottom:1.5rem; width:min(46vw,14rem); }
+  .gsap-ready .portrait-stage { position:relative; inset:auto; width:min(74vw,18.75rem); margin-inline:auto; justify-self:center; align-self:start; }
   .gsap-ready .hero-title-secondary,
   .gsap-ready .hero-transition { display:block; }
   .gsap-ready .hero-transition .text-mask { font-size:clamp(3.4rem,16vw,7rem); }
@@ -514,11 +515,10 @@ a.text-link:hover { border-color: var(--cyan); color: var(--cyan); }
 @media (max-width:480px) {
   :root { --section-space:4.75rem; }.container { width:calc(100% - 2rem); }.nav-wrap { min-height:68px; }.js .site-nav { top:68px; padding-inline:1rem; }.hero-pin { padding:7.25rem 0 4rem; }.availability { font-size:.55rem; }.hero-kicker { flex-wrap:wrap; gap:.5rem; font-size:.57rem; }.hero-kicker i { width:1rem; }.hero-message { min-height:11.8rem; }.hero-title { font-size:clamp(3.45rem,17.4vw,4.9rem); line-height:.78; }.hero-summary { font-size:.91rem; }.hero-actions { display:grid; grid-template-columns:1fr 1fr; gap:.65rem .85rem; }.hero-actions .button { grid-column:1/-1; }.hero-actions .button,.hero-actions .text-link { min-height:44px; }.text-link { justify-content:space-between; }.portrait-interactive { padding:.7rem .4rem; }.portrait-caption { flex-direction:column; gap:.15rem; }.tech-label { font-size:.48rem; }.tech-flutter { right:2rem; }.tech-git { left:2rem; }
   .gsap-ready .hero-pin { height:100svh; min-height:40rem; padding:4.75rem 0 1rem; }
-  .gsap-ready .hero-message { top:5.2rem; }
   .gsap-ready .hero-detail { top:clamp(15.8rem,38vh,18.5rem); }
   .gsap-ready .hero-summary { font-size:clamp(.76rem,3.6vw,.88rem); line-height:1.48; }
   .gsap-ready .hero-actions { margin-top:.85rem; }
-  .gsap-ready .portrait-stage { bottom:1.2rem; width:min(43vw,11.5rem); }
+  .gsap-ready .portrait-stage { width:min(74vw,18.75rem); }
   .project-stage { padding-block:4.75rem; }.project-slides { gap:4rem; }.project-annotations { display:none; }.feature-list { grid-template-columns:1fr; }.meta-proof { grid-template-columns:1fr; min-height:25rem; padding:.7rem; }.meta-device-frame { width:11rem; height:23.5rem; }.meta-proof .workflow-frame { display:none; }.phone-composition { min-height:25rem; }.phone-frame { width:10rem; }
   .section-heading h2,.stack-heading h2,.education-grid h2 { font-size:clamp(2.9rem,15vw,4.5rem); }.principle { grid-template-columns:1fr; }.integration-grid { grid-template-columns:1fr; }.integration-grid article { min-height:11rem; }.stack-track { padding-inline:1rem; }.stack-panel { min-height:22rem; padding:1.5rem; }.stack-panel h3 { font-size:clamp(2.3rem,12vw,3.5rem); }.metric-strip { grid-template-columns:1fr 1fr; }.metric-strip article { min-height:9rem; padding:1rem; }.metric-strip span { font-size:.62rem; }
   .contact-kicker { font-size:clamp(2.1rem,11vw,3rem); }.contact-title { font-size:clamp(3.7rem,18vw,5.4rem); }.contact-link { grid-template-columns:4.5rem minmax(0,1fr) auto; min-height:5.5rem; padding-inline:.3rem; }.contact-link strong { font-size:.76rem; }.footer-wrap { flex-direction:column; gap:.5rem; }

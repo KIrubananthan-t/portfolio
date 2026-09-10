@@ -139,6 +139,7 @@ document.documentElement.classList.add('js');
       gsap.set(secondaryLines, { yPercent: 110 });
       gsap.set(transition, { autoAlpha: 0, visibility: 'visible' });
       gsap.set(transitionLines, { yPercent: 120 });
+      gsap.set(portrait, { x: 0, y: 0, xPercent: 0, yPercent: 0, scale: 1, rotation: 0 });
 
       const timeline = gsap.timeline({
         scrollTrigger: {
@@ -267,10 +268,16 @@ document.documentElement.classList.add('js');
       const labelInners = $$('.tech-label-inner', interactive);
       if (!section || !stage || !interactive || !frame || !image || !aura) return undefined;
 
+      gsap.set(stage, { x: 0, y: 0, xPercent: 0, yPercent: 0, scale: 1, rotation: 0 });
+      gsap.set(interactive, { x: 0, y: 0, xPercent: 0, yPercent: 0, scale: 1, rotation: 0 });
+      gsap.set(frame, { x: 0, y: 0, xPercent: 0, yPercent: 0, scale: 1, rotation: 0 });
+      gsap.set(image, { x: 0, y: 0, xPercent: 0, yPercent: 0 });
+      gsap.set(aura, { x: 0, y: 0, xPercent: 0, yPercent: 0, scale: 1 });
+
       const tweens = [
-        gsap.to(interactive, { y: -8, duration: 3.6, repeat: -1, yoyo: true, ease: 'sine.inOut' }),
-        gsap.to(image, { y: 5, scale: 1.055, duration: 4.1, repeat: -1, yoyo: true, ease: 'sine.inOut' }),
-        gsap.to(aura, { x: 7, y: -5, scale: 1.06, opacity: 0.6, duration: 4.5, repeat: -1, yoyo: true, ease: 'sine.inOut' })
+        gsap.to(interactive, { y: -8, duration: 3.6, repeat: -1, yoyo: true, ease: 'sine.inOut', paused: true }),
+        gsap.to(image, { y: 5, scale: 1.055, duration: 4.1, repeat: -1, yoyo: true, ease: 'sine.inOut', paused: true }),
+        gsap.to(aura, { x: 7, y: -5, scale: 1.06, opacity: 0.6, duration: 4.5, repeat: -1, yoyo: true, ease: 'sine.inOut', paused: true })
       ];
 
       const labelMotion = [
@@ -280,24 +287,31 @@ document.documentElement.classList.add('js');
       ];
       labelInners.forEach((label, index) => {
         const motion = labelMotion[index % labelMotion.length];
-        tweens.push(gsap.to(label, { ...motion, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: index * 0.08 }));
+        tweens.push(gsap.to(label, { ...motion, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: index * 0.08, paused: true }));
       });
 
+      let motionStarted = false;
       const parallax = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           start: 'top top',
           end: 'bottom top',
           scrub: 0.7,
-          invalidateOnRefresh: true
+          invalidateOnRefresh: true,
+          onUpdate: self => {
+            if (!motionStarted && self.progress > 0.005) {
+              motionStarted = true;
+              tweens.forEach(tween => tween.play());
+            }
+          }
         }
       });
       parallax
-        .to(stage, { y: -24, ease: 'none' }, 0)
-        .to(frame, { scale: 0.985, rotationZ: 1.1, ease: 'none' }, 0)
-        .to(image, { yPercent: -1.4, ease: 'none' }, 0);
+        .to(stage, { y: -24, duration: 0.85, ease: 'none' }, 0.15)
+        .to(frame, { scale: 0.985, rotationZ: 1.1, duration: 0.85, ease: 'none' }, 0.15)
+        .to(image, { yPercent: -1.4, duration: 0.85, ease: 'none' }, 0.15);
 
-      const onVisibility = () => tweens.forEach(tween => document.hidden ? tween.pause() : tween.resume());
+      const onVisibility = () => tweens.forEach(tween => document.hidden || !motionStarted ? tween.pause() : tween.resume());
       document.addEventListener('visibilitychange', onVisibility);
 
       return () => {
