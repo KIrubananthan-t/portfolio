@@ -441,11 +441,37 @@ a.text-link:hover { border-color: var(--cyan); color: var(--cyan); }
   :root { --section-space:5.5rem; }.container { width:min(100% - 2.5rem,720px); }.page-grid { background-size:48px 48px; }
   .section-heading { grid-template-columns:1fr; gap:1.5rem; }.section-heading h2 { font-size:clamp(3.2rem,13vw,5.5rem); }.section-heading > p { max-width:31rem; }
   #bgCanvas { display:none; }.hero-pin { min-height:auto; padding:8rem 0 4.5rem; }.hero-layout { grid-template-columns:1fr; gap:4rem; }.hero-message { min-height:clamp(13.5rem,43vw,18rem); }.hero-title { font-size:clamp(4.2rem,16vw,6.5rem); }.hero-title-secondary,.hero-transition { display:none; }.hero-detail { opacity:1 !important; transform:none !important; }.portrait-stage { width:min(100%,31rem); justify-self:center; }.tech-php,.tech-js { left:0; }.tech-mysql,.tech-api { right:0; }.hero-scroll { display:none; }
+  .gsap-ready .hero-title-secondary,
+  .gsap-ready .hero-transition { display:block; }
+  .gsap-ready .hero-scroll { display:flex; }
+  .gsap-ready .hero-detail { opacity:0 !important; transform:translateY(1.5rem) !important; }
+  .gsap-ready .project-counter { display:flex; position:relative; top:auto; left:auto; margin:1.5rem auto 0; justify-content:center; }
+  .gsap-ready .project-pin { min-height:100svh; overflow:hidden; }
+  .gsap-ready .project-stage { min-height:100svh; padding-block:5.5rem 1.5rem; }
+  .gsap-ready .project-slides { position:relative; min-height:70svh; gap:0; padding-top:3.2rem; }
+  .gsap-ready .project-slide { position:absolute; inset:0; display:grid; grid-template-columns:1fr; gap:1.1rem; padding:0; border-bottom:none; }
+  .gsap-ready .project-slide:last-child { padding-bottom:0; border-bottom:0; }
+  .gsap-ready .project-visual { width:min(100%, 30rem); justify-self:center; }
+  .gsap-ready .project-copy { max-width:32rem; margin:0 auto; }
   .project-pin { min-height:auto; overflow:visible; }.project-stage { min-height:auto; padding-block:5.5rem; }.stage-heading { display:block; }.stage-heading .eyebrow { margin-bottom:.8rem; }.project-counter { display:none; }.project-slides { gap:5rem; padding-top:3rem; }.project-slide { grid-template-columns:1fr; gap:2rem; padding:0 0 4rem; border-bottom:1px solid var(--border); }.project-slide:last-child { padding-bottom:0; border-bottom:0; }.project-visual { width:100%; }.project-copy { max-width:40rem; }.project-copy h3 { font-size:clamp(2.7rem,10vw,4.5rem); }.feature-list { grid-template-columns:repeat(2,minmax(0,1fr)); }.workflow-frame,.phone-composition { min-height:clamp(24rem,92vw,33rem); }
   .principle { grid-template-columns:3rem 1fr; gap:1rem; }.ownership-grid { grid-template-columns:1fr; }.integration-block > header { grid-template-columns:1fr; gap:1rem; }.integration-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
   .stack-pin { min-height:auto; overflow:visible; padding-block:5.5rem; }.stack-heading { grid-template-columns:1fr; gap:1rem; }.stack-heading h2 { font-size:clamp(3.2rem,13vw,5.5rem); }.stack-viewport { overflow:visible; }.stack-track { display:grid; width:auto; padding-inline:max(1.25rem,calc((100vw - 720px)/2)); }.stack-panel { width:100%; min-height:24rem; }.stack-progress { display:none; }
+  .gsap-ready .stack-pin { min-height:100svh; overflow:hidden; padding-block:5.5rem 2rem; }
+  .gsap-ready .stack-viewport { overflow:hidden; }
+  .gsap-ready .stack-track { display:flex; width:max-content; gap:1rem; padding-inline:1rem; }
+  .gsap-ready .stack-panel { width:82vw; min-width:82vw; max-width:24rem; min-height:22rem; } 
+  .gsap-ready .stack-progress { display:flex; }
   .metric-strip { grid-template-columns:repeat(2,minmax(0,1fr)); }.delivery-layout { grid-template-columns:1fr; gap:3rem; }
   .experience-pin { min-height:auto; overflow:visible; }.experience-stage { display:block; min-height:auto; padding-block:5.5rem; }.experience-heading { display:block; margin-bottom:3rem; }.experience-heading .eyebrow { margin-bottom:.8rem; }.experience-date,.experience-rail { display:none; }.experience-slides { display:grid; gap:0; }.experience-item { position:relative; display:block; min-height:auto; padding:0 0 4rem 2.5rem; border-left:1px solid var(--border); }.experience-item::before { content:""; position:absolute; top:.25rem; left:-.38rem; width:.7rem; height:.7rem; border:2px solid var(--cyan); border-radius:50%; background:var(--bg); }.experience-item:last-child { padding-bottom:0; }.experience-period { margin-bottom:1rem; }.experience-copy h3 { font-size:clamp(2.2rem,9vw,3.8rem); }
+  .gsap-ready .experience-pin { min-height:100svh; overflow:hidden; }
+  .gsap-ready .experience-stage { display:grid; grid-template-columns:4.5rem 0.9rem minmax(0,1fr); gap:1rem 0.5rem; min-height:100svh; padding-block:5.5rem 1.5rem; }
+  .gsap-ready .experience-heading { grid-column:1 / -1; margin-bottom:0; }
+  .gsap-ready .experience-date,
+  .gsap-ready .experience-rail { display:flex; }
+  .gsap-ready .experience-slides { position:relative; grid-column:2 / -1; min-height:60svh; display:block; }
+  .gsap-ready .experience-item { position:absolute; inset:0; display:flex; flex-direction:column; justify-content:center; min-height:auto; padding:0 0 0 0; border-left:none; }
+  .gsap-ready .experience-item::before { display:none; }
+  .gsap-ready .experience-period { margin-bottom:0.85rem; }
   .education-grid { grid-template-columns:1fr; }.education-grid header { grid-column:auto; }.education-card { min-height:auto; }.education-card > span { margin-bottom:2.5rem; }
   .contact-intro { grid-template-columns:1fr; gap:1rem; margin:0 0 4rem; }.contact-title { font-size:clamp(4.4rem,18vw,8rem); }.contact-grid { grid-template-columns:1fr; }.contact-link,.contact-link:nth-child(even) { border-right:0; }.footer-wrap { flex-wrap:wrap; }
 }

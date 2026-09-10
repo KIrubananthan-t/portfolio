@@ -119,6 +119,59 @@ document.documentElement.classList.add('js');
         gsap.set([detail, secondary, transition, portrait, labels, primaryLines, secondaryLines, transitionLines], { clearProps: 'all' });
       };
     });
+
+    media.add('(max-width: 768px) and (prefers-reduced-motion: no-preference)', () => {
+      const section = $('.hero-story');
+      const pin = $('.hero-pin');
+      const primaryLines = $$('.hero-title-primary .text-mask > span');
+      const secondary = $('.hero-title-secondary');
+      const secondaryLines = $$('.hero-title-secondary .text-mask > span');
+      const transition = $('.hero-transition');
+      const transitionLines = $$('.hero-transition .text-mask > span');
+      const detail = $('.hero-detail');
+      const portrait = $('.portrait-stage');
+      const labels = $$('.tech-label');
+      if (!section || !pin || !secondary || !transition || !detail || !portrait) return undefined;
+
+      gsap.set(detail, { autoAlpha: 0, y: 26 });
+      gsap.set(secondary, { autoAlpha: 0, visibility: 'visible' });
+      gsap.set(secondaryLines, { yPercent: 110 });
+      gsap.set(transition, { autoAlpha: 0, visibility: 'visible' });
+      gsap.set(transitionLines, { yPercent: 120 });
+
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: '+=360%',
+          pin,
+          scrub: 0.8,
+          anticipatePin: 1,
+          invalidateOnRefresh: true
+        }
+      });
+
+      timeline
+        .to(detail, { autoAlpha: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 0.05)
+        .to(labels, { y: index => index % 2 ? -12 : 10, x: index => index % 3 ? 5 : -6, stagger: 0.035, duration: 0.6 }, 0.14)
+        .to(portrait, { scale: 1.04, y: 10, duration: 0.7, ease: 'power2.inOut' }, 0.2)
+        .to(primaryLines, { yPercent: -120, duration: 0.7, stagger: 0.05, ease: 'power3.inOut' }, 0.72)
+        .to(secondary, { autoAlpha: 1, duration: 0.2 }, 0.8)
+        .to(secondaryLines, { yPercent: 0, duration: 0.7, stagger: 0.05, ease: 'power4.out' }, 0.82)
+        .to(detail, { autoAlpha: 0, y: -18, duration: 0.34 }, 1.25)
+        .to('.availability, .hero-kicker', { autoAlpha: 0, y: -16, duration: 0.32 }, 1.28)
+        .to(secondaryLines, { yPercent: -120, duration: 0.7, stagger: 0.04, ease: 'power3.inOut' }, 1.7)
+        .to(transition, { autoAlpha: 1, duration: 0.2 }, 1.78)
+        .to(transitionLines, { yPercent: 0, duration: 0.72, stagger: 0.05, ease: 'power4.out' }, 1.84)
+        .to('.hero-scroll', { autoAlpha: 0, duration: 0.2 }, 1.9)
+        .to(portrait, { scale: 1.08, xPercent: 4, autoAlpha: 0.72, duration: 0.8 }, 1.96)
+        .to(transitionLines, { yPercent: -18, scale: 0.97, duration: 0.65, ease: 'power2.inOut' }, 2.5);
+
+      return () => {
+        timeline.kill();
+        gsap.set([detail, secondary, transition, portrait, labels, primaryLines, secondaryLines, transitionLines], { clearProps: 'all' });
+      };
+    });
   }
 
   function initProjectStory() {
@@ -167,6 +220,46 @@ document.documentElement.classList.add('js');
         gsap.set([slides, reel, progress], { clearProps: 'all' });
       };
     });
+
+    media.add('(max-width: 768px) and (prefers-reduced-motion: no-preference)', () => {
+      const section = $('.projects-story');
+      const pin = $('.project-pin');
+      const slides = $$('.project-slide');
+      const reel = $('#projectCounterReel');
+      const progress = $('#projectProgress');
+      if (!section || !pin || slides.length !== 5 || !reel || !progress) return undefined;
+
+      gsap.set(slides, { autoAlpha: 0, y: 34, scale: 1.02 });
+      gsap.set(slides[0], { autoAlpha: 1, y: 0, scale: 1 });
+      gsap.set(progress, { scaleX: 0.2 });
+
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: `+=${(slides.length - 1) * 200}%`,
+          pin,
+          scrub: 0.8,
+          anticipatePin: 1,
+          invalidateOnRefresh: true
+        }
+      });
+
+      slides.slice(1).forEach((slide, index) => {
+        const previous = slides[index];
+        const position = index + 0.7;
+        timeline
+          .to(previous, { autoAlpha: 0, y: -28, scale: 0.98, duration: 0.42, ease: 'power2.in' }, position)
+          .fromTo(slide, { autoAlpha: 0, y: 34, scale: 1.02 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.48, ease: 'power3.out' }, position + 0.06)
+          .to(reel, { yPercent: -20 * (index + 1), duration: 0.5, ease: 'power3.inOut' }, position)
+          .to(progress, { scaleX: (index + 2) / slides.length, duration: 0.5, ease: 'power2.inOut' }, position);
+      });
+
+      return () => {
+        timeline.kill();
+        gsap.set([slides, reel, progress], { clearProps: 'all' });
+      };
+    });
   }
 
   function initStackScroll() {
@@ -191,6 +284,35 @@ document.documentElement.classList.add('js');
           end: () => `+=${getDistance()}`,
           pin,
           scrub: 0.7,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onUpdate: self => gsap.set(progress, { scaleX: self.progress })
+        }
+      });
+
+      return () => {
+        tween.kill();
+        gsap.set([track, progress], { clearProps: 'all' });
+      };
+    });
+
+    media.add('(max-width: 768px) and (prefers-reduced-motion: no-preference)', () => {
+      const section = $('.stack-story');
+      const pin = $('.stack-pin');
+      const track = $('#stackTrack');
+      const progress = $('#stackProgress');
+      if (!section || !pin || !track || !progress) return undefined;
+
+      const getDistance = () => Math.max(0, track.scrollWidth - track.parentElement.clientWidth + 32);
+      const tween = gsap.to(track, {
+        x: () => -getDistance(),
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: () => `+=${getDistance() || 1200}`,
+          pin,
+          scrub: 0.8,
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onUpdate: self => gsap.set(progress, { scaleX: self.progress })
@@ -241,6 +363,47 @@ document.documentElement.classList.add('js');
           .to(reel, { yPercent: -(100 / 3) * (index + 1), duration: 0.46, ease: 'power3.inOut' }, position)
           .to(progress, { scaleY: (index + 1) / 2, duration: 0.46 }, position)
           .to(dot, { y: () => (pin.clientHeight - 165) * ((index + 1) / 2), duration: 0.46, ease: 'power3.inOut' }, position);
+      });
+
+      return () => {
+        timeline.kill();
+        gsap.set([items, reel, progress, dot], { clearProps: 'all' });
+      };
+    });
+
+    media.add('(max-width: 768px) and (prefers-reduced-motion: no-preference)', () => {
+      const section = $('.experience-story');
+      const pin = $('.experience-pin');
+      const items = $$('.experience-item');
+      const reel = $('#experienceDateReel');
+      const progress = $('#experienceProgress');
+      const dot = $('#experienceDot');
+      if (!section || !pin || items.length !== 3 || !reel || !progress || !dot) return undefined;
+
+      gsap.set(items, { autoAlpha: 0, y: 24 });
+      gsap.set(items[0], { autoAlpha: 1, y: 0 });
+
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: '+=260%',
+          pin,
+          scrub: 0.8,
+          anticipatePin: 1,
+          invalidateOnRefresh: true
+        }
+      });
+
+      items.slice(1).forEach((item, index) => {
+        const previous = items[index];
+        const position = index + 0.7;
+        timeline
+          .to(previous, { autoAlpha: 0, y: -24, duration: 0.38 }, position)
+          .fromTo(item, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.48, ease: 'power3.out' }, position + 0.06)
+          .to(reel, { yPercent: -(100 / 3) * (index + 1), duration: 0.48, ease: 'power3.inOut' }, position)
+          .to(progress, { scaleY: (index + 1) / 2, duration: 0.48 }, position)
+          .to(dot, { y: () => (pin.clientHeight - 200) * ((index + 1) / 2), duration: 0.48, ease: 'power3.inOut' }, position);
       });
 
       return () => {
