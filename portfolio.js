@@ -139,15 +139,13 @@ document.documentElement.classList.add('js');
       gsap.set(secondaryLines, { yPercent: 110 });
       gsap.set(transition, { autoAlpha: 0, visibility: 'visible' });
       gsap.set(transitionLines, { yPercent: 120 });
-      gsap.set(portrait, { x: 0, y: 0, xPercent: 0, yPercent: 0, scale: 1, rotation: 0 });
-
       const timeline = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           start: 'top top',
           end: '+=360%',
           pin,
-          scrub: 0.8,
+          scrub: 0.42,
           anticipatePin: 1,
           invalidateOnRefresh: true
         }
@@ -291,18 +289,30 @@ document.documentElement.classList.add('js');
       });
 
       let motionStarted = false;
-      const parallax = gsap.timeline({
+      let parallax;
+      const pauseIdleMotion = () => tweens.forEach(tween => tween.pause());
+      const resumeIdleMotion = () => {
+        if (!motionStarted || document.hidden || !parallax?.scrollTrigger?.isActive) return;
+        tweens.forEach(tween => tween.resume());
+      };
+      const resumeIdleCall = gsap.delayedCall(0.48, resumeIdleMotion).pause();
+      const onScrollStart = () => {
+        motionStarted = true;
+        resumeIdleCall.pause(0);
+        pauseIdleMotion();
+      };
+      const onScrollEnd = () => resumeIdleCall.restart(true);
+      parallax = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           start: 'top top',
           end: 'bottom top',
-          scrub: 0.7,
+          scrub: 0.42,
           invalidateOnRefresh: true,
-          onUpdate: self => {
-            if (!motionStarted && self.progress > 0.005) {
-              motionStarted = true;
-              tweens.forEach(tween => tween.play());
-            }
+          onToggle: self => {
+            if (self.isActive) return;
+            resumeIdleCall.pause(0);
+            pauseIdleMotion();
           }
         }
       });
@@ -311,11 +321,23 @@ document.documentElement.classList.add('js');
         .to(frame, { scale: 0.985, rotationZ: 1.1, duration: 0.85, ease: 'none' }, 0.15)
         .to(image, { yPercent: -1.4, duration: 0.85, ease: 'none' }, 0.15);
 
-      const onVisibility = () => tweens.forEach(tween => document.hidden || !motionStarted ? tween.pause() : tween.resume());
+      ScrollTrigger.addEventListener('scrollStart', onScrollStart);
+      ScrollTrigger.addEventListener('scrollEnd', onScrollEnd);
+      const onVisibility = () => {
+        if (document.hidden) {
+          resumeIdleCall.pause(0);
+          pauseIdleMotion();
+        } else if (motionStarted) {
+          resumeIdleCall.restart(true);
+        }
+      };
       document.addEventListener('visibilitychange', onVisibility);
 
       return () => {
+        ScrollTrigger.removeEventListener('scrollStart', onScrollStart);
+        ScrollTrigger.removeEventListener('scrollEnd', onScrollEnd);
         document.removeEventListener('visibilitychange', onVisibility);
+        resumeIdleCall.kill();
         tweens.forEach(tween => tween.kill());
         parallax.kill();
         gsap.set(stage, { clearProps: 'transform' });
@@ -385,16 +407,27 @@ document.documentElement.classList.add('js');
       if (!section || !pin || !slideViewport || slides.length !== 5 || !reel || !progress) return undefined;
 
       const projectLinks = slides.map(slide => $$('a', slide));
+      let lastActiveIndex = -1;
       const updateFocusableSlide = activeIndex => {
+        if (activeIndex === lastActiveIndex) return;
+        lastActiveIndex = activeIndex;
         projectLinks.forEach((links, slideIndex) => links.forEach(link => {
           if (slideIndex === activeIndex) link.removeAttribute('tabindex');
           else link.setAttribute('tabindex', '-1');
         }));
+        slides.forEach((slide, slideIndex) => {
+          slide.style.pointerEvents = slideIndex === activeIndex ? 'auto' : 'none';
+        });
       };
-      const getTravel = slide => Math.max(0, slide.scrollHeight - slideViewport.clientHeight + 12);
+      let travelDistances = [];
+      const measureTravel = () => {
+        const viewportHeight = slideViewport.clientHeight;
+        travelDistances = slides.map(slide => Math.max(0, slide.scrollHeight - viewportHeight + 12));
+      };
+      measureTravel();
 
-      gsap.set(slides, { opacity: 0, y: 24, scale: 1, pointerEvents: 'none' });
-      gsap.set(slides[0], { opacity: 1, y: 0, pointerEvents: 'auto' });
+      gsap.set(slides, { opacity: 0, y: 24, scale: 1 });
+      gsap.set(slides[0], { opacity: 1, y: 0 });
       gsap.set(progress, { scaleX: 0.2 });
       updateFocusableSlide(0);
 
@@ -404,9 +437,10 @@ document.documentElement.classList.add('js');
           start: 'top top',
           end: `+=${slides.length * 130}%`,
           pin,
-          scrub: 0.8,
+          scrub: 0.42,
           anticipatePin: 1,
           invalidateOnRefresh: true,
+          onRefreshInit: measureTravel,
           onUpdate: self => updateFocusableSlide(Math.min(slides.length - 1, Math.floor(self.progress * slides.length)))
         }
       });
@@ -416,17 +450,18 @@ document.documentElement.classList.add('js');
         if (index > 0) {
           const previous = slides[index - 1];
           timeline
-            .to(previous, { opacity: 0, y: () => -getTravel(previous) - 24, duration: 0.36, ease: 'power2.in', pointerEvents: 'none' }, position)
-            .fromTo(slide, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.46, ease: 'power3.out', pointerEvents: 'auto' }, position + 0.08)
+            .to(previous, { opacity: 0, y: () => -travelDistances[index - 1] - 24, duration: 0.36, ease: 'power2.in' }, position)
+            .fromTo(slide, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.46, ease: 'power3.out' }, position + 0.08)
             .to(reel, { yPercent: -20 * index, duration: 0.46, ease: 'power3.inOut' }, position + 0.02)
             .to(progress, { scaleX: (index + 1) / slides.length, duration: 0.46, ease: 'power2.inOut' }, position + 0.02);
         }
-        timeline.to(slide, { y: () => -getTravel(slide), duration: 1.2, ease: 'none' }, position + 0.56);
+        timeline.to(slide, { y: () => -travelDistances[index], duration: 1.2, ease: 'none' }, position + 0.56);
       });
 
       return () => {
         timeline.kill();
         projectLinks.flat().forEach(link => link.removeAttribute('tabindex'));
+        slides.forEach(slide => slide.style.removeProperty('pointer-events'));
         gsap.set([slides, reel, progress], { clearProps: 'all' });
       };
     });
@@ -444,19 +479,23 @@ document.documentElement.classList.add('js');
       const progress = $('#stackProgress');
       if (!section || !pin || !track || !progress) return undefined;
 
-      const getDistance = () => Math.max(0, track.scrollWidth - window.innerWidth + 56);
+      let distance = 0;
+      const measureDistance = () => { distance = Math.max(0, track.scrollWidth - window.innerWidth + 56); };
+      const setProgress = gsap.quickSetter(progress, 'scaleX');
+      measureDistance();
       const tween = gsap.to(track, {
-        x: () => -getDistance(),
+        x: () => -distance,
         ease: 'none',
         scrollTrigger: {
           trigger: section,
           start: 'top top',
-          end: () => `+=${getDistance()}`,
+          end: () => `+=${distance}`,
           pin,
           scrub: 0.7,
           anticipatePin: 1,
           invalidateOnRefresh: true,
-          onUpdate: self => gsap.set(progress, { scaleX: self.progress })
+          onRefreshInit: measureDistance,
+          onUpdate: self => setProgress(self.progress)
         }
       });
 
@@ -473,19 +512,23 @@ document.documentElement.classList.add('js');
       const progress = $('#stackProgress');
       if (!section || !pin || !track || !progress) return undefined;
 
-      const getDistance = () => Math.max(0, track.scrollWidth - track.parentElement.clientWidth + 32);
+      let distance = 0;
+      const measureDistance = () => { distance = Math.max(0, track.scrollWidth - track.parentElement.clientWidth + 32); };
+      const setProgress = gsap.quickSetter(progress, 'scaleX');
+      measureDistance();
       const tween = gsap.to(track, {
-        x: () => -getDistance(),
+        x: () => -distance,
         ease: 'none',
         scrollTrigger: {
           trigger: section,
           start: 'top top',
-          end: () => `+=${getDistance() || 1200}`,
+          end: () => `+=${distance || 1200}`,
           pin,
-          scrub: 0.8,
+          scrub: 0.42,
           anticipatePin: 1,
           invalidateOnRefresh: true,
-          onUpdate: self => gsap.set(progress, { scaleX: self.progress })
+          onRefreshInit: measureDistance,
+          onUpdate: self => setProgress(self.progress)
         }
       });
 
@@ -510,6 +553,9 @@ document.documentElement.classList.add('js');
       const dot = $('#experienceDot');
       if (!section || !pin || items.length !== 3 || !reel || !progress || !dot) return undefined;
 
+      let dotDistance = 0;
+      const measureDotDistance = () => { dotDistance = Math.max(0, pin.clientHeight - 165); };
+      measureDotDistance();
       gsap.set(items, { autoAlpha: 0, y: 34 });
       gsap.set(items[0], { autoAlpha: 1, y: 0 });
       const timeline = gsap.timeline({
@@ -520,7 +566,8 @@ document.documentElement.classList.add('js');
           pin,
           scrub: 0.75,
           anticipatePin: 1,
-          invalidateOnRefresh: true
+          invalidateOnRefresh: true,
+          onRefreshInit: measureDotDistance
         }
       });
 
@@ -532,7 +579,7 @@ document.documentElement.classList.add('js');
           .fromTo(item, { autoAlpha: 0, y: 34 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power3.out' }, position + 0.08)
           .to(reel, { yPercent: -(100 / 3) * (index + 1), duration: 0.46, ease: 'power3.inOut' }, position)
           .to(progress, { scaleY: (index + 1) / 2, duration: 0.46 }, position)
-          .to(dot, { y: () => (pin.clientHeight - 165) * ((index + 1) / 2), duration: 0.46, ease: 'power3.inOut' }, position);
+          .to(dot, { y: () => dotDistance * ((index + 1) / 2), duration: 0.46, ease: 'power3.inOut' }, position);
       });
 
       return () => {
@@ -551,8 +598,20 @@ document.documentElement.classList.add('js');
       const dot = $('#experienceDot');
       if (!section || !pin || !rail || items.length !== 3 || !reel || !progress || !dot) return undefined;
 
-      gsap.set(items, { opacity: 0, y: 24, pointerEvents: 'none' });
-      gsap.set(items[0], { opacity: 1, y: 0, pointerEvents: 'auto' });
+      let railDistance = 0;
+      let lastActiveIndex = -1;
+      const measureRailDistance = () => { railDistance = Math.max(0, rail.clientHeight - 12); };
+      const updateActiveItem = activeIndex => {
+        if (activeIndex === lastActiveIndex) return;
+        lastActiveIndex = activeIndex;
+        items.forEach((item, itemIndex) => {
+          item.style.pointerEvents = itemIndex === activeIndex ? 'auto' : 'none';
+        });
+      };
+      measureRailDistance();
+      gsap.set(items, { opacity: 0, y: 24 });
+      gsap.set(items[0], { opacity: 1, y: 0 });
+      updateActiveItem(0);
 
       const timeline = gsap.timeline({
         scrollTrigger: {
@@ -560,9 +619,11 @@ document.documentElement.classList.add('js');
           start: 'top top',
           end: '+=260%',
           pin,
-          scrub: 0.8,
+          scrub: 0.42,
           anticipatePin: 1,
-          invalidateOnRefresh: true
+          invalidateOnRefresh: true,
+          onRefreshInit: measureRailDistance,
+          onUpdate: self => updateActiveItem(Math.min(items.length - 1, Math.floor(self.progress * items.length)))
         }
       });
 
@@ -570,15 +631,16 @@ document.documentElement.classList.add('js');
         const previous = items[index];
         const position = index + 0.7;
         timeline
-          .to(previous, { opacity: 0, y: -24, duration: 0.38, pointerEvents: 'none' }, position)
-          .fromTo(item, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.48, ease: 'power3.out', pointerEvents: 'auto' }, position + 0.06)
+          .to(previous, { opacity: 0, y: -24, duration: 0.38 }, position)
+          .fromTo(item, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.48, ease: 'power3.out' }, position + 0.06)
           .to(reel, { yPercent: -(100 / 3) * (index + 1), duration: 0.48, ease: 'power3.inOut' }, position)
           .to(progress, { scaleY: (index + 1) / 2, duration: 0.48 }, position)
-          .to(dot, { y: () => Math.max(0, rail.clientHeight - 12) * ((index + 1) / 2), duration: 0.48, ease: 'power3.inOut' }, position);
+          .to(dot, { y: () => railDistance * ((index + 1) / 2), duration: 0.48, ease: 'power3.inOut' }, position);
       });
 
       return () => {
         timeline.kill();
+        items.forEach(item => item.style.removeProperty('pointer-events'));
         gsap.set([items, reel, progress, dot], { clearProps: 'all' });
       };
     });
@@ -637,30 +699,37 @@ document.documentElement.classList.add('js');
     }
 
     if (state.gsapAvailable) {
-      const navigationSections = links.map(link => $(link.getAttribute('href'))).filter(Boolean);
-      const updateActiveLink = () => {
-        let current = null;
-        const marker = innerHeight * 0.5;
-        navigationSections.forEach(section => {
-          const bounds = section.getBoundingClientRect();
-          if (bounds.top <= marker && bounds.bottom >= innerHeight * 0.15) current = section;
-        });
-        if (scrollY >= document.documentElement.scrollHeight - innerHeight - 4) current = $('#contact');
+      const navigationSections = links
+        .map(link => ({ link, section: $(link.getAttribute('href')) }))
+        .filter(entry => entry.section);
+      let activeSectionId = '';
+      const updateActiveLink = sectionId => {
+        if (!sectionId || sectionId === activeSectionId) return;
+        activeSectionId = sectionId;
         links.forEach(link => {
-          const active = current && link.getAttribute('href') === `#${current.id}`;
-          link.classList.toggle('active', Boolean(active));
+          const active = link.getAttribute('href') === `#${sectionId}`;
+          link.classList.toggle('active', active);
           if (active) link.setAttribute('aria-current', 'location');
           else link.removeAttribute('aria-current');
         });
       };
+
+      navigationSections.forEach(({ section }) => {
+        ScrollTrigger.create({
+          trigger: section,
+          start: 'top 52%',
+          end: 'bottom 15%',
+          onEnter: () => updateActiveLink(section.id),
+          onEnterBack: () => updateActiveLink(section.id),
+          onRefresh: self => { if (self.isActive) updateActiveLink(section.id); }
+        });
+      });
+
       ScrollTrigger.create({
         start: 24,
-        end: 'max',
-        onUpdate: self => {
-          if (header) header.classList.toggle('scrolled', self.scroll() > 24);
-          updateActiveLink();
-        },
-        onRefresh: updateActiveLink
+        end: () => ScrollTrigger.maxScroll(window) + 1,
+        onToggle: self => { if (header) header.classList.toggle('scrolled', self.isActive); },
+        onRefresh: self => { if (header) header.classList.toggle('scrolled', self.scroll() > 24); }
       });
     } else {
       window.addEventListener('scroll', () => header && header.classList.toggle('scrolled', window.scrollY > 24), { passive: true });
@@ -676,12 +745,14 @@ document.documentElement.classList.add('js');
       return;
     }
     let ticking = false;
+    let maxScroll = Math.max(0, document.documentElement.scrollHeight - document.documentElement.clientHeight);
+    const measureMaxScroll = () => { maxScroll = Math.max(0, document.documentElement.scrollHeight - document.documentElement.clientHeight); };
+    window.addEventListener('resize', measureMaxScroll, { passive: true });
     window.addEventListener('scroll', () => {
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
-        const height = document.documentElement.scrollHeight - innerHeight;
-        progress.style.transform = `scaleX(${height > 0 ? scrollY / height : 0})`;
+        progress.style.transform = `scaleX(${maxScroll > 0 ? scrollY / maxScroll : 0})`;
         ticking = false;
       });
     }, { passive: true });
@@ -755,11 +826,19 @@ document.documentElement.classList.add('js');
   function initResponsiveRefresh() {
     if (!state.gsapAvailable) return;
     let refreshTimer = 0;
-    const refresh = () => {
+    let refreshPending = false;
+    const runRefresh = () => {
+      if (ScrollTrigger.isScrolling()) {
+        refreshPending = true;
+        return;
+      }
+      refreshPending = false;
       window.clearTimeout(refreshTimer);
       refreshTimer = window.setTimeout(() => ScrollTrigger.refresh(), 260);
     };
-    window.addEventListener('orientationchange', refresh, { passive: true });
+    const onScrollEnd = () => { if (refreshPending) runRefresh(); };
+    window.addEventListener('orientationchange', runRefresh, { passive: true });
+    ScrollTrigger.addEventListener('scrollEnd', onScrollEnd);
   }
 
   function initProjectImageRefresh() {
@@ -767,10 +846,34 @@ document.documentElement.classList.add('js');
     const images = $$('.project-screenshot');
     if (!images.length) return;
     let refreshTimer = 0;
-    const refreshAfterImage = () => {
+    let refreshPending = false;
+    const imageHeights = new WeakMap(images.map(image => [image, image.getBoundingClientRect().height]));
+    const runRefresh = () => {
+      if (ScrollTrigger.isScrolling()) {
+        refreshPending = true;
+        return;
+      }
+      refreshPending = false;
       window.clearTimeout(refreshTimer);
-      refreshTimer = window.setTimeout(() => ScrollTrigger.refresh(), 160);
+      refreshTimer = window.setTimeout(() => {
+        if (ScrollTrigger.isScrolling()) {
+          refreshPending = true;
+          return;
+        }
+        ScrollTrigger.refresh();
+      }, 180);
     };
+    const refreshAfterImage = event => {
+      const image = event.currentTarget;
+      requestAnimationFrame(() => {
+        const previousHeight = imageHeights.get(image) || 0;
+        const nextHeight = image.getBoundingClientRect().height;
+        imageHeights.set(image, nextHeight);
+        if (Math.abs(nextHeight - previousHeight) > 0.5) runRefresh();
+      });
+    };
+    const onScrollEnd = () => { if (refreshPending) runRefresh(); };
+    ScrollTrigger.addEventListener('scrollEnd', onScrollEnd);
     images.forEach(image => {
       if (image.complete) return;
       image.addEventListener('load', refreshAfterImage, { once: true });
