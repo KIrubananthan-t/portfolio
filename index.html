@@ -118,131 +118,132 @@
       </div>
     </section>
 
-    <!-- 02 / PINNED PROJECT STORY -->
+    <!-- 02 / BINBUX-STYLE SCROLL PROJECT SHOWCASE -->
     <section class="projects-story" id="projects" aria-labelledby="projects-title">
       <div class="project-pin">
         <div class="container project-stage">
           <header class="stage-heading">
-            <p class="eyebrow">01 / Selected work</p>
-            <h2 id="projects-title">Products built for <span>real operations.</span></h2>
+            <div>
+              <p class="eyebrow">01 / Selected work</p>
+              <h2 id="projects-title">Projects built for <span>real operations.</span></h2>
+            </div>
           </header>
 
           <div class="project-counter" aria-hidden="true">
-            <div class="counter-window"><div class="counter-reel" id="projectCounterReel"><span>01</span><span>02</span><span>03</span><span>04</span><span>05</span></div></div>
+            <div class="counter-window">
+              <div class="counter-reel" id="projectCounterReel">
+                <span>01</span><span>02</span><span>03</span><span>04</span><span>05</span>
+              </div>
+            </div>
             <span>/ 05</span>
             <i><b id="projectProgress"></b></i>
           </div>
 
-          <div class="project-slides">
-            <article class="project-slide is-first" data-project="01">
-              <div class="project-visual project-glow project-spot">
-                <div class="shot-frame project-shot-frame">
-                  <div class="browser-chrome" aria-hidden="true"><i></i><i></i><i></i><span>spotmystudio.com</span></div>
-                  <img class="project-screenshot project-screenshot-wide" src="assets/projects/spotmystudio/dashboard.png" alt="SpotMyStudio studio booking dashboard" width="1895" height="865" loading="lazy" decoding="async">
-                </div>
-                <div class="project-annotations" aria-hidden="true"><span>Real-time availability</span><span>Role-based dashboards</span><span>Transaction-safe booking</span></div>
-              </div>
-              <div class="project-copy">
-                <div class="project-status"><span>Flagship product</span><span class="live-dot">Live</span></div>
-                <p class="project-subtitle">Production Studio Booking Marketplace</p>
+          <div class="project-scene" aria-label="Selected projects">
+            <div class="project-backgrounds" aria-hidden="true">
+              <figure class="project-background is-active" data-project="01">
+                <img class="project-screenshot" src="assets/projects/spotmystudio/dashboard.png" alt="" width="1895" height="865" loading="eager" decoding="async">
+              </figure>
+              <figure class="project-background" data-project="02">
+                <img class="project-screenshot" src="assets/projects/meta-crm/dashboard.png" alt="" width="1080" height="2424" loading="lazy" decoding="async">
+              </figure>
+              <figure class="project-background" data-project="03">
+                <img class="project-screenshot" src="assets/projects/binbux/mobile.png" alt="" width="1080" height="2424" loading="lazy" decoding="async">
+              </figure>
+              <figure class="project-background" data-project="04">
+                <img class="project-screenshot" src="assets/projects/task-manager/dashboard.png" alt="" width="1892" height="906" loading="lazy" decoding="async">
+              </figure>
+              <figure class="project-background" data-project="05">
+                <img class="project-screenshot" src="assets/projects/hr-system/dashboard.png" alt="" width="1887" height="866" loading="lazy" decoding="async">
+              </figure>
+            </div>
+
+            <div class="project-info-stack">
+              <article class="project-info is-active" data-project="01">
+                <p class="project-info-index">01 / Flagship product</p>
                 <h3>SpotMyStudio</h3>
-                <p>A full-stack production platform for studio discovery, dynamic pricing, booking, verification, payments, notifications and business administration.</p>
-                <ul class="feature-list">
-                  <li>Customer / Vendor / Admin role-based dashboards</li><li>Studio discovery and complete booking workflow</li>
-                  <li>Real-time availability and booking overlap prevention</li><li>OTP verification and secure authentication</li>
-                  <li>Razorpay, Google Maps, notifications and transactional email</li><li>Transaction-safe booking logic</li>
+                <p class="project-info-type">Production Studio Booking Marketplace</p>
+                <p class="project-info-description">Studio discovery, dynamic pricing, booking, verification, payments and business administration in one production platform.</p>
+                <ul class="project-info-stack-list" aria-label="SpotMyStudio stack">
+                  <li>PHP</li><li>MySQL</li><li>JavaScript</li><li>REST APIs</li><li>Razorpay</li><li>Google Maps</li>
                 </ul>
-                <ul class="stack-list" aria-label="SpotMyStudio stack"><li>PHP</li><li>MySQL</li><li>JavaScript</li><li>REST APIs</li><li>Razorpay</li><li>Google Maps API</li><li>PHPMailer</li></ul>
-                <a class="project-link magnetic" href="https://www.spotmystudio.com/" target="_blank" rel="noopener noreferrer">Visit live website <span aria-hidden="true">↗</span></a>
-              </div>
-            </article>
-
-            <article class="project-slide" data-project="02">
-              <div class="project-visual project-glow project-meta-crm">
-                <div class="meta-proof">
-                  <div class="meta-device-frame">
-                    <img class="project-screenshot project-screenshot-mobile" src="assets/projects/meta-crm/dashboard.png" alt="Meta Lead CRM lead management dashboard" width="1080" height="2424" loading="lazy" decoding="async">
-                  </div>
-                  <div class="workflow-frame" aria-label="Meta Lead CRM integration workflow">
-                  <span class="shot-code mono">META / CRM CONNECTION</span>
-                  <div class="workflow-diagram">
-                    <span>Facebook Lead Ads</span><i>↓</i><span>Meta OAuth</span><i>↓</i><span>Facebook Page</span><i>↓</i><span>Instant Lead Form</span><i>↓</i><span>Lead Retrieval</span><i>↓</i><span>CRM</span><i>↓</i><span>Lead Assignment</span><i>↓</i><span>Follow-Up Workflow</span>
-                  </div>
-                  </div>
+                <div class="project-info-actions">
+                  <a class="project-info-button magnetic" href="https://www.spotmystudio.com/" target="_blank" rel="noopener noreferrer">View Project <span aria-hidden="true">↗</span></a>
                 </div>
-              </div>
-              <div class="project-copy">
-                <div class="project-status"><span>Technical integration</span><span class="current-dot">Current project</span></div>
-                <p class="project-subtitle">Facebook Lead Ads → CRM → Lead Assignment Workflow</p>
+              </article>
+
+              <article class="project-info" data-project="02">
+                <p class="project-info-index">02 / Technical integration</p>
                 <h3>Meta Lead CRM</h3>
-                <p>A current CRM project connecting Meta and Facebook business assets with an internal lead-management and follow-up workflow.</p>
-                <ul class="feature-list">
-                  <li>Meta OAuth and Graph API integration</li><li>Facebook Page connection and discovery</li>
-                  <li>Instant Form discovery and Lead Ads retrieval</li><li>CRM lead storage and lead assignment</li>
-                  <li>Permission and access-token handling</li><li>Role-based workflows, API errors and connection status</li>
+                <p class="project-info-type">Facebook Lead Ads → CRM → Assignment</p>
+                <p class="project-info-description">Meta business assets connected to lead retrieval, assignment and follow-up workflows through a custom CRM integration.</p>
+                <ul class="project-info-stack-list" aria-label="Meta Lead CRM stack">
+                  <li>PHP</li><li>MySQL</li><li>JavaScript</li><li>Meta Graph API</li><li>OAuth</li>
                 </ul>
-                <ul class="stack-list" aria-label="Meta Lead CRM stack"><li>PHP</li><li>MySQL</li><li>JavaScript</li><li>REST APIs</li><li>Meta Graph API</li><li>OAuth</li></ul>
-                <span class="project-note">In active development — no public link claimed</span>
-              </div>
-            </article>
+              </article>
 
-            <article class="project-slide" data-project="03">
-              <div class="project-visual project-glow project-binbux">
-                <div class="phone-composition">
-                  <div class="phone-frame phone-proof-frame">
-                    <img class="project-screenshot project-screenshot-mobile" src="assets/projects/binbux/mobile.png" alt="BinBux Flutter mobile application" width="1080" height="2424" loading="lazy" decoding="async">
-                  </div>
-                </div>
-              </div>
-              <div class="project-copy">
-                <div class="project-status"><span>Sole-developed mobile + web product</span><span class="live-dot">Live</span></div>
-                <p class="project-subtitle">Smart Scrap Pickup Platform</p>
+              <article class="project-info" data-project="03">
+                <p class="project-info-index">03 / Mobile + web product</p>
                 <h3>BinBux</h3>
-                <p>I personally developed the BinBux mobile application, connecting Flutter user workflows to a PHP and MySQL backend through REST APIs.</p>
-                <div class="project-metric"><strong>100+</strong><span>Google Play downloads</span></div>
-                <ul class="feature-list"><li>Flutter mobile application and Dart</li><li>User workflows and authentication</li><li>Scrap pickup scheduling and validation</li><li>API-driven web/mobile communication</li><li>Backend and production integration</li></ul>
-                <ul class="stack-list" aria-label="BinBux stack"><li>Flutter</li><li>Dart</li><li>PHP</li><li>MySQL</li><li>REST APIs</li></ul>
-                <div class="project-actions"><a class="project-link magnetic" href="https://binbux.in/" target="_blank" rel="noopener noreferrer">Website <span aria-hidden="true">↗</span></a><a class="project-link secondary magnetic" href="https://play.google.com/store/apps/details?id=com.kiruba.first&amp;hl=en_IN" target="_blank" rel="noopener noreferrer">Google Play <span aria-hidden="true">↗</span></a></div>
-              </div>
-            </article>
-
-            <article class="project-slide" data-project="04">
-              <div class="project-visual project-glow project-task">
-                <div class="shot-frame project-shot-frame">
-                  <div class="browser-chrome" aria-hidden="true"><i></i><i></i><i></i><span>zentrow.app</span></div>
-                  <img class="project-screenshot project-screenshot-wide" src="assets/projects/task-manager/dashboard.png" alt="Zentrow project and task management dashboard" width="1892" height="906" loading="lazy" decoding="async">
+                <p class="project-info-type">Smart Scrap Pickup Platform</p>
+                <p class="project-info-description">A Flutter application with PHP and MySQL backend for authenticated scrap-pickup scheduling, validation and operations.</p>
+                <ul class="project-info-stack-list" aria-label="BinBux stack">
+                  <li>Flutter</li><li>Dart</li><li>PHP</li><li>MySQL</li><li>REST APIs</li>
+                </ul>
+                <div class="project-info-actions">
+                  <a class="project-info-button magnetic" href="https://binbux.in/" target="_blank" rel="noopener noreferrer">View Project <span aria-hidden="true">↗</span></a>
+                  <a class="project-info-button is-secondary magnetic" href="https://play.google.com/store/apps/details?id=com.kiruba.first&amp;hl=en_IN" target="_blank" rel="noopener noreferrer">Google Play <span aria-hidden="true">↗</span></a>
                 </div>
-              </div>
-              <div class="project-copy">
-                <div class="project-status"><span>SaaS / Business productivity</span><span class="live-dot">Live</span></div>
-                <p class="project-subtitle">Project &amp; Team Workflow Platform</p>
+              </article>
+
+              <article class="project-info" data-project="04">
+                <p class="project-info-index">04 / SaaS productivity</p>
                 <h3>Zentrow</h3>
-                <p>A role-based organization, project, task, communication and reporting system used by 10+ team members for over 6 months.</p>
-                <div class="project-metric"><strong>10+</strong><span>Team members · 6+ months usage</span></div>
-                <ul class="feature-list"><li>Organizations, projects, tasks, Table and Board views</li><li>Assignments, live timers and manual time entries</li><li>Owner / Admin / Manager / Member permissions</li><li>Team chat, direct messaging and email invitations</li><li>Daily, weekly and monthly reporting</li><li>Google authentication and productivity workflows</li><li>Organization isolation and timer synchronization</li></ul>
-                <ul class="stack-list" aria-label="Zentrow stack"><li>PHP</li><li>MySQL</li><li>JavaScript</li><li>REST APIs</li></ul>
-                <a class="project-link magnetic" href="https://zentrow.app/" target="_blank" rel="noopener noreferrer">Visit Zentrow <span aria-hidden="true">↗</span></a>
-              </div>
-            </article>
-
-            <article class="project-slide" data-project="05">
-              <div class="project-visual project-glow project-hr">
-                <div class="shot-frame project-shot-frame">
-                  <div class="browser-chrome" aria-hidden="true"><i></i><i></i><i></i><span>Internal operations</span></div>
-                  <img class="project-screenshot project-screenshot-wide" src="assets/projects/hr-system/dashboard.png" alt="HR Management System administration dashboard" width="1887" height="866" loading="lazy" decoding="async">
+                <p class="project-info-type">Project &amp; Team Workflow Platform</p>
+                <p class="project-info-description">Role-based organization, project, task, communication and reporting workflows currently used by 100+ active users across 5 organizations.</p>
+                <ul class="project-info-stack-list" aria-label="Zentrow stack">
+                  <li>PHP</li><li>MySQL</li><li>JavaScript</li><li>REST APIs</li>
+                </ul>
+                <div class="project-info-actions">
+                  <a class="project-info-button magnetic" href="https://zentrow.app/" target="_blank" rel="noopener noreferrer">View Project <span aria-hidden="true">↗</span></a>
                 </div>
+              </article>
+
+              <article class="project-info" data-project="05">
+                <p class="project-info-index">05 / Internal operations</p>
+                <h3>HR Management</h3>
+                <p class="project-info-type">Employee Operations Platform</p>
+                <p class="project-info-description">Internal HR workflows for employees, attendance, leave approvals and secure payslip delivery.</p>
+                <ul class="project-info-stack-list" aria-label="HR system stack">
+                  <li>PHP</li><li>MySQL</li><li>JavaScript</li>
+                </ul>
+              </article>
+            </div>
+
+            <div class="project-preview-groups" aria-hidden="true">
+              <div class="project-preview-group is-active" data-project="01">
+                <figure class="project-preview"><img src="assets/projects/meta-crm/dashboard.png" alt="" width="1080" height="2424"><figcaption><span>02</span><strong>Meta Lead CRM</strong></figcaption></figure>
+                <figure class="project-preview"><img src="assets/projects/binbux/mobile.png" alt="" width="1080" height="2424"><figcaption><span>03</span><strong>BinBux</strong></figcaption></figure>
+                <figure class="project-preview"><img src="assets/projects/task-manager/dashboard.png" alt="" width="1892" height="906"><figcaption><span>04</span><strong>Zentrow</strong></figcaption></figure>
               </div>
-              <div class="project-copy">
-                <div class="project-status"><span>Internal business operations</span><span class="private-dot">Private</span></div>
-                <p class="project-subtitle">Employee Operations Platform</p>
-                <h3>HR Management System</h3>
-                <p>An internal employee and HR workflow system used by 15+ users for day-to-day business operations.</p>
-                <div class="project-metric"><strong>15+</strong><span>Internal users</span></div>
-                <ul class="feature-list"><li>Employee management and dashboards</li><li>Attendance and leave requests</li><li>Leave approval workflows</li><li>Automated payslip generation</li><li>Secure employee payslip access</li><li>Administrative controls</li></ul>
-                <ul class="stack-list" aria-label="HR system stack"><li>PHP</li><li>MySQL</li><li>JavaScript</li></ul>
-                <span class="project-note">Private internal product</span>
+              <div class="project-preview-group" data-project="02">
+                <figure class="project-preview"><img src="assets/projects/binbux/mobile.png" alt="" width="1080" height="2424"><figcaption><span>03</span><strong>BinBux</strong></figcaption></figure>
+                <figure class="project-preview"><img src="assets/projects/task-manager/dashboard.png" alt="" width="1892" height="906"><figcaption><span>04</span><strong>Zentrow</strong></figcaption></figure>
+                <figure class="project-preview"><img src="assets/projects/hr-system/dashboard.png" alt="" width="1887" height="866"><figcaption><span>05</span><strong>HR Management</strong></figcaption></figure>
               </div>
-            </article>
+              <div class="project-preview-group" data-project="03">
+                <figure class="project-preview"><img src="assets/projects/task-manager/dashboard.png" alt="" width="1892" height="906"><figcaption><span>04</span><strong>Zentrow</strong></figcaption></figure>
+                <figure class="project-preview"><img src="assets/projects/hr-system/dashboard.png" alt="" width="1887" height="866"><figcaption><span>05</span><strong>HR Management</strong></figcaption></figure>
+              </div>
+              <div class="project-preview-group" data-project="04">
+                <figure class="project-preview"><img src="assets/projects/hr-system/dashboard.png" alt="" width="1887" height="866"><figcaption><span>05</span><strong>HR Management</strong></figcaption></figure>
+              </div>
+              <div class="project-preview-group" data-project="05">
+                <figure class="project-preview"><img src="assets/projects/task-manager/dashboard.png" alt="" width="1892" height="906"><figcaption><span>04</span><strong>Zentrow</strong></figcaption></figure>
+                <figure class="project-preview"><img src="assets/projects/binbux/mobile.png" alt="" width="1080" height="2424"><figcaption><span>03</span><strong>BinBux</strong></figcaption></figure>
+                <figure class="project-preview"><img src="assets/projects/meta-crm/dashboard.png" alt="" width="1080" height="2424"><figcaption><span>02</span><strong>Meta Lead CRM</strong></figcaption></figure>
+              </div>
+            </div>
           </div>
         </div>
       </div>

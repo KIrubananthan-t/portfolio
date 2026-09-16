@@ -355,188 +355,673 @@ document.documentElement.classList.add('js');
     const media = gsap.matchMedia();
     state.matchMediaContexts.push(media);
 
-    media.add('(min-width: 769px) and (min-height: 601px) and (prefers-reduced-motion: no-preference)', () => {
+    const createProjectScene = isMobile => {
       const section = $('.projects-story');
       const pin = $('.project-pin');
-      const slides = $$('.project-slide');
+      const scene = $('.project-scene');
+      const backgrounds = $$('.project-background');
+      const backgroundImages = backgrounds.map(background => $('img', background));
+      const infos = $$('.project-info');
+      const previewGroups = $$('.project-preview-group');
       const reel = $('#projectCounterReel');
       const progress = $('#projectProgress');
-      if (!section || !pin || slides.length !== 5 || !reel || !progress) return undefined;
+      if (!section || !pin || !scene || backgrounds.length !== 5 || backgroundImages.some(item => !item) || infos.length !== 5 || previewGroups.length !== 5 || !reel || !progress) return undefined;
 
-      gsap.set(slides, { autoAlpha: 0, y: 40, scale: 1.02 });
-      gsap.set(slides[0], { autoAlpha: 1, y: 0, scale: 1 });
-      gsap.set(progress, { scaleX: 0.2 });
-
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: 'top top',
-          end: `+=${(slides.length - 1) * 115}%`,
-          pin,
-          scrub: 0.75,
-          anticipatePin: 1,
-          invalidateOnRefresh: true
-        }
-      });
-
-      slides.slice(1).forEach((slide, index) => {
-        const previous = slides[index];
-        const visual = $('.project-visual', slide);
-        const position = index + 0.65;
-        timeline
-          .to(previous, { autoAlpha: 0, y: -40, scale: 0.97, duration: 0.38, ease: 'power2.in' }, position)
-          .fromTo(slide, { autoAlpha: 0, y: 40, scale: 1.02 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.5, ease: 'power3.out' }, position + 0.1)
-          .fromTo(visual, { x: 24 }, { x: 0, duration: 0.55, ease: 'power3.out' }, position + 0.12)
-          .to(reel, { yPercent: -20 * (index + 1), duration: 0.48, ease: 'power3.inOut' }, position)
-          .to(progress, { scaleX: (index + 2) / slides.length, duration: 0.48, ease: 'power2.inOut' }, position);
-      });
-
-      return () => {
-        timeline.kill();
-        gsap.set([slides, reel, progress], { clearProps: 'all' });
-      };
-    });
-
-    media.add('(max-width: 768px) and (prefers-reduced-motion: no-preference)', () => {
-      const section = $('.projects-story');
-      const pin = $('.project-pin');
-      const slideViewport = $('.project-slides');
-      const slides = $$('.project-slide');
-      const reel = $('#projectCounterReel');
-      const progress = $('#projectProgress');
-      if (!section || !pin || !slideViewport || slides.length !== 5 || !reel || !progress) return undefined;
-
-      const projectLinks = slides.map(slide => $$('a', slide));
+      const projectLinks = infos.map(info => $$('a', info));
       let lastActiveIndex = -1;
-      const updateFocusableSlide = activeIndex => {
+      let cachedPinHeight = window.innerHeight;
+      const cacheProjectSize = () => {
+        cachedPinHeight = Math.max(1, pin.clientHeight || window.innerHeight);
+      };
+      const updateActiveProject = activeIndex => {
         if (activeIndex === lastActiveIndex) return;
         lastActiveIndex = activeIndex;
-        projectLinks.forEach((links, slideIndex) => links.forEach(link => {
-          if (slideIndex === activeIndex) link.removeAttribute('tabindex');
+        projectLinks.forEach((links, projectIndex) => links.forEach(link => {
+          if (projectIndex === activeIndex) link.removeAttribute('tabindex');
           else link.setAttribute('tabindex', '-1');
         }));
-        slides.forEach((slide, slideIndex) => {
-          slide.style.pointerEvents = slideIndex === activeIndex ? 'auto' : 'none';
+        infos.forEach((info, projectIndex) => {
+          const isActive = projectIndex === activeIndex;
+          info.classList.toggle('is-active', isActive);
+          info.style.pointerEvents = isActive ? 'auto' : 'none';
+          info.setAttribute('aria-hidden', isActive ? 'false' : 'true');
         });
+        backgrounds.forEach((background, projectIndex) => background.classList.toggle('is-active', projectIndex === activeIndex));
+        previewGroups.forEach((group, projectIndex) => group.classList.toggle('is-active', projectIndex === activeIndex));
       };
-      let travelDistances = [];
-      const measureTravel = () => {
-        const viewportHeight = slideViewport.clientHeight;
-        travelDistances = slides.map(slide => Math.max(0, slide.scrollHeight - viewportHeight + 12));
-      };
-      measureTravel();
 
-      gsap.set(slides, { opacity: 0, y: 24, scale: 1 });
-      gsap.set(slides[0], { opacity: 1, y: 0 });
+      cacheProjectSize();
+      backgrounds.forEach((background, index) => {
+        gsap.set(background, { opacity: index === 0 ? 1 : 0 });
+        gsap.set(backgroundImages[index], { scale: index === 0 ? 1 : 1.04, force3D: true });
+        gsap.set(infos[index], { opacity: index === 0 ? 1 : 0, y: index === 0 ? 0 : 15 });
+        gsap.set(previewGroups[index], { opacity: index === 0 ? 1 : 0, x: index === 0 ? 0 : 28, force3D: true });
+        gsap.set($$('.project-preview', previewGroups[index]), { scale: 1, x: 0, opacity: 1, force3D: true });
+      });
       gsap.set(progress, { scaleX: 0.2 });
-      updateFocusableSlide(0);
+      updateActiveProject(0);
 
       const timeline = gsap.timeline({
+        defaults: { duration: 1, ease: 'none', overwrite: false },
         scrollTrigger: {
           trigger: section,
           start: 'top top',
-          end: `+=${slides.length * 130}%`,
+          end: () => `+=${cachedPinHeight * (cards.length - 1)}`,
           pin,
-          scrub: 0.42,
+          scrub: isMobile ? 0.42 : 0.44,
           anticipatePin: 1,
           invalidateOnRefresh: true,
-          onRefreshInit: measureTravel,
-          onUpdate: self => updateFocusableSlide(Math.min(slides.length - 1, Math.floor(self.progress * slides.length)))
+          onRefreshInit: cacheProjectSize,
+          onUpdate: self => updateActiveProject(Math.min(backgrounds.length - 1, Math.round(self.progress * (backgrounds.length - 1))))
         }
       });
 
-      slides.forEach((slide, index) => {
-        const position = index * 2;
-        if (index > 0) {
-          const previous = slides[index - 1];
-          timeline
-            .to(previous, { opacity: 0, y: () => -travelDistances[index - 1] - 24, duration: 0.36, ease: 'power2.in' }, position)
-            .fromTo(slide, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.46, ease: 'power3.out' }, position + 0.08)
-            .to(reel, { yPercent: -20 * index, duration: 0.46, ease: 'power3.inOut' }, position + 0.02)
-            .to(progress, { scaleX: (index + 1) / slides.length, duration: 0.46, ease: 'power2.inOut' }, position + 0.02);
-        }
-        timeline.to(slide, { y: () => -travelDistances[index], duration: 1.2, ease: 'none' }, position + 0.56);
-      });
+      for (let index = 0; index < backgrounds.length - 1; index += 1) {
+        const selectedPreview = $('.project-preview', previewGroups[index]);
+        timeline
+          .to(backgrounds[index], { opacity: 0, duration: 0.58 }, index)
+          .to(backgroundImages[index], { scale: 0.985, duration: 0.75 }, index)
+          .to(backgrounds[index + 1], { opacity: 1, duration: 0.58 }, index + 0.12)
+          .to(backgroundImages[index + 1], { scale: 1, duration: 0.82 }, index + 0.08)
+          .to(infos[index], { opacity: 0, y: -15, duration: 0.3 }, index)
+          .to(infos[index + 1], { opacity: 1, y: 0, duration: 0.44 }, index + 0.24)
+          .to(selectedPreview, { scale: 1.05, x: isMobile ? -8 : -12, opacity: 0, duration: 0.42 }, index)
+          .to(previewGroups[index], { opacity: 0, x: isMobile ? -16 : -28, duration: 0.46 }, index + 0.16)
+          .to(previewGroups[index + 1], { opacity: 1, x: 0, duration: 0.48 }, index + 0.3)
+          .to(reel, { yPercent: -20 * (index + 1) }, index)
+          .to(progress, { scaleX: (index + 2) / backgrounds.length }, index);
+      }
 
       return () => {
+        if (timeline.scrollTrigger) timeline.scrollTrigger.kill();
         timeline.kill();
         projectLinks.flat().forEach(link => link.removeAttribute('tabindex'));
-        slides.forEach(slide => slide.style.removeProperty('pointer-events'));
-        gsap.set([slides, reel, progress], { clearProps: 'all' });
+        infos.forEach(info => {
+          info.removeAttribute('aria-hidden');
+          info.classList.remove('is-active');
+          info.style.removeProperty('pointer-events');
+        });
+        backgrounds.forEach(background => background.classList.remove('is-active'));
+        previewGroups.forEach(group => group.classList.remove('is-active'));
+        gsap.set([...backgrounds, ...infos, ...previewGroups, ...$$('.project-preview')], { clearProps: 'transform,opacity' });
+        gsap.set(backgroundImages, { clearProps: 'transform' });
+        gsap.set([reel, progress], { clearProps: 'transform' });
       };
-    });
+    };
+
+    media.add('(min-width: 769px) and (prefers-reduced-motion: no-preference)', () => createProjectScene(false));
+    media.add('(max-width: 768px) and (prefers-reduced-motion: no-preference)', () => createProjectScene(true));
   }
+
+function initProjectStory() {
+  if (!state.gsapAvailable) return;
+
+  const media = gsap.matchMedia();
+  state.matchMediaContexts.push(media);
+
+  const createProjectScene = isMobile => {
+    const section = $('.projects-story');
+    const pin = $('.project-pin');
+    const scene = $('.project-scene');
+
+    if (!section || !pin || !scene) return undefined;
+
+    const backgrounds = $$('.project-background', scene);
+    const backgroundImages = backgrounds.map(background =>
+      $('img', background)
+    );
+
+    const infos = $$('.project-info', scene);
+    const previewGroups = $$('.project-preview-group', scene);
+
+    const reel = $('#projectCounterReel');
+    const progress = $('#projectProgress');
+
+    const count = backgrounds.length;
+
+    if (
+      !reel ||
+      !progress ||
+      count < 2 ||
+      backgroundImages.some(image => !image) ||
+      infos.length !== count ||
+      previewGroups.length !== count
+    ) {
+      return undefined;
+    }
+
+    const projectLinks = infos.map(info => $$('a', info));
+
+    let lastActiveIndex = -1;
+    let cachedPinHeight = Math.max(
+      1,
+      pin.clientHeight || window.innerHeight
+    );
+
+    /* -------------------------------------------------------
+       MEASURE PIN
+    ------------------------------------------------------- */
+
+    const cacheProjectSize = () => {
+      cachedPinHeight = Math.max(
+        1,
+        pin.clientHeight || window.innerHeight
+      );
+    };
+
+    /* -------------------------------------------------------
+       ACCESSIBILITY / ACTIVE STATE
+    ------------------------------------------------------- */
+
+    const updateActiveProject = activeIndex => {
+      if (activeIndex === lastActiveIndex) return;
+
+      lastActiveIndex = activeIndex;
+
+      infos.forEach((info, index) => {
+        const active = index === activeIndex;
+
+        info.classList.toggle('is-active', active);
+
+        info.style.pointerEvents = active
+          ? 'auto'
+          : 'none';
+
+        info.setAttribute(
+          'aria-hidden',
+          active ? 'false' : 'true'
+        );
+      });
+
+      backgrounds.forEach((background, index) => {
+        background.classList.toggle(
+          'is-active',
+          index === activeIndex
+        );
+      });
+
+      previewGroups.forEach((group, index) => {
+        group.classList.toggle(
+          'is-active',
+          index === activeIndex
+        );
+      });
+
+      projectLinks.forEach((links, index) => {
+        links.forEach(link => {
+          if (index === activeIndex) {
+            link.removeAttribute('tabindex');
+          } else {
+            link.setAttribute('tabindex', '-1');
+          }
+        });
+      });
+    };
+
+    cacheProjectSize();
+
+    /* -------------------------------------------------------
+       INITIAL PROJECT STATES
+    ------------------------------------------------------- */
+
+    backgrounds.forEach((background, index) => {
+      gsap.set(background, {
+        autoAlpha: index === 0 ? 1 : 0,
+        zIndex: index === 0 ? 1 : 0
+      });
+
+      gsap.set(backgroundImages[index], {
+        scale: index === 0 ? 1 : 1.045,
+        force3D: true
+      });
+
+      gsap.set(infos[index], {
+        autoAlpha: index === 0 ? 1 : 0,
+
+        x: index === 0
+          ? 0
+          : 18,
+
+        y: index === 0
+          ? 0
+          : 12,
+
+        force3D: true
+      });
+
+      gsap.set(previewGroups[index], {
+        autoAlpha: index === 0 ? 1 : 0,
+
+        x: index === 0
+          ? 0
+          : isMobile
+            ? 18
+            : 36,
+
+        force3D: true
+      });
+
+      gsap.set(
+        $$('.project-preview', previewGroups[index]),
+        {
+          scale: 1,
+          x: 0,
+          opacity: 1,
+          force3D: true
+        }
+      );
+    });
+
+    gsap.set(reel, {
+      yPercent: 0,
+      force3D: true
+    });
+
+    gsap.set(progress, {
+      scaleX: 1 / count,
+      transformOrigin: 'left center'
+    });
+
+    updateActiveProject(0);
+
+    /* -------------------------------------------------------
+       MAIN SCROLL TIMELINE
+    ------------------------------------------------------- */
+
+    const timeline = gsap.timeline({
+      defaults: {
+        ease: 'none',
+        overwrite: false
+      },
+
+      scrollTrigger: {
+        trigger: section,
+
+        start: 'top top',
+
+        /*
+         * Each project receives roughly one viewport
+         * progression.
+         *
+         * Mobile is slightly longer so touch scrolling
+         * doesn't feel too fast.
+         */
+        end: () =>
+          `+=${cachedPinHeight *
+            (count - 1) *
+            (isMobile ? 0.95 : 0.88)}`,
+
+        pin: pin,
+
+        scrub: isMobile
+          ? 0.42
+          : 0.44,
+
+        anticipatePin: 1,
+
+        invalidateOnRefresh: true,
+
+        onRefreshInit: cacheProjectSize,
+
+        onUpdate: self => {
+          const activeIndex = Math.min(
+            count - 1,
+
+            Math.max(
+              0,
+
+              Math.round(
+                self.progress *
+                (count - 1)
+              )
+            )
+          );
+
+          updateActiveProject(activeIndex);
+        }
+      }
+    });
+
+    /* -------------------------------------------------------
+       PROJECT → PROJECT TRANSITIONS
+    ------------------------------------------------------- */
+
+    for (
+      let index = 0;
+      index < count - 1;
+      index += 1
+    ) {
+      const currentGroup =
+        previewGroups[index];
+
+      const nextGroup =
+        previewGroups[index + 1];
+
+      /*
+       * First preview represents the project
+       * that becomes active next.
+       */
+      const selectedPreview =
+        $('.project-preview', currentGroup);
+
+      const segment = index;
+
+      timeline
+
+        /* ================================================
+           CURRENT BACKGROUND
+        ================================================= */
+
+        .to(
+          backgroundImages[index],
+          {
+            scale: 1.035,
+            duration: 0.72
+          },
+          segment
+        )
+
+        .to(
+          backgrounds[index],
+          {
+            autoAlpha: 0,
+            duration: 0.46
+          },
+          segment + 0.22
+        )
+
+        /* ================================================
+           NEXT PROJECT BACKGROUND
+        ================================================= */
+
+        .set(
+          backgrounds[index + 1],
+          {
+            zIndex: 1
+          },
+          segment + 0.04
+        )
+
+        .to(
+          backgrounds[index + 1],
+          {
+            autoAlpha: 1,
+            duration: 0.54
+          },
+          segment + 0.16
+        )
+
+        .to(
+          backgroundImages[index + 1],
+          {
+            scale: 1,
+            duration: 0.82
+          },
+          segment + 0.12
+        )
+
+        /* ================================================
+           CURRENT INFO PANEL LEAVES
+        ================================================= */
+
+        .to(
+          infos[index],
+          {
+            autoAlpha: 0,
+
+            x: isMobile
+              ? -8
+              : -16,
+
+            y: -10,
+
+            duration: 0.30
+          },
+          segment + 0.02
+        )
+
+        /* ================================================
+           NEXT INFO PANEL ENTERS
+        ================================================= */
+
+        .to(
+          infos[index + 1],
+          {
+            autoAlpha: 1,
+            x: 0,
+            y: 0,
+
+            duration: 0.42
+          },
+          segment + 0.28
+        );
+
+      /* ================================================
+         SELECTED BINBUX-STYLE PREVIEW CARD
+      ================================================= */
+
+      if (selectedPreview) {
+        timeline.to(
+          selectedPreview,
+          {
+            scale: 1.07,
+
+            x: isMobile
+              ? -8
+              : -18,
+
+            opacity: 0,
+
+            duration: 0.38
+          },
+          segment + 0.02
+        );
+      }
+
+      timeline
+
+        /* ================================================
+           OLD PREVIEW SET LEAVES
+        ================================================= */
+
+        .to(
+          currentGroup,
+          {
+            autoAlpha: 0,
+
+            x: isMobile
+              ? -12
+              : -30,
+
+            duration: 0.40
+          },
+          segment + 0.18
+        )
+
+        /* ================================================
+           NEW PREVIEW CARDS ARRIVE
+        ================================================= */
+
+        .to(
+          nextGroup,
+          {
+            autoAlpha: 1,
+            x: 0,
+
+            duration: 0.46
+          },
+          segment + 0.30
+        )
+
+        /* ================================================
+           PROJECT COUNTER
+        ================================================= */
+
+        .to(
+          reel,
+          {
+            yPercent:
+              -20 * (index + 1),
+
+            duration: 0.55
+          },
+          segment + 0.18
+        )
+
+        /* ================================================
+           PROGRESS LINE
+        ================================================= */
+
+        .to(
+          progress,
+          {
+            scaleX:
+              (index + 2) / count,
+
+            duration: 0.55
+          },
+          segment + 0.18
+        );
+    }
+
+    /* -------------------------------------------------------
+       CLEANUP
+    ------------------------------------------------------- */
+
+    return () => {
+      if (timeline.scrollTrigger) {
+        timeline.scrollTrigger.kill();
+      }
+
+      timeline.kill();
+
+      projectLinks
+        .flat()
+        .forEach(link => {
+          link.removeAttribute('tabindex');
+        });
+
+      infos.forEach(info => {
+        info.removeAttribute(
+          'aria-hidden'
+        );
+
+        info.classList.remove(
+          'is-active'
+        );
+
+        info.style.removeProperty(
+          'pointer-events'
+        );
+      });
+
+      backgrounds.forEach(background => {
+        background.classList.remove(
+          'is-active'
+        );
+      });
+
+      previewGroups.forEach(group => {
+        group.classList.remove(
+          'is-active'
+        );
+      });
+
+      gsap.set(
+        [
+          ...backgrounds,
+          ...backgroundImages,
+          ...infos,
+          ...previewGroups,
+          ...$$(
+            '.project-preview',
+            scene
+          ),
+          reel,
+          progress
+        ],
+        {
+          clearProps: 'all'
+        }
+      );
+    };
+  };
+
+  /* -------------------------------------------------------
+     DESKTOP
+  ------------------------------------------------------- */
+
+  media.add(
+    `
+      (min-width: 769px)
+      and
+      (prefers-reduced-motion: no-preference)
+    `,
+    () => createProjectScene(false)
+  );
+
+  /* -------------------------------------------------------
+     MOBILE
+  ------------------------------------------------------- */
+
+  media.add(
+    `
+      (max-width: 768px)
+      and
+      (prefers-reduced-motion: no-preference)
+    `,
+    () => createProjectScene(true)
+  );
+}
 
   function initStackScroll() {
     if (!state.gsapAvailable) return;
     const media = gsap.matchMedia();
     state.matchMediaContexts.push(media);
 
-    media.add('(min-width: 769px) and (min-height: 601px) and (prefers-reduced-motion: no-preference)', () => {
+    const createStackScene = () => {
       const section = $('.stack-story');
       const pin = $('.stack-pin');
+      const viewport = $('.stack-viewport');
       const track = $('#stackTrack');
       const progress = $('#stackProgress');
-      if (!section || !pin || !track || !progress) return undefined;
+      if (!section || !pin || !viewport || !track || !progress) return undefined;
 
-      let distance = 0;
-      const measureDistance = () => { distance = Math.max(0, track.scrollWidth - window.innerWidth + 56); };
-      const setProgress = gsap.quickSetter(progress, 'scaleX');
-      measureDistance();
-      const tween = gsap.to(track, {
-        x: () => -distance,
+      const measureDistance = () => Math.max(0, track.scrollWidth - viewport.clientWidth);
+      const getEndDistance = () => Math.max(window.innerHeight, measureDistance());
+      gsap.set(track, { x: 0, force3D: true });
+      gsap.set(progress, { scaleX: 0, transformOrigin: 'left center' });
+
+      const timeline = gsap.to(track, {
+        x: () => -measureDistance(),
         ease: 'none',
         scrollTrigger: {
           trigger: section,
           start: 'top top',
-          end: () => `+=${distance}`,
+          end: () => `+=${getEndDistance()}`,
           pin,
-          scrub: 0.7,
+          scrub: 0.55,
           anticipatePin: 1,
           invalidateOnRefresh: true,
-          onRefreshInit: measureDistance,
-          onUpdate: self => setProgress(self.progress)
+          onUpdate: self => gsap.set(progress, { scaleX: self.progress })
         }
       });
 
       return () => {
-        tween.kill();
+        if (timeline.scrollTrigger) timeline.scrollTrigger.kill();
+        timeline.kill();
         gsap.set([track, progress], { clearProps: 'all' });
       };
-    });
+    };
 
-    media.add('(max-width: 768px) and (prefers-reduced-motion: no-preference)', () => {
-      const section = $('.stack-story');
-      const pin = $('.stack-pin');
-      const track = $('#stackTrack');
-      const progress = $('#stackProgress');
-      if (!section || !pin || !track || !progress) return undefined;
-
-      let distance = 0;
-      const measureDistance = () => { distance = Math.max(0, track.scrollWidth - track.parentElement.clientWidth + 32); };
-      const setProgress = gsap.quickSetter(progress, 'scaleX');
-      measureDistance();
-      const tween = gsap.to(track, {
-        x: () => -distance,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: section,
-          start: 'top top',
-          end: () => `+=${distance || 1200}`,
-          pin,
-          scrub: 0.42,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          onRefreshInit: measureDistance,
-          onUpdate: self => setProgress(self.progress)
-        }
-      });
-
-      return () => {
-        tween.kill();
-        gsap.set([track, progress], { clearProps: 'all' });
-      };
-    });
+    media.add(
+      '(min-width: 769px) and (prefers-reduced-motion: no-preference)',
+      createStackScene
+    );
+    media.add(
+      '(max-width: 768px) and (prefers-reduced-motion: no-preference)',
+      createStackScene
+    );
   }
 
   function initExperienceTimeline() {
