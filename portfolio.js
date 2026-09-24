@@ -856,20 +856,50 @@ function initProjectStory() {
 
   function initReveals() {
     const principles = $$('.principle');
-    const elements = $$('.reveal').filter(element => !element.classList.contains('principle'));
+    const profile = $('.engineering-profile');
+    const elements = $$('.reveal').filter(element => !element.classList.contains('principle') && element !== profile);
     if (!state.gsapAvailable || reducedMotion.matches) {
       [...elements, ...principles].forEach(element => element.classList.add('is-visible'));
       return;
     }
 
+    const revealBatch = batch => {
+      const hidden = batch.filter(element => !element.classList.contains('is-visible'));
+      if (!hidden.length) return;
+      hidden.forEach(element => element.classList.add('is-visible'));
+      gsap.fromTo(hidden, { autoAlpha: 0, y: 32 }, { autoAlpha: 1, y: 0, duration: 0.75, stagger: 0.08, ease: 'power3.out', overwrite: true });
+    };
+
     ScrollTrigger.batch(elements, {
       start: 'top 88%',
-      once: true,
-      onEnter: batch => {
-        batch.forEach(element => element.classList.add('is-visible'));
-        gsap.fromTo(batch, { autoAlpha: 0, y: 32 }, { autoAlpha: 1, y: 0, duration: 0.75, stagger: 0.08, ease: 'power3.out', overwrite: true });
-      }
+      onEnter: revealBatch,
+      onEnterBack: revealBatch
     });
+
+    if (profile) {
+      const revealProfile = () => {
+        if (profile.classList.contains('is-visible')) return;
+        profile.classList.add('is-visible');
+        gsap.fromTo(profile, { autoAlpha: 0, y: 32 }, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power3.out', overwrite: true });
+      };
+      ScrollTrigger.create({
+        trigger: profile,
+        start: 'top 92%',
+        end: 'bottom 8%',
+        onEnter: revealProfile,
+        onEnterBack: revealProfile,
+        onUpdate: self => { if (self.isActive) revealProfile(); },
+        onRefresh: self => { if (self.isActive) revealProfile(); }
+      });
+      if ('IntersectionObserver' in window) {
+        const profileObserver = new IntersectionObserver(entries => {
+          if (!entries.some(entry => entry.isIntersecting)) return;
+          revealProfile();
+          profileObserver.disconnect();
+        }, { threshold: 0.01 });
+        profileObserver.observe(profile);
+      }
+    }
 
     principles.forEach((principle, index) => {
       gsap.fromTo(principle, { autoAlpha: 0, y: 40 }, {
@@ -879,7 +909,7 @@ function initProjectStory() {
         delay: (index % 2) * 0.06,
         ease: 'power3.out',
         onStart: () => principle.classList.add('is-visible'),
-        scrollTrigger: { trigger: principle, start: 'top 86%', once: true }
+        scrollTrigger: { trigger: principle, start: 'top 86%', toggleActions: 'play none play none' }
       });
     });
 
@@ -888,7 +918,7 @@ function initProjectStory() {
         yPercent: 108,
         duration: 0.9,
         ease: 'power4.out',
-        scrollTrigger: { trigger: line, start: 'top 90%', once: true }
+        scrollTrigger: { trigger: line, start: 'top 90%', toggleActions: 'play none play none' }
       });
     });
   }

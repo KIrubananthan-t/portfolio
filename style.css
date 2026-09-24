@@ -1684,6 +1684,156 @@ html:not(.gsap-ready) .projects-story .project-background[data-project="05"], ht
   text-transform: uppercase;
 }
 
+.hero-proof {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-top: 1.15rem;
+  list-style: none;
+}
+
+.hero-proof li {
+  position: relative;
+  padding: .42rem .65rem .42rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(13,17,23,.68);
+  color: var(--text-secondary);
+  font: 500 .55rem/1 var(--font-mono);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.hero-proof li::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: .65rem;
+  width: .28rem;
+  height: .28rem;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 .65rem rgba(56,216,255,.55);
+}
+
+.engineering-profile {
+  display: grid;
+  grid-template-columns: minmax(15rem,.72fr) minmax(0,1.28fr);
+  gap: clamp(1.5rem,4vw,4.5rem);
+  align-items: stretch;
+  margin-top: clamp(4rem,8vw,7rem);
+  padding: clamp(1rem,2vw,1.5rem);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at 18% 15%,rgba(56,216,255,.08),transparent 35%),
+    linear-gradient(135deg,rgba(13,17,23,.96),rgba(8,11,16,.98));
+  overflow: hidden;
+}
+
+.engineering-profile.is-visible {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.engineering-profile-photo {
+  position: relative;
+  min-height: 31rem;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: calc(var(--radius-lg) - .55rem);
+  background: var(--bg-secondary);
+}
+
+.engineering-profile-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg,transparent 58%,rgba(7,9,13,.76));
+}
+
+.engineering-profile-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.engineering-profile-photo figcaption {
+  position: absolute;
+  z-index: 1;
+  right: 1rem;
+  bottom: .9rem;
+  left: 1rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--text-secondary);
+  font: .52rem var(--font-mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.engineering-profile-photo figcaption span:last-child { color: var(--cyan); }
+
+.engineering-profile-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(1rem,3vw,3.25rem) clamp(.5rem,2vw,2rem) clamp(1rem,3vw,3.25rem) 0;
+}
+
+.engineering-profile-copy h3 {
+  margin: 1rem 0 1.4rem;
+  font-size: clamp(2.5rem,5vw,5.4rem);
+  font-weight: 500;
+  line-height: .92;
+  letter-spacing: -.065em;
+  text-transform: uppercase;
+}
+
+.engineering-profile-copy > p:not(.eyebrow) {
+  max-width: 58ch;
+  color: var(--text-secondary);
+  line-height: 1.72;
+}
+
+.engineering-focus-grid {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: .65rem;
+  margin-top: clamp(1.75rem,3vw,3rem);
+}
+
+.engineering-focus-grid article {
+  min-height: 10.5rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: rgba(255,255,255,.025);
+}
+
+.engineering-focus-grid article > span {
+  display: block;
+  margin-bottom: 2rem;
+  color: var(--accent-light);
+  font-size: .58rem;
+}
+
+.engineering-focus-grid h4 {
+  margin-bottom: .45rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.engineering-focus-grid p {
+  color: var(--text-muted);
+  font-size: .72rem;
+  line-height: 1.55;
+}
+
 .project-capabilities {
   display: grid;
   grid-template-columns: repeat(2,minmax(0,1fr));
@@ -1757,6 +1907,11 @@ html:not(.gsap-ready) .projects-story .project-background[data-project="05"], ht
   .gsap-ready .projects-story .project-info { clip-path: none !important; }
   .stack-panel,
   .gsap-ready .stack-panel { opacity: 1 !important; transform: none !important; }
+  .engineering-profile { grid-template-columns: minmax(14rem,.7fr) minmax(0,1.3fr); }
+  .engineering-profile-photo { min-height: 27rem; }
+  .engineering-focus-grid { grid-template-columns: 1fr; }
+  .engineering-focus-grid article { min-height: 0; display: grid; grid-template-columns: 2rem 1fr; gap: .5rem; }
+  .engineering-focus-grid article > span { margin: .2rem 0 0; }
 }
 
 @media (max-width: 768px) {
@@ -1765,6 +1920,10 @@ html:not(.gsap-ready) .projects-story .project-background[data-project="05"], ht
   .project-capabilities li { font-size: clamp(.43rem,1.5vw,.55rem); }
   .projects-story .project-background { min-height: 36rem; }
   .contact-grid { grid-template-columns: 1fr; }
+  .engineering-profile { grid-template-columns: 1fr; padding: .75rem; }
+  .engineering-profile-photo { min-height: 29rem; }
+  .engineering-profile-copy { padding: 1.5rem .5rem .75rem; }
+  .engineering-profile-copy h3 { font-size: clamp(2.45rem,12vw,4.2rem); }
 }
 
 @media (max-width: 430px) {
