@@ -215,6 +215,7 @@ function initProjectStory() {
       const links = slides.map(slide => $$('a', slide));
       const visuals = slides.map(slide => $('.project-visual', slide));
       const screenshots = slides.map(slide => $('.project-screenshot', slide));
+      const titles = slides.map(slide => $('.project-copy h3', slide));
       let activeIndex = -1;
       let pinHeight = Math.max(window.innerHeight, pin.clientHeight);
 
@@ -235,6 +236,7 @@ function initProjectStory() {
         gsap.set(slide, { autoAlpha: index === 0 ? 1 : 0, y: index === 0 ? 0 : 38, scale: index === 0 ? 1 : 1.015, force3D: true });
         if (visuals[index]) gsap.set(visuals[index], { x: index === 0 ? 0 : 26, force3D: true });
         if (screenshots[index]) gsap.set(screenshots[index], { scale: 1.04, force3D: true });
+        if (titles[index]) gsap.set(titles[index], { clipPath: index === 0 ? 'inset(0% 0% 0% 0%)' : 'inset(0% 0% 100% 0%)' });
       });
       gsap.set(progress, { scaleX: 1 / count, transformOrigin: 'left center' });
       gsap.set(reel, { yPercent: 0 });
@@ -242,17 +244,24 @@ function initProjectStory() {
 
       const timeline = gsap.timeline({
         defaults: { ease: 'none' },
+        onUpdate: () => setActive(Math.min(count - 1, Math.max(0, Math.floor(timeline.time() + 0.5)))),
         scrollTrigger: {
           trigger: section,
           start: 'top top',
-          end: () => `+=${pinHeight * (count - 1) * 0.78}`,
+          end: () => `+=${pinHeight * (count - 1) * 0.82}`,
           pin,
           scrub: 0.55,
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onRefreshInit: measure,
-          snap: { snapTo: 1 / (count - 1), duration: { min: 0.12, max: 0.24 }, delay: 0.08, inertia: false, ease: 'power1.inOut' },
-          onUpdate: self => setActive(Math.min(count - 1, Math.max(0, Math.round(self.progress * (count - 1)))))
+          snap: {
+            snapTo: value => {
+              const duration = timeline.duration();
+              const stops = Array.from({ length: count }, (_, index) => index === count - 1 ? 1 : index / duration);
+              return gsap.utils.snap(stops, value);
+            },
+            duration: { min: 0.12, max: 0.24 }, delay: 0.16, inertia: false, ease: 'power1.inOut'
+          }
         }
       });
 
@@ -260,13 +269,15 @@ function initProjectStory() {
         const segment = index;
         timeline
           .to(screenshots[index], { scale: 1, duration: 0.28 }, segment)
-          .to(slides[index], { autoAlpha: 0, y: -38, scale: 0.985, duration: 0.34, ease: 'power2.in' }, segment + 0.31)
-          .fromTo(slides[index + 1], { autoAlpha: 0, y: 38, scale: 1.015 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.46, ease: 'power3.out' }, segment + 0.48)
-          .fromTo(visuals[index + 1], { x: 26 }, { x: 0, duration: 0.5, ease: 'power3.out' }, segment + 0.5)
-          .to(screenshots[index + 1], { scale: 1, duration: 0.58 }, segment + 0.44)
-          .to(reel, { yPercent: -20 * (index + 1), duration: 0.44, ease: 'power3.inOut' }, segment + 0.38)
-          .to(progress, { scaleX: (index + 2) / count, duration: 0.44, ease: 'power2.inOut' }, segment + 0.38);
+          .to(slides[index], { autoAlpha: 0, y: -28, scale: 0.99, duration: 0.28, ease: 'power2.in' }, segment + 0.34)
+          .fromTo(slides[index + 1], { autoAlpha: 0, y: 30, scale: 1.015 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.36, ease: 'power3.out' }, segment + 0.45)
+          .fromTo(visuals[index + 1], { x: 24 }, { x: 0, duration: 0.38, ease: 'power3.out' }, segment + 0.46)
+          .fromTo(titles[index + 1], { clipPath: 'inset(0% 0% 100% 0%)', y: 18 }, { clipPath: 'inset(0% 0% 0% 0%)', y: 0, duration: 0.3, ease: 'power3.out' }, segment + 0.51)
+          .to(screenshots[index + 1], { scale: 1, duration: 0.4 }, segment + 0.45)
+          .to(reel, { yPercent: -20 * (index + 1), duration: 0.34, ease: 'power3.inOut' }, segment + 0.43)
+          .to(progress, { scaleX: (index + 2) / count, duration: 0.34, ease: 'power2.inOut' }, segment + 0.43);
       }
+      timeline.to({ hold: 0 }, { hold: 1, duration: 0.34 }, count - 1);
 
       return () => {
         timeline.kill();
@@ -276,7 +287,7 @@ function initProjectStory() {
           slide.style.removeProperty('pointer-events');
           slide.classList.remove('is-active');
         });
-        gsap.set([...slides, ...visuals.filter(Boolean), ...screenshots.filter(Boolean), reel, progress], { clearProps: 'all' });
+        gsap.set([...slides, ...visuals.filter(Boolean), ...screenshots.filter(Boolean), ...titles.filter(Boolean), reel, progress], { clearProps: 'all' });
       };
     });
   }
@@ -296,11 +307,11 @@ function initProjectStory() {
       if (!section || !pin || !viewport || !track || !progress || !current) return undefined;
 
       const measureDistance = () => Math.max(0, track.scrollWidth - viewport.clientWidth);
-      const getEndDistance = () => Math.max(window.innerHeight * 0.82, measureDistance() * 0.82);
+      const getEndDistance = () => Math.max(window.innerHeight * 0.75, measureDistance() * 0.72);
       const panels = $$('.stack-panel', track);
       gsap.set(track, { x: 0, force3D: true });
       gsap.set(progress, { scaleX: 0, transformOrigin: 'left center' });
-      gsap.set(panels, { autoAlpha: 0.6, scale: 0.965, force3D: true });
+      gsap.set(panels, { autoAlpha: 0.64, scale: 0.975, force3D: true });
       gsap.set(panels[0], { autoAlpha: 1, scale: 1 });
 
       let activeIndex = -1;
@@ -309,7 +320,8 @@ function initProjectStory() {
         activeIndex = index;
         current.textContent = String(index + 1).padStart(2, '0');
         panels.forEach((panel, panelIndex) => {
-          gsap.to(panel, { autoAlpha: panelIndex === index ? 1 : 0.62, scale: panelIndex === index ? 1 : 0.965, duration: 0.28, overwrite: true });
+          panel.classList.toggle('is-active', panelIndex === index);
+          gsap.to(panel, { autoAlpha: panelIndex === index ? 1 : 0.64, scale: panelIndex === index ? 1 : 0.975, duration: 0.24, overwrite: true });
         });
       };
       setActivePanel(0);
@@ -336,6 +348,8 @@ function initProjectStory() {
         if (timeline.scrollTrigger) timeline.scrollTrigger.kill();
         timeline.kill();
         current.textContent = '01';
+        panels.forEach(panel => panel.classList.remove('is-active'));
+        gsap.killTweensOf(panels);
         gsap.set([track, progress, ...panels], { clearProps: 'all' });
       };
     };

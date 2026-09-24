@@ -29,13 +29,24 @@
     media.add('(min-width: 1101px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)', () => {
       const grid = document.querySelector('.page-grid');
       const shiftGrid = grid ? gsap.quickTo(grid, 'y', { duration: 0.55, ease: 'power3.out' }) : null;
-      const settle = () => { motionState.velocity = 0; if (shiftGrid) shiftGrid(0); };
+      const projectCount = document.querySelector('.project-counter > span');
+      const stackCount = document.querySelector('#stackCurrent');
+      const shiftProjectCount = projectCount ? gsap.quickTo(projectCount, 'y', { duration: 0.3, ease: 'power3.out' }) : null;
+      const shiftStackCount = stackCount ? gsap.quickTo(stackCount, 'y', { duration: 0.3, ease: 'power3.out' }) : null;
+      const settle = () => {
+        motionState.velocity = 0;
+        if (shiftGrid) shiftGrid(0);
+        if (shiftProjectCount) shiftProjectCount(0);
+        if (shiftStackCount) shiftStackCount(0);
+      };
       const trigger = ScrollTrigger.create({
         start: 0,
         end: 'max',
         onUpdate: self => {
           motionState.velocity = gsap.utils.clamp(-3, 3, self.getVelocity() / 700);
           if (shiftGrid) shiftGrid(motionState.velocity * 2.2);
+          if (shiftProjectCount) shiftProjectCount(motionState.velocity * 1.5);
+          if (shiftStackCount) shiftStackCount(motionState.velocity * 1.5);
         }
       });
       ScrollTrigger.addEventListener('scrollEnd', settle);
@@ -43,7 +54,8 @@
         trigger.kill();
         ScrollTrigger.removeEventListener('scrollEnd', settle);
         settle();
-        if (grid) gsap.set(grid, { clearProps: 'transform' });
+        gsap.killTweensOf([grid, projectCount, stackCount].filter(Boolean));
+        gsap.set([grid, projectCount, stackCount].filter(Boolean), { clearProps: 'transform' });
       };
     });
   }
