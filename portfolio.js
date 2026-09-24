@@ -199,543 +199,87 @@ document.documentElement.classList.add('js');
 
 
 function initProjectStory() {
-  if (!state.gsapAvailable) return;
+    if (!state.gsapAvailable) return;
+    const media = gsap.matchMedia();
+    state.matchMediaContexts.push(media);
 
-  const media = gsap.matchMedia();
-  state.matchMediaContexts.push(media);
+    media.add('(min-width: 1101px) and (min-height: 741px) and (prefers-reduced-motion: no-preference)', () => {
+      const section = $('.projects-story');
+      const pin = $('.project-pin');
+      const slides = $$('.project-slide', section);
+      const reel = $('#projectCounterReel');
+      const progress = $('#projectProgress');
+      if (!section || !pin || slides.length < 2 || !reel || !progress) return undefined;
 
-  const createProjectScene = isMobile => {
-    const section = $('.projects-story');
-    const pin = $('.project-pin');
-    const scene = $('.project-scene');
+      const count = slides.length;
+      const links = slides.map(slide => $$('a', slide));
+      const visuals = slides.map(slide => $('.project-visual', slide));
+      const screenshots = slides.map(slide => $('.project-screenshot', slide));
+      let activeIndex = -1;
+      let pinHeight = Math.max(window.innerHeight, pin.clientHeight);
 
-    if (!section || !pin || !scene) return undefined;
-
-    const backgrounds = $$('.project-background', scene);
-    const backgroundImages = backgrounds.map(background =>
-      $('img', background)
-    );
-
-    const infos = $$('.project-info', scene);
-    const previewGroups = $$('.project-preview-group', scene);
-
-    const reel = $('#projectCounterReel');
-    const progress = $('#projectProgress');
-
-    const count = backgrounds.length;
-
-    if (
-      !reel ||
-      !progress ||
-      count < 2 ||
-      backgroundImages.some(image => !image) ||
-      infos.length !== count ||
-      previewGroups.length !== count
-    ) {
-      return undefined;
-    }
-
-    const projectLinks = infos.map(info => $$('a', info));
-
-    let lastActiveIndex = -1;
-    let cachedPinHeight = Math.max(
-      1,
-      pin.clientHeight || window.innerHeight
-    );
-
-    /* -------------------------------------------------------
-       MEASURE PIN
-    ------------------------------------------------------- */
-
-    const cacheProjectSize = () => {
-      cachedPinHeight = Math.max(
-        1,
-        pin.clientHeight || window.innerHeight
-      );
-    };
-
-    /* -------------------------------------------------------
-       ACCESSIBILITY / ACTIVE STATE
-    ------------------------------------------------------- */
-
-    const updateActiveProject = activeIndex => {
-      if (activeIndex === lastActiveIndex) return;
-
-      lastActiveIndex = activeIndex;
-
-      infos.forEach((info, index) => {
-        const active = index === activeIndex;
-
-        info.classList.toggle('is-active', active);
-
-        info.style.pointerEvents = active
-          ? 'auto'
-          : 'none';
-
-        info.setAttribute(
-          'aria-hidden',
-          active ? 'false' : 'true'
-        );
-      });
-
-      backgrounds.forEach((background, index) => {
-        background.classList.toggle(
-          'is-active',
-          index === activeIndex
-        );
-      });
-
-      previewGroups.forEach((group, index) => {
-        group.classList.toggle(
-          'is-active',
-          index === activeIndex
-        );
-      });
-
-      projectLinks.forEach((links, index) => {
-        links.forEach(link => {
-          if (index === activeIndex) {
-            link.removeAttribute('tabindex');
-          } else {
-            link.setAttribute('tabindex', '-1');
-          }
+      const measure = () => { pinHeight = Math.max(window.innerHeight, pin.clientHeight); };
+      const setActive = index => {
+        if (index === activeIndex) return;
+        activeIndex = index;
+        slides.forEach((slide, slideIndex) => {
+          const active = slideIndex === index;
+          slide.classList.toggle('is-active', active);
+          slide.setAttribute('aria-hidden', active ? 'false' : 'true');
+          slide.style.pointerEvents = active ? 'auto' : 'none';
+          links[slideIndex].forEach(link => active ? link.removeAttribute('tabindex') : link.setAttribute('tabindex', '-1'));
         });
+      };
+
+      slides.forEach((slide, index) => {
+        gsap.set(slide, { autoAlpha: index === 0 ? 1 : 0, y: index === 0 ? 0 : 38, scale: index === 0 ? 1 : 1.015, force3D: true });
+        if (visuals[index]) gsap.set(visuals[index], { x: index === 0 ? 0 : 26, force3D: true });
+        if (screenshots[index]) gsap.set(screenshots[index], { scale: 1.04, force3D: true });
       });
-    };
+      gsap.set(progress, { scaleX: 1 / count, transformOrigin: 'left center' });
+      gsap.set(reel, { yPercent: 0 });
+      setActive(0);
 
-    cacheProjectSize();
-
-    /* -------------------------------------------------------
-       INITIAL PROJECT STATES
-    ------------------------------------------------------- */
-
-    backgrounds.forEach((background, index) => {
-      gsap.set(background, {
-        autoAlpha: index === 0 ? 1 : 0,
-        zIndex: index === 0 ? 1 : 0
-      });
-
-      gsap.set(backgroundImages[index], {
-        scale: 1.04,
-        yPercent: index === 0 ? 0 : 1.5,
-        force3D: true
-      });
-
-      gsap.set(infos[index], {
-        autoAlpha: index === 0 ? 1 : 0,
-        y: index === 0
-          ? 0
-          : 30,
-
-        clipPath: index === 0 ? 'inset(0% 0% 0% 0%)' : 'inset(100% 0% 0% 0%)',
-
-        force3D: true
-      });
-
-      gsap.set(previewGroups[index], {
-        autoAlpha: index === 0 ? 1 : 0,
-
-        x: index === 0
-          ? 0
-          : isMobile
-            ? 18
-            : 36,
-
-        force3D: true
-      });
-
-      gsap.set(
-        $$('.project-preview', previewGroups[index]),
-        {
-          scale: 1,
-          x: 0,
-          opacity: 1,
-          force3D: true
+      const timeline = gsap.timeline({
+        defaults: { ease: 'none' },
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: () => `+=${pinHeight * (count - 1) * 0.78}`,
+          pin,
+          scrub: 0.55,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onRefreshInit: measure,
+          snap: { snapTo: 1 / (count - 1), duration: { min: 0.12, max: 0.24 }, delay: 0.08, inertia: false, ease: 'power1.inOut' },
+          onUpdate: self => setActive(Math.min(count - 1, Math.max(0, Math.round(self.progress * (count - 1)))))
         }
-      );
-    });
+      });
 
-    gsap.set(reel, {
-      yPercent: 0,
-      force3D: true
-    });
-
-    gsap.set(progress, {
-      scaleX: 1 / count,
-      transformOrigin: 'left center'
-    });
-
-    updateActiveProject(0);
-
-    /* -------------------------------------------------------
-       ARRIVAL — cards rise up into place the first time the
-       section reaches the viewport, before the pinned
-       crossfade timeline takes over.
-    ------------------------------------------------------- */
-
-    const stageHeading = $('.stage-heading', section);
-    const firstPreviewCards = $$('.project-preview', previewGroups[0]);
-
-    const counterEl = $('.project-counter', section);
-
-    gsap.set(
-      [stageHeading, counterEl, backgrounds[0], infos[0], ...firstPreviewCards].filter(Boolean),
-      { y: 64, autoAlpha: 0 }
-    );
-
-    const arrivalTrigger = ScrollTrigger.create({
-      trigger: section,
-      start: 'top 78%',
-      once: true,
-      onEnter: () => {
-        const arrivalTimeline = gsap.timeline({ defaults: { ease: 'power3.out' } });
-
-        arrivalTimeline
-          .to(stageHeading, { y: 0, autoAlpha: 1, duration: 0.8 }, 0)
-          .to(counterEl, { y: 0, autoAlpha: 1, duration: 0.7 }, 0.1)
-          .to(backgrounds[0], { y: 0, autoAlpha: 1, duration: 1 }, 0.05)
-          .to(infos[0], { y: 0, autoAlpha: 1, duration: 0.85 }, 0.22)
-          .to(firstPreviewCards, { y: 0, autoAlpha: 1, duration: 0.7, stagger: 0.12 }, 0.3);
-      }
-    });
-
-    /* -------------------------------------------------------
-       MAIN SCROLL TIMELINE
-    ------------------------------------------------------- */
-
-    const timeline = gsap.timeline({
-      defaults: {
-        ease: 'none',
-        overwrite: false
-      },
-
-      scrollTrigger: {
-        trigger: section,
-
-        start: 'top top',
-
-        /*
-         * Each project receives roughly one viewport
-         * progression.
-         *
-         * Mobile is slightly longer so touch scrolling
-         * doesn't feel too fast.
-         */
-        end: () =>
-          `+=${cachedPinHeight * (count - 1) * 0.72}`,
-
-        pin: pin,
-
-        scrub: isMobile
-          ? 0.42
-          : 0.44,
-
-        anticipatePin: 1,
-
-        invalidateOnRefresh: true,
-
-        snap: {
-          snapTo: 1 / (count - 1),
-          duration: { min: 0.12, max: 0.24 },
-          delay: 0.08,
-          inertia: false,
-          ease: 'power1.inOut'
-        },
-
-        onRefreshInit: cacheProjectSize,
-
-        onUpdate: self => {
-          const activeIndex = Math.min(
-            count - 1,
-
-            Math.max(
-              0,
-
-              Math.round(
-                self.progress *
-                (count - 1)
-              )
-            )
-          );
-
-          updateActiveProject(activeIndex);
-        }
-      }
-    });
-
-    /* -------------------------------------------------------
-       PROJECT → PROJECT TRANSITIONS
-    ------------------------------------------------------- */
-
-    for (
-      let index = 0;
-      index < count - 1;
-      index += 1
-    ) {
-      const currentGroup =
-        previewGroups[index];
-
-      const nextGroup =
-        previewGroups[index + 1];
-
-      /*
-       * First preview represents the project
-       * that becomes active next.
-       */
-      const selectedPreview =
-        $('.project-preview', currentGroup);
-
-      const segment = index;
-
-      timeline
-
-        /* ================================================
-           CURRENT BACKGROUND
-        ================================================= */
-
-        .to(backgroundImages[index], { scale: 1, duration: 0.28 }, segment)
-
-        .to(
-          backgrounds[index],
-          {
-            autoAlpha: 0,
-            yPercent: -2.5,
-            duration: 0.38
-          },
-          segment + 0.34
-        )
-
-        /* ================================================
-           NEXT PROJECT BACKGROUND
-        ================================================= */
-
-        .set(
-          backgrounds[index + 1],
-          {
-            zIndex: 1
-          },
-          segment + 0.04
-        )
-
-        .to(
-          backgrounds[index + 1],
-          {
-            autoAlpha: 1,
-            duration: 0.46
-          },
-          segment + 0.3
-        )
-
-        .to(
-          backgroundImages[index + 1],
-          {
-            scale: 1,
-            yPercent: 0,
-            duration: 0.58
-          },
-          segment + 0.26
-        )
-
-        /* ================================================
-           CURRENT INFO PANEL LEAVES
-        ================================================= */
-
-        .to(
-          infos[index],
-          {
-            autoAlpha: 0,
-            y: -30,
-            clipPath: 'inset(0% 0% 100% 0%)',
-
-            duration: 0.30
-          },
-          segment + 0.28
-        )
-
-        /* ================================================
-           NEXT INFO PANEL ENTERS
-        ================================================= */
-
-        .to(
-          infos[index + 1],
-          {
-            autoAlpha: 1,
-            y: 0,
-            clipPath: 'inset(0% 0% 0% 0%)',
-
-            duration: 0.46
-          },
-          segment + 0.5
-        );
-
-      /* ================================================
-         SELECTED BINBUX-STYLE PREVIEW CARD
-      ================================================= */
-
-      if (selectedPreview) {
-        timeline.to(
-          selectedPreview,
-          {
-            scale: 1.07,
-
-            x: isMobile
-              ? -8
-              : -18,
-
-            opacity: 0,
-
-            duration: 0.38
-          },
-          segment + 0.02
-        );
+      for (let index = 0; index < count - 1; index += 1) {
+        const segment = index;
+        timeline
+          .to(screenshots[index], { scale: 1, duration: 0.28 }, segment)
+          .to(slides[index], { autoAlpha: 0, y: -38, scale: 0.985, duration: 0.34, ease: 'power2.in' }, segment + 0.31)
+          .fromTo(slides[index + 1], { autoAlpha: 0, y: 38, scale: 1.015 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.46, ease: 'power3.out' }, segment + 0.48)
+          .fromTo(visuals[index + 1], { x: 26 }, { x: 0, duration: 0.5, ease: 'power3.out' }, segment + 0.5)
+          .to(screenshots[index + 1], { scale: 1, duration: 0.58 }, segment + 0.44)
+          .to(reel, { yPercent: -20 * (index + 1), duration: 0.44, ease: 'power3.inOut' }, segment + 0.38)
+          .to(progress, { scaleX: (index + 2) / count, duration: 0.44, ease: 'power2.inOut' }, segment + 0.38);
       }
 
-      timeline
-
-        /* ================================================
-           OLD PREVIEW SET LEAVES
-        ================================================= */
-
-        .to(
-          currentGroup,
-          {
-            autoAlpha: 0,
-
-            x: isMobile
-              ? -12
-              : -30,
-
-            duration: 0.40
-          },
-          segment + 0.18
-        )
-
-        /* ================================================
-           NEW PREVIEW CARDS ARRIVE
-        ================================================= */
-
-        .to(
-          nextGroup,
-          {
-            autoAlpha: 1,
-            x: 0,
-
-            duration: 0.46
-          },
-          segment + 0.30
-        )
-
-        /* ================================================
-           PROJECT COUNTER
-        ================================================= */
-
-        .to(
-          reel,
-          {
-            yPercent:
-              -20 * (index + 1),
-
-            duration: 0.55
-          },
-          segment + 0.18
-        )
-
-        /* ================================================
-           PROGRESS LINE
-        ================================================= */
-
-        .to(
-          progress,
-          {
-            scaleX:
-              (index + 2) / count,
-
-            duration: 0.55
-          },
-          segment + 0.18
-        );
-    }
-
-    /* -------------------------------------------------------
-       CLEANUP
-    ------------------------------------------------------- */
-
-    return () => {
-      arrivalTrigger.kill();
-
-      if (timeline.scrollTrigger) {
-        timeline.scrollTrigger.kill();
-      }
-
-      timeline.kill();
-
-      projectLinks
-        .flat()
-        .forEach(link => {
-          link.removeAttribute('tabindex');
+      return () => {
+        timeline.kill();
+        links.flat().forEach(link => link.removeAttribute('tabindex'));
+        slides.forEach(slide => {
+          slide.removeAttribute('aria-hidden');
+          slide.style.removeProperty('pointer-events');
+          slide.classList.remove('is-active');
         });
-
-      infos.forEach(info => {
-        info.removeAttribute(
-          'aria-hidden'
-        );
-
-        info.classList.remove(
-          'is-active'
-        );
-
-        info.style.removeProperty(
-          'pointer-events'
-        );
-      });
-
-      backgrounds.forEach(background => {
-        background.classList.remove(
-          'is-active'
-        );
-      });
-
-      previewGroups.forEach(group => {
-        group.classList.remove(
-          'is-active'
-        );
-      });
-
-      gsap.set(
-        [
-          ...backgrounds,
-          ...backgroundImages,
-          ...infos,
-          ...previewGroups,
-          ...$$(
-            '.project-preview',
-            scene
-          ),
-          reel,
-          progress
-        ],
-        {
-          clearProps: 'all'
-        }
-      );
-    };
-  };
-
-  /* -------------------------------------------------------
-     DESKTOP
-  ------------------------------------------------------- */
-
-  media.add(
-    `
-      (min-width: 1101px)
-      and (min-height: 741px)
-      and (prefers-reduced-motion: no-preference)
-    `,
-    () => createProjectScene(false)
-  );
-
-
-}
+        gsap.set([...slides, ...visuals.filter(Boolean), ...screenshots.filter(Boolean), reel, progress], { clearProps: 'all' });
+      };
+    });
+  }
 
   function initStackScroll() {
     if (!state.gsapAvailable) return;
