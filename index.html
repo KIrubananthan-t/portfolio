@@ -19,9 +19,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assets/vendor/lenis.css">
+  <link rel="stylesheet" href="motion.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="assets/vendor/lenis.min.js" defer></script>
   <script src="portfolio.js" defer></script>
+  <script src="motion.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -88,6 +92,13 @@
           </div>
 
           <div class="portrait-stage intro-item" id="portraitStage">
+            <svg class="motion-orbit" viewBox="0 0 600 600" fill="none" aria-hidden="true">
+              <circle class="orbit-outer" cx="300" cy="300" r="282" />
+              <circle class="orbit-dashes" cx="300" cy="300" r="264" />
+              <path class="orbit-cross" d="M300 0v42M300 558v42M0 300h42M558 300h42" />
+              <circle class="orbit-node" cx="300" cy="18" r="7" />
+              <circle class="orbit-node orbit-node-secondary" cx="18" cy="300" r="4" />
+            </svg>
             <div class="portrait-aura" id="portraitAura" aria-hidden="true"></div>
 
             <div class="portrait-interactive" id="portraitInteractive">
@@ -248,6 +259,18 @@
         </div>
       </div>
     </section>
+
+    <div class="motion-band" aria-hidden="true">
+      <div class="motion-band-meta"><span>From concept to production</span><span>Keep moving ↘</span></div>
+      <div class="motion-lane motion-lane-forward">
+        <span>IDEA <i>↗</i> CODE <i>↗</i> <b>PRODUCT</b> <i>↗</i>&nbsp;</span>
+        <span>IDEA <i>↗</i> CODE <i>↗</i> <b>PRODUCT</b> <i>↗</i>&nbsp;</span>
+      </div>
+      <div class="motion-lane motion-lane-reverse">
+        <span>DESIGN <i>✳</i> <b>BUILD</b> <i>✳</i> SHIP <i>✳</i>&nbsp;</span>
+        <span>DESIGN <i>✳</i> <b>BUILD</b> <i>✳</i> SHIP <i>✳</i>&nbsp;</span>
+      </div>
+    </div>
 
     <!-- 03 / ENGINEERING APPROACH -->
     <section class="section approach-section" id="about" aria-labelledby="approach-title">

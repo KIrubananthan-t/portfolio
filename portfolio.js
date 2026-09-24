@@ -69,7 +69,7 @@ document.documentElement.classList.add('js');
     const media = gsap.matchMedia();
     state.matchMediaContexts.push(media);
 
-    media.add('(min-width: 769px) and (min-height: 601px) and (prefers-reduced-motion: no-preference)', () => {
+    media.add('(min-width: 1101px) and (min-height: 741px) and (prefers-reduced-motion: no-preference)', () => {
       const section = $('.hero-story');
       const pin = $('.hero-pin');
       const primaryLines = $$('.hero-title-primary .text-mask > span');
@@ -121,59 +121,7 @@ document.documentElement.classList.add('js');
       };
     });
 
-    media.add('(max-width: 768px) and (prefers-reduced-motion: no-preference)', () => {
-      const section = $('.hero-story');
-      const pin = $('.hero-pin');
-      const primaryLines = $$('.hero-title-primary .text-mask > span');
-      const secondary = $('.hero-title-secondary');
-      const secondaryLines = $$('.hero-title-secondary .text-mask > span');
-      const transition = $('.hero-transition');
-      const transitionLines = $$('.hero-transition .text-mask > span');
-      const detail = $('.hero-detail');
-      const portrait = $('.portrait-stage');
-      const labels = $$('.tech-label');
-      if (!section || !pin || !secondary || !transition || !detail || !portrait) return undefined;
 
-      gsap.set(detail, { autoAlpha: 0, y: 26 });
-      gsap.set(secondary, { autoAlpha: 0, visibility: 'visible' });
-      gsap.set(secondaryLines, { yPercent: 110 });
-      gsap.set(transition, { autoAlpha: 0, visibility: 'visible' });
-      gsap.set(transitionLines, { yPercent: 120 });
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: 'top top',
-          end: '+=360%',
-          pin,
-          scrub: 0.42,
-          anticipatePin: 1,
-          invalidateOnRefresh: true
-        }
-      });
-
-      timeline
-        .to(detail, { autoAlpha: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 0.05)
-        .to(portrait, { autoAlpha: 0.24, duration: 0.45 }, 0.05)
-        .to(labels, { y: index => index % 2 ? -12 : 10, x: index => index % 3 ? 5 : -6, stagger: 0.035, duration: 0.6 }, 0.14)
-        .to(primaryLines, { yPercent: -120, duration: 0.7, stagger: 0.05, ease: 'power3.inOut' }, 0.72)
-        .to(secondary, { autoAlpha: 1, duration: 0.2 }, 0.8)
-        .to(secondaryLines, { yPercent: 0, duration: 0.7, stagger: 0.05, ease: 'power4.out' }, 0.82)
-        .to(detail, { autoAlpha: 0, y: -18, duration: 0.34 }, 1.25)
-        .to('.availability, .hero-kicker', { autoAlpha: 0, y: -16, duration: 0.32 }, 1.28)
-        .to(portrait, { autoAlpha: 0.72, duration: 0.5 }, 1.32)
-        .to(secondaryLines, { yPercent: -120, duration: 0.7, stagger: 0.04, ease: 'power3.inOut' }, 1.7)
-        .to(transition, { autoAlpha: 1, duration: 0.2 }, 1.78)
-        .to(transitionLines, { yPercent: 0, duration: 0.72, stagger: 0.05, ease: 'power4.out' }, 1.84)
-        .to('.hero-scroll', { autoAlpha: 0, duration: 0.2 }, 1.9)
-        .to(portrait, { autoAlpha: 0.18, duration: 0.8 }, 1.96)
-        .to(transitionLines, { yPercent: -18, scale: 0.97, duration: 0.65, ease: 'power2.inOut' }, 2.5);
-
-      return () => {
-        timeline.kill();
-        gsap.set([detail, secondary, transition, labels, primaryLines, secondaryLines, transitionLines], { clearProps: 'all' });
-        gsap.set(portrait, { clearProps: 'opacity,visibility' });
-      };
-    });
   }
 
   function initPortraitInteraction() {
@@ -251,207 +199,6 @@ document.documentElement.classList.add('js');
     });
   }
 
-  function initMobilePortraitMotion() {
-    if (!state.gsapAvailable) return;
-    const media = gsap.matchMedia();
-    state.matchMediaContexts.push(media);
-
-    media.add('(max-width: 768px) and (prefers-reduced-motion: no-preference)', () => {
-      const section = $('.hero-story');
-      const stage = $('#portraitStage');
-      const interactive = $('#portraitInteractive');
-      const frame = $('#portraitFrame');
-      const image = $('#portraitImage');
-      const aura = $('#portraitAura');
-      const labelInners = $$('.tech-label-inner', interactive);
-      if (!section || !stage || !interactive || !frame || !image || !aura) return undefined;
-
-      gsap.set(stage, { x: 0, y: 0, xPercent: 0, yPercent: 0, scale: 1, rotation: 0 });
-      gsap.set(interactive, { x: 0, y: 0, xPercent: 0, yPercent: 0, scale: 1, rotation: 0 });
-      gsap.set(frame, { x: 0, y: 0, xPercent: 0, yPercent: 0, scale: 1, rotation: 0 });
-      gsap.set(image, { x: 0, y: 0, xPercent: 0, yPercent: 0 });
-      gsap.set(aura, { x: 0, y: 0, xPercent: 0, yPercent: 0, scale: 1 });
-
-      const tweens = [
-        gsap.to(interactive, { y: -8, duration: 3.6, repeat: -1, yoyo: true, ease: 'sine.inOut', paused: true }),
-        gsap.to(image, { y: 5, scale: 1.055, duration: 4.1, repeat: -1, yoyo: true, ease: 'sine.inOut', paused: true }),
-        gsap.to(aura, { x: 7, y: -5, scale: 1.06, opacity: 0.6, duration: 4.5, repeat: -1, yoyo: true, ease: 'sine.inOut', paused: true })
-      ];
-
-      const labelMotion = [
-        { x: 5, y: -6, duration: 3.3 }, { x: -6, y: 5, duration: 3.8 },
-        { x: 4, y: 7, duration: 4.1 }, { x: -5, y: -4, duration: 3.5 },
-        { x: 7, y: 4, duration: 4.3 }, { x: -4, y: 6, duration: 3.7 }
-      ];
-      labelInners.forEach((label, index) => {
-        const motion = labelMotion[index % labelMotion.length];
-        tweens.push(gsap.to(label, { ...motion, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: index * 0.08, paused: true }));
-      });
-
-      let motionStarted = false;
-      let parallax;
-      const pauseIdleMotion = () => tweens.forEach(tween => tween.pause());
-      const resumeIdleMotion = () => {
-        if (!motionStarted || document.hidden || !parallax?.scrollTrigger?.isActive) return;
-        tweens.forEach(tween => tween.resume());
-      };
-      const resumeIdleCall = gsap.delayedCall(0.48, resumeIdleMotion).pause();
-      const onScrollStart = () => {
-        motionStarted = true;
-        resumeIdleCall.pause(0);
-        pauseIdleMotion();
-      };
-      const onScrollEnd = () => resumeIdleCall.restart(true);
-      parallax = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.42,
-          invalidateOnRefresh: true,
-          onToggle: self => {
-            if (self.isActive) return;
-            resumeIdleCall.pause(0);
-            pauseIdleMotion();
-          }
-        }
-      });
-      parallax
-        .to(stage, { y: -24, duration: 0.85, ease: 'none' }, 0.15)
-        .to(frame, { scale: 0.985, rotationZ: 1.1, duration: 0.85, ease: 'none' }, 0.15)
-        .to(image, { yPercent: -1.4, duration: 0.85, ease: 'none' }, 0.15);
-
-      ScrollTrigger.addEventListener('scrollStart', onScrollStart);
-      ScrollTrigger.addEventListener('scrollEnd', onScrollEnd);
-      const onVisibility = () => {
-        if (document.hidden) {
-          resumeIdleCall.pause(0);
-          pauseIdleMotion();
-        } else if (motionStarted) {
-          resumeIdleCall.restart(true);
-        }
-      };
-      document.addEventListener('visibilitychange', onVisibility);
-
-      return () => {
-        ScrollTrigger.removeEventListener('scrollStart', onScrollStart);
-        ScrollTrigger.removeEventListener('scrollEnd', onScrollEnd);
-        document.removeEventListener('visibilitychange', onVisibility);
-        resumeIdleCall.kill();
-        tweens.forEach(tween => tween.kill());
-        parallax.kill();
-        gsap.set(stage, { clearProps: 'transform' });
-        gsap.set(interactive, { clearProps: 'transform' });
-        gsap.set(frame, { clearProps: 'transform' });
-        gsap.set(image, { clearProps: 'transform' });
-        gsap.set(aura, { clearProps: 'transform,opacity' });
-        gsap.set(labelInners, { clearProps: 'transform' });
-      };
-    });
-  }
-
-  function initProjectStory() {
-    if (!state.gsapAvailable) return;
-    const media = gsap.matchMedia();
-    state.matchMediaContexts.push(media);
-
-    const createProjectScene = isMobile => {
-      const section = $('.projects-story');
-      const pin = $('.project-pin');
-      const scene = $('.project-scene');
-      const backgrounds = $$('.project-background');
-      const backgroundImages = backgrounds.map(background => $('img', background));
-      const infos = $$('.project-info');
-      const previewGroups = $$('.project-preview-group');
-      const reel = $('#projectCounterReel');
-      const progress = $('#projectProgress');
-      if (!section || !pin || !scene || backgrounds.length !== 5 || backgroundImages.some(item => !item) || infos.length !== 5 || previewGroups.length !== 5 || !reel || !progress) return undefined;
-
-      const projectLinks = infos.map(info => $$('a', info));
-      let lastActiveIndex = -1;
-      let cachedPinHeight = window.innerHeight;
-      const cacheProjectSize = () => {
-        cachedPinHeight = Math.max(1, pin.clientHeight || window.innerHeight);
-      };
-      const updateActiveProject = activeIndex => {
-        if (activeIndex === lastActiveIndex) return;
-        lastActiveIndex = activeIndex;
-        projectLinks.forEach((links, projectIndex) => links.forEach(link => {
-          if (projectIndex === activeIndex) link.removeAttribute('tabindex');
-          else link.setAttribute('tabindex', '-1');
-        }));
-        infos.forEach((info, projectIndex) => {
-          const isActive = projectIndex === activeIndex;
-          info.classList.toggle('is-active', isActive);
-          info.style.pointerEvents = isActive ? 'auto' : 'none';
-          info.setAttribute('aria-hidden', isActive ? 'false' : 'true');
-        });
-        backgrounds.forEach((background, projectIndex) => background.classList.toggle('is-active', projectIndex === activeIndex));
-        previewGroups.forEach((group, projectIndex) => group.classList.toggle('is-active', projectIndex === activeIndex));
-      };
-
-      cacheProjectSize();
-      backgrounds.forEach((background, index) => {
-        gsap.set(background, { opacity: index === 0 ? 1 : 0 });
-        gsap.set(backgroundImages[index], { scale: index === 0 ? 1 : 1.04, force3D: true });
-        gsap.set(infos[index], { opacity: index === 0 ? 1 : 0, y: index === 0 ? 0 : 15 });
-        gsap.set(previewGroups[index], { opacity: index === 0 ? 1 : 0, x: index === 0 ? 0 : 28, force3D: true });
-        gsap.set($$('.project-preview', previewGroups[index]), { scale: 1, x: 0, opacity: 1, force3D: true });
-      });
-      gsap.set(progress, { scaleX: 0.2 });
-      updateActiveProject(0);
-
-      const timeline = gsap.timeline({
-        defaults: { duration: 1, ease: 'none', overwrite: false },
-        scrollTrigger: {
-          trigger: section,
-          start: 'top top',
-          end: () => `+=${cachedPinHeight * (cards.length - 1)}`,
-          pin,
-          scrub: isMobile ? 0.42 : 0.44,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          onRefreshInit: cacheProjectSize,
-          onUpdate: self => updateActiveProject(Math.min(backgrounds.length - 1, Math.round(self.progress * (backgrounds.length - 1))))
-        }
-      });
-
-      for (let index = 0; index < backgrounds.length - 1; index += 1) {
-        const selectedPreview = $('.project-preview', previewGroups[index]);
-        timeline
-          .to(backgrounds[index], { opacity: 0, duration: 0.58 }, index)
-          .to(backgroundImages[index], { scale: 0.985, duration: 0.75 }, index)
-          .to(backgrounds[index + 1], { opacity: 1, duration: 0.58 }, index + 0.12)
-          .to(backgroundImages[index + 1], { scale: 1, duration: 0.82 }, index + 0.08)
-          .to(infos[index], { opacity: 0, y: -15, duration: 0.3 }, index)
-          .to(infos[index + 1], { opacity: 1, y: 0, duration: 0.44 }, index + 0.24)
-          .to(selectedPreview, { scale: 1.05, x: isMobile ? -8 : -12, opacity: 0, duration: 0.42 }, index)
-          .to(previewGroups[index], { opacity: 0, x: isMobile ? -16 : -28, duration: 0.46 }, index + 0.16)
-          .to(previewGroups[index + 1], { opacity: 1, x: 0, duration: 0.48 }, index + 0.3)
-          .to(reel, { yPercent: -20 * (index + 1) }, index)
-          .to(progress, { scaleX: (index + 2) / backgrounds.length }, index);
-      }
-
-      return () => {
-        if (timeline.scrollTrigger) timeline.scrollTrigger.kill();
-        timeline.kill();
-        projectLinks.flat().forEach(link => link.removeAttribute('tabindex'));
-        infos.forEach(info => {
-          info.removeAttribute('aria-hidden');
-          info.classList.remove('is-active');
-          info.style.removeProperty('pointer-events');
-        });
-        backgrounds.forEach(background => background.classList.remove('is-active'));
-        previewGroups.forEach(group => group.classList.remove('is-active'));
-        gsap.set([...backgrounds, ...infos, ...previewGroups, ...$$('.project-preview')], { clearProps: 'transform,opacity' });
-        gsap.set(backgroundImages, { clearProps: 'transform' });
-        gsap.set([reel, progress], { clearProps: 'transform' });
-      };
-    };
-
-    media.add('(min-width: 769px) and (prefers-reduced-motion: no-preference)', () => createProjectScene(false));
-    media.add('(max-width: 768px) and (prefers-reduced-motion: no-preference)', () => createProjectScene(true));
-  }
 
 function initProjectStory() {
   if (!state.gsapAvailable) return;
@@ -953,25 +700,14 @@ function initProjectStory() {
 
   media.add(
     `
-      (min-width: 769px)
-      and
-      (prefers-reduced-motion: no-preference)
+      (min-width: 1101px)
+      and (min-height: 741px)
+      and (prefers-reduced-motion: no-preference)
     `,
     () => createProjectScene(false)
   );
 
-  /* -------------------------------------------------------
-     MOBILE
-  ------------------------------------------------------- */
 
-  media.add(
-    `
-      (max-width: 768px)
-      and
-      (prefers-reduced-motion: no-preference)
-    `,
-    () => createProjectScene(true)
-  );
 }
 
   function initStackScroll() {
@@ -1015,11 +751,7 @@ function initProjectStory() {
     };
 
     media.add(
-      '(min-width: 769px) and (prefers-reduced-motion: no-preference)',
-      createStackScene
-    );
-    media.add(
-      '(max-width: 768px) and (prefers-reduced-motion: no-preference)',
+      '(min-width: 1101px) and (min-height: 741px) and (prefers-reduced-motion: no-preference)',
       createStackScene
     );
   }
@@ -1029,7 +761,7 @@ function initProjectStory() {
     const media = gsap.matchMedia();
     state.matchMediaContexts.push(media);
 
-    media.add('(min-width: 769px) and (min-height: 601px) and (prefers-reduced-motion: no-preference)', () => {
+    media.add('(min-width: 1101px) and (min-height: 741px) and (prefers-reduced-motion: no-preference)', () => {
       const section = $('.experience-story');
       const pin = $('.experience-pin');
       const items = $$('.experience-item');
@@ -1073,62 +805,7 @@ function initProjectStory() {
       };
     });
 
-    media.add('(max-width: 768px) and (prefers-reduced-motion: no-preference)', () => {
-      const section = $('.experience-story');
-      const pin = $('.experience-pin');
-      const rail = $('.experience-rail');
-      const items = $$('.experience-item');
-      const reel = $('#experienceDateReel');
-      const progress = $('#experienceProgress');
-      const dot = $('#experienceDot');
-      if (!section || !pin || !rail || items.length !== 3 || !reel || !progress || !dot) return undefined;
 
-      let railDistance = 0;
-      let lastActiveIndex = -1;
-      const measureRailDistance = () => { railDistance = Math.max(0, rail.clientHeight - 12); };
-      const updateActiveItem = activeIndex => {
-        if (activeIndex === lastActiveIndex) return;
-        lastActiveIndex = activeIndex;
-        items.forEach((item, itemIndex) => {
-          item.style.pointerEvents = itemIndex === activeIndex ? 'auto' : 'none';
-        });
-      };
-      measureRailDistance();
-      gsap.set(items, { opacity: 0, y: 24 });
-      gsap.set(items[0], { opacity: 1, y: 0 });
-      updateActiveItem(0);
-
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: 'top top',
-          end: '+=260%',
-          pin,
-          scrub: 0.42,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          onRefreshInit: measureRailDistance,
-          onUpdate: self => updateActiveItem(Math.min(items.length - 1, Math.floor(self.progress * items.length)))
-        }
-      });
-
-      items.slice(1).forEach((item, index) => {
-        const previous = items[index];
-        const position = index + 0.7;
-        timeline
-          .to(previous, { opacity: 0, y: -24, duration: 0.38 }, position)
-          .fromTo(item, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.48, ease: 'power3.out' }, position + 0.06)
-          .to(reel, { yPercent: -(100 / 3) * (index + 1), duration: 0.48, ease: 'power3.inOut' }, position)
-          .to(progress, { scaleY: (index + 1) / 2, duration: 0.48 }, position)
-          .to(dot, { y: () => railDistance * ((index + 1) / 2), duration: 0.48, ease: 'power3.inOut' }, position);
-      });
-
-      return () => {
-        timeline.kill();
-        items.forEach(item => item.style.removeProperty('pointer-events'));
-        gsap.set([items, reel, progress, dot], { clearProps: 'all' });
-      };
-    });
   }
 
   function initReveals() {
@@ -1247,9 +924,8 @@ function initProjectStory() {
     const dot = $('#cursorDot');
     const ring = $('#cursorRing');
     const spotlight = $('#cursorSpotlight');
-    if (!dot || !ring || !spotlight || reducedMotion.matches || !precisePointer.matches) return;
+    if (!dot || !ring || !spotlight) return;
 
-    document.body.classList.add('cursor-enabled');
     let mouseX = innerWidth / 2;
     let mouseY = innerHeight / 2;
     let ringX = mouseX;
@@ -1257,7 +933,7 @@ function initProjectStory() {
     let lightX = mouseX;
     let lightY = mouseY;
     let frame = 0;
-    let running = true;
+    let running = false;
 
     const render = () => {
       if (!running) return;
@@ -1270,8 +946,18 @@ function initProjectStory() {
       spotlight.style.transform = `translate3d(${lightX}px,${lightY}px,0) translate(-50%,-50%)`;
       frame = requestAnimationFrame(render);
     };
-    const start = () => { if (running) return; running = true; render(); };
-    const stop = () => { running = false; cancelAnimationFrame(frame); };
+    const start = () => {
+      if (running || document.hidden || reducedMotion.matches || !precisePointer.matches) return;
+      document.body.classList.add('cursor-enabled');
+      running = true;
+      render();
+    };
+    const stop = () => {
+      document.body.classList.remove('cursor-enabled');
+      running = false;
+      cancelAnimationFrame(frame);
+    };
+    const updateMotion = () => reducedMotion.matches || !precisePointer.matches ? stop() : start();
 
     window.addEventListener('pointermove', event => { mouseX = event.clientX; mouseY = event.clientY; }, { passive: true });
     $$('a, button, .project-glow').forEach(element => {
@@ -1279,8 +965,10 @@ function initProjectStory() {
       element.addEventListener('mouseleave', () => ring.classList.remove('hover'));
     });
     document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+    precisePointer.addEventListener('change', updateMotion);
+    reducedMotion.addEventListener('change', updateMotion);
     state.cursorController = { start, stop };
-    render();
+    start();
   }
 
   function initMagnetic() {
@@ -1433,8 +1121,8 @@ function initProjectStory() {
       };
     };
 
-    if (media) media.add('(min-width: 769px) and (min-height: 601px) and (prefers-reduced-motion: no-preference)', create);
-    else if (innerWidth > 768) create();
+    if (media) media.add('(min-width: 1101px) and (min-height: 741px) and (prefers-reduced-motion: no-preference)', create);
+    else if (innerWidth > 1100 && innerHeight > 740) create();
   }
 
   function initialize() {
@@ -1446,14 +1134,13 @@ function initProjectStory() {
     }
 
     initAccessibility();
-    initNavigation();
     initScrollProgress();
     initHeroStory();
     initPortraitInteraction();
-    initMobilePortraitMotion();
     initProjectStory();
     initStackScroll();
     initExperienceTimeline();
+    initNavigation();
     initReveals();
     initCursor();
     initMagnetic();

@@ -1428,3 +1428,248 @@ a.text-link:hover { border-color: var(--cyan); color: var(--cyan); }
     font-size: clamp(.55rem, 1.7vw, .68rem);
   }
 }
+
+/* Compact screens use a document flow layout so every project remains reachable. */
+@media (max-width: 1100px), (max-height: 740px), (prefers-reduced-motion: reduce) {
+  .gsap-ready .hero-pin,
+  .gsap-ready .projects-story .project-pin,
+  .gsap-ready .stack-pin,
+  .gsap-ready .experience-pin {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  .gsap-ready .hero-pin { padding-block: 7.5rem 4rem; }
+  .gsap-ready .hero-layout { height: auto; }
+  .gsap-ready .hero-copy { height: auto; }
+  .gsap-ready .hero-message { position: relative; min-height: 0; }
+  .gsap-ready .hero-title-primary { position: relative; }
+  .gsap-ready .hero-title-secondary,
+  .gsap-ready .hero-transition,
+  .gsap-ready .hero-scroll { display: none; }
+  .gsap-ready .hero-detail {
+    position: relative;
+    top: auto;
+    right: auto;
+    left: auto;
+    margin-top: 1.5rem;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+  .gsap-ready .portrait-stage {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    width: min(100%, 31rem);
+  }
+
+  .projects-story .project-counter,
+  .projects-story .project-preview-group { display: none; }
+  .gsap-ready .projects-story .project-stage,
+  .projects-story .project-stage {
+    height: auto;
+    min-height: 0;
+    padding-block: var(--section-space);
+  }
+  .projects-story .stage-heading,
+  .gsap-ready .projects-story .stage-heading { width: 100%; }
+  .projects-story .project-scene,
+  .gsap-ready .projects-story .project-scene {
+    position: relative;
+    top: auto;
+    left: auto;
+    display: grid;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    gap: 1.25rem;
+    margin-top: 2rem;
+    overflow: visible;
+    transform: none;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  .projects-story .project-scene::after { display: none; }
+  .projects-story .project-backgrounds,
+  .projects-story .project-info-stack,
+  .gsap-ready .projects-story .project-info-stack {
+    display: contents;
+  }
+  .projects-story .project-background {
+    position: relative;
+    inset: auto;
+    grid-column: 1;
+    width: 100%;
+    min-height: 28rem;
+    opacity: 1;
+    visibility: visible;
+    border: 1px solid var(--border);
+    border-radius: 1.2rem;
+    background: var(--bg-secondary);
+  }
+  .projects-story .project-background::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 15%, rgba(7,9,13,.9) 100%);
+  }
+  .projects-story .project-background img {
+    position: absolute;
+    inset: 0;
+    transform: none;
+  }
+  .projects-story .project-info,
+  .gsap-ready .projects-story .project-info {
+    position: relative;
+    grid-area: auto;
+    grid-column: 1;
+    align-self: end;
+    width: calc(100% - 2rem);
+    height: auto;
+    max-height: none;
+    margin: 1rem;
+    overflow: visible;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
+  }
+  .projects-story .project-background[data-project="01"], .projects-story .project-info[data-project="01"] { grid-row: 1; }
+  .projects-story .project-background[data-project="02"], .projects-story .project-info[data-project="02"] { grid-row: 2; }
+  .projects-story .project-background[data-project="03"], .projects-story .project-info[data-project="03"] { grid-row: 3; }
+  .projects-story .project-background[data-project="04"], .projects-story .project-info[data-project="04"] { grid-row: 4; }
+  .projects-story .project-background[data-project="05"], .projects-story .project-info[data-project="05"] { grid-row: 5; }
+
+  .gsap-ready .stack-pin { padding-block: var(--section-space); }
+  .gsap-ready .stack-viewport { overflow: visible; }
+  .gsap-ready .stack-track {
+    display: grid;
+    width: min(var(--container), calc(100% - 2.5rem));
+    gap: 1rem;
+    margin-inline: auto;
+    padding: 0;
+    transform: none;
+  }
+  .gsap-ready .stack-panel { width: 100%; min-width: 0; max-width: none; min-height: 20rem; }
+  .gsap-ready .stack-progress { display: none; }
+
+  .gsap-ready .experience-stage {
+    display: block;
+    min-height: 0;
+    padding-block: var(--section-space);
+  }
+  .gsap-ready .experience-heading { margin-bottom: 2.5rem; }
+  .gsap-ready .experience-date,
+  .gsap-ready .experience-rail { display: none; }
+  .gsap-ready .experience-slides { display: grid; min-height: 0; gap: 2rem; }
+  .gsap-ready .experience-item {
+    position: relative;
+    inset: auto;
+    display: block;
+    min-height: 0;
+    padding: 0 0 2rem 1.5rem;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    border-left: 1px solid var(--border);
+  }
+  .gsap-ready .experience-item:not(.is-first) {
+    opacity: 1;
+    visibility: visible;
+  }
+  .gsap-ready .experience-item::before { display: block; }
+}
+
+@media (min-width: 769px) and (max-width: 1100px) {
+  .gsap-ready .hero-layout { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; }
+  .gsap-ready .portrait-stage { justify-self: center; }
+}
+
+@media (min-width: 1101px) and (max-width: 1300px) {
+  .hero-title { font-size: clamp(4.25rem, 6.7vw, 5.4rem); }
+}
+
+/* The CDN animation scripts are optional; keep the whole project list usable offline. */
+html:not(.gsap-ready) .projects-story .project-pin,
+html:not(.gsap-ready) .projects-story .project-stage { min-height: 0; overflow: visible; }
+html:not(.gsap-ready) .projects-story .project-stage { padding-block: var(--section-space); }
+html:not(.gsap-ready) .projects-story .project-counter,
+html:not(.gsap-ready) .projects-story .project-preview-group { display: none; }
+html:not(.gsap-ready) .projects-story .project-scene {
+  position: relative;
+  top: auto;
+  left: auto;
+  display: grid;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  gap: 1.25rem;
+  margin-top: 2rem;
+  overflow: visible;
+  transform: none;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+html:not(.gsap-ready) .projects-story .project-scene::after { display: none; }
+html:not(.gsap-ready) .projects-story .project-backgrounds,
+html:not(.gsap-ready) .projects-story .project-info-stack { display: contents; }
+html:not(.gsap-ready) .projects-story .project-background {
+  position: relative;
+  inset: auto;
+  grid-column: 1;
+  min-height: 28rem;
+  opacity: 1;
+  visibility: visible;
+  border: 1px solid var(--border);
+  border-radius: 1.2rem;
+}
+html:not(.gsap-ready) .projects-story .project-background::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 15%, rgba(7,9,13,.9) 100%);
+}
+html:not(.gsap-ready) .projects-story .project-background img { position: absolute; inset: 0; transform: none; }
+html:not(.gsap-ready) .projects-story .project-info {
+  position: relative;
+  grid-area: auto;
+  grid-column: 1;
+  align-self: end;
+  width: calc(100% - 2rem);
+  height: auto;
+  max-height: none;
+  margin: 1rem;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+}
+html:not(.gsap-ready) .projects-story .project-background[data-project="01"], html:not(.gsap-ready) .projects-story .project-info[data-project="01"] { grid-row: 1; }
+html:not(.gsap-ready) .projects-story .project-background[data-project="02"], html:not(.gsap-ready) .projects-story .project-info[data-project="02"] { grid-row: 2; }
+html:not(.gsap-ready) .projects-story .project-background[data-project="03"], html:not(.gsap-ready) .projects-story .project-info[data-project="03"] { grid-row: 3; }
+html:not(.gsap-ready) .projects-story .project-background[data-project="04"], html:not(.gsap-ready) .projects-story .project-info[data-project="04"] { grid-row: 4; }
+html:not(.gsap-ready) .projects-story .project-background[data-project="05"], html:not(.gsap-ready) .projects-story .project-info[data-project="05"] { grid-row: 5; }
+
+@media (max-width: 768px) {
+  .gsap-ready .hero-pin { padding-block: 6.5rem 3.5rem; }
+  .gsap-ready .hero-layout { display: grid; grid-template-rows: auto auto; gap: 2.5rem; }
+  .gsap-ready .portrait-stage { width: min(78vw, 22rem); }
+  .projects-story .project-info-description { display: block; overflow: visible; }
+}
+
+@media (max-width: 480px) {
+  .gsap-ready .hero-pin { padding-top: 5.75rem; }
+  .hero-title { font-size: clamp(2.65rem, 14vw, 4.2rem); }
+  .projects-story .project-background { min-height: 31rem; }
+  .projects-story .project-info,
+  .gsap-ready .projects-story .project-info { width: calc(100% - 1rem); margin: .5rem; padding: .8rem; }
+  .projects-story .project-info h3 { font-size: clamp(1.8rem, 8vw, 2.4rem); }
+  .projects-story .project-info-button { min-height: 44px; }
+  .gsap-ready .stack-track { width: calc(100% - 2rem); }
+}
