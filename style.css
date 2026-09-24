@@ -741,7 +741,7 @@ a.text-link:hover { border-color: var(--cyan); color: var(--cyan); }
 
 .project-stage {
   min-height: 100svh;
-  padding-block: 5.15rem 1rem;
+  padding-block: 4rem 0;
 }
 
 .projects-story .stage-heading {
@@ -819,22 +819,23 @@ a.text-link:hover { border-color: var(--cyan); color: var(--cyan); }
   background: var(--accent);
 }
 
-/* Full visual stage, like BinBux "What We Buy". */
+/* Full visual stage, like BinBux "What We Buy" — now edge-to-edge full screen. */
 .projects-story .project-scene {
   position: absolute;
   z-index: 2;
-  top: 9.15rem;
+  top: 7.25rem;
   left: 50%;
-  width: calc(100vw - 1.5rem);
-  height: calc(100svh - 10.15rem);
+  width: 100vw;
+  height: calc(100svh - 7.25rem);
   min-height: 34rem;
-  max-height: 45rem;
+  max-height: none;
   overflow: hidden;
   transform: translateX(-50%);
-  border: 1px solid rgba(255,255,255,.22);
-  border-radius: 1.35rem;
+  border: 0;
+  border-top: 1px solid rgba(255,255,255,.14);
+  border-radius: 0;
   background: var(--bg-secondary);
-  box-shadow: 0 1.8rem 5rem rgba(0,0,0,.36);
+  box-shadow: none;
   isolation: isolate;
 }
 
@@ -1672,4 +1673,109 @@ html:not(.gsap-ready) .projects-story .project-background[data-project="05"], ht
   .projects-story .project-info h3 { font-size: clamp(1.8rem, 8vw, 2.4rem); }
   .projects-story .project-info-button { min-height: 44px; }
   .gsap-ready .stack-track { width: calc(100% - 2rem); }
+}
+
+/* 2026 product-engineer refinement */
+.hero-role {
+  margin-top: .7rem;
+  color: var(--text-muted);
+  font: 500 clamp(.58rem,.75vw,.72rem)/1.5 var(--font-mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.project-capabilities {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: .3rem .65rem;
+  margin: 0 0 .85rem;
+  padding: .7rem 0;
+  border-block: 1px solid rgba(255,255,255,.09);
+  list-style: none;
+}
+
+.project-capabilities li {
+  position: relative;
+  padding-left: .75rem;
+  color: var(--text-secondary);
+  font: 500 clamp(.48rem,.56vw,.62rem)/1.4 var(--font-mono);
+}
+
+.project-capabilities li::before {
+  content: "";
+  position: absolute;
+  top: .48em;
+  left: 0;
+  width: .28rem;
+  height: .28rem;
+  border-radius: 50%;
+  background: var(--cyan);
+  opacity: .7;
+}
+
+.experience-copy > p:not(.current-label) {
+  max-width: 58rem;
+  color: var(--text-secondary);
+  font-size: clamp(.88rem,1.05vw,1rem);
+  line-height: 1.75;
+}
+
+.principle {
+  transition: border-color .55s ease, background-color .55s ease;
+}
+
+.principle.is-visible {
+  border-color: color-mix(in srgb,var(--accent) 24%,var(--border));
+  background: linear-gradient(90deg,rgba(124,92,255,.035),transparent 32%);
+}
+
+@media (min-width: 1101px) and (min-height: 741px) and (prefers-reduced-motion: no-preference) {
+  .projects-story .project-info-stack,
+  .gsap-ready .projects-story .project-info-stack {
+    width: min(42vw,43rem);
+  }
+
+  .projects-story .project-info,
+  .gsap-ready .projects-story .project-info {
+    height: auto;
+    max-height: min(66vh,43rem);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(124,92,255,.5) transparent;
+  }
+
+  .stack-panel {
+    width: clamp(27rem,43vw,38rem);
+    min-height: 48vh;
+  }
+}
+
+@media (max-width: 1100px), (max-height: 740px), (prefers-reduced-motion: reduce) {
+  .hero-role { margin-bottom: 1rem; }
+  .project-capabilities { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .projects-story .project-info,
+  .gsap-ready .projects-story .project-info { clip-path: none !important; }
+  .stack-panel,
+  .gsap-ready .stack-panel { opacity: 1 !important; transform: none !important; }
+}
+
+@media (max-width: 768px) {
+  .hero-role { font-size: .56rem; }
+  .project-capabilities { gap: .25rem .45rem; }
+  .project-capabilities li { font-size: clamp(.43rem,1.5vw,.55rem); }
+  .projects-story .project-background { min-height: 36rem; }
+  .contact-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 430px) {
+  .project-capabilities { grid-template-columns: 1fr; }
+  .projects-story .project-background { min-height: 43rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-grid { transform: none !important; }
+  .project-capabilities,
+  .project-info,
+  .stack-panel,
+  .experience-item { opacity: 1 !important; visibility: visible !important; transform: none !important; clip-path: none !important; }
 }

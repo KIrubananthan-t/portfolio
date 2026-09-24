@@ -7,15 +7,14 @@ document.documentElement.classList.add('js');
   const $ = (selector, context = document) => context.querySelector(selector);
   const $$ = (selector, context = document) => Array.from(context.querySelectorAll(selector));
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const precisePointer = window.matchMedia('(min-width: 769px) and (hover: hover) and (pointer: fine)');
+  const precisePointer = window.matchMedia('(min-width: 1101px) and (hover: hover) and (pointer: fine)');
   const state = {
     gsapAvailable: false,
-    particleController: null,
     cursorController: null,
     matchMediaContexts: []
   };
 
-  function initAccessibility() {
+  function initReducedMotion() {
     const exposeContent = () => {
       $$('.reveal').forEach(element => element.classList.add('is-visible'));
       if ($('#preloader')) $('#preloader').classList.add('is-done');
@@ -26,7 +25,6 @@ document.documentElement.classList.add('js');
       if (!event.matches) return;
       exposeContent();
       document.body.classList.remove('cursor-enabled');
-      if (state.particleController) state.particleController.stop();
       if (state.cursorController) state.cursorController.stop();
     });
   }
@@ -92,7 +90,7 @@ document.documentElement.classList.add('js');
         scrollTrigger: {
           trigger: section,
           start: 'top top',
-          end: '+=360%',
+          end: '+=200%',
           pin,
           scrub: 0.8,
           anticipatePin: 1,
@@ -107,8 +105,8 @@ document.documentElement.classList.add('js');
         .to(detail, { autoAlpha: 0, y: -22, duration: 0.35 }, 0.9)
         .to(primaryLines, { yPercent: -112, duration: 0.55, stagger: 0.045, ease: 'power3.inOut' }, 0.98)
         .to(secondaryLines, { yPercent: 0, duration: 0.62, stagger: 0.05, ease: 'power4.out' }, 1.12)
-        .to('.availability, .hero-kicker', { autoAlpha: 0, y: -16, duration: 0.35 }, 1.2)
-        .to(portrait, { xPercent: 8, autoAlpha: 0.18, scale: 1.08, duration: 0.75 }, 1.65)
+        .to('.availability, .hero-kicker, .hero-role', { autoAlpha: 0, y: -16, duration: 0.35 }, 1.2)
+        .to(portrait, { xPercent: 6, yPercent: 4, autoAlpha: 0.24, scale: 0.96, duration: 0.75 }, 1.65)
         .to(secondaryLines, { yPercent: -112, duration: 0.55, stagger: 0.045, ease: 'power3.inOut' }, 1.7)
         .to(transition, { autoAlpha: 1, duration: 0.2 }, 1.82)
         .to(transitionLines, { yPercent: 0, duration: 0.72, stagger: 0.055, ease: 'power4.out' }, 1.88)
@@ -129,7 +127,7 @@ document.documentElement.classList.add('js');
     const media = gsap.matchMedia();
     state.matchMediaContexts.push(media);
 
-    media.add('(min-width: 769px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)', () => {
+    media.add('(min-width: 1101px) and (min-height: 741px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)', () => {
       const stage = $('#portraitStage');
       const interactive = $('#portraitInteractive');
       const frame = $('#portraitFrame');
@@ -159,12 +157,12 @@ document.documentElement.classList.add('js');
         const normalizedY = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
         moveInteractiveX(normalizedX * 4);
         moveInteractiveY(normalizedY * 3);
-        rotateX(normalizedY * -4);
-        rotateY(normalizedX * 5);
-        moveImageX(normalizedX * -6);
-        moveImageY(normalizedY * -5);
-        moveAuraX(normalizedX * 9);
-        moveAuraY(normalizedY * 7);
+        rotateX(normalizedY * -2.5);
+        rotateY(normalizedX * 3.5);
+        moveImageX(normalizedX * -4);
+        moveImageY(normalizedY * -3.5);
+        moveAuraX(normalizedX * 7);
+        moveAuraY(normalizedY * 5);
         interactive.style.setProperty('--shine-x', `${50 + normalizedX * 24}%`);
         interactive.style.setProperty('--shine-y', `${42 + normalizedY * 22}%`);
         labelSetters.forEach((setter, index) => {
@@ -318,20 +316,18 @@ function initProjectStory() {
       });
 
       gsap.set(backgroundImages[index], {
-        scale: index === 0 ? 1 : 1.045,
+        scale: 1.04,
+        yPercent: index === 0 ? 0 : 1.5,
         force3D: true
       });
 
       gsap.set(infos[index], {
         autoAlpha: index === 0 ? 1 : 0,
-
-        x: index === 0
-          ? 0
-          : 18,
-
         y: index === 0
           ? 0
-          : 12,
+          : 30,
+
+        clipPath: index === 0 ? 'inset(0% 0% 0% 0%)' : 'inset(100% 0% 0% 0%)',
 
         force3D: true
       });
@@ -372,6 +368,38 @@ function initProjectStory() {
     updateActiveProject(0);
 
     /* -------------------------------------------------------
+       ARRIVAL — cards rise up into place the first time the
+       section reaches the viewport, before the pinned
+       crossfade timeline takes over.
+    ------------------------------------------------------- */
+
+    const stageHeading = $('.stage-heading', section);
+    const firstPreviewCards = $$('.project-preview', previewGroups[0]);
+
+    const counterEl = $('.project-counter', section);
+
+    gsap.set(
+      [stageHeading, counterEl, backgrounds[0], infos[0], ...firstPreviewCards].filter(Boolean),
+      { y: 64, autoAlpha: 0 }
+    );
+
+    const arrivalTrigger = ScrollTrigger.create({
+      trigger: section,
+      start: 'top 78%',
+      once: true,
+      onEnter: () => {
+        const arrivalTimeline = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+        arrivalTimeline
+          .to(stageHeading, { y: 0, autoAlpha: 1, duration: 0.8 }, 0)
+          .to(counterEl, { y: 0, autoAlpha: 1, duration: 0.7 }, 0.1)
+          .to(backgrounds[0], { y: 0, autoAlpha: 1, duration: 1 }, 0.05)
+          .to(infos[0], { y: 0, autoAlpha: 1, duration: 0.85 }, 0.22)
+          .to(firstPreviewCards, { y: 0, autoAlpha: 1, duration: 0.7, stagger: 0.12 }, 0.3);
+      }
+    });
+
+    /* -------------------------------------------------------
        MAIN SCROLL TIMELINE
     ------------------------------------------------------- */
 
@@ -394,9 +422,7 @@ function initProjectStory() {
          * doesn't feel too fast.
          */
         end: () =>
-          `+=${cachedPinHeight *
-            (count - 1) *
-            (isMobile ? 0.95 : 0.88)}`,
+          `+=${cachedPinHeight * (count - 1) * 0.72}`,
 
         pin: pin,
 
@@ -407,6 +433,14 @@ function initProjectStory() {
         anticipatePin: 1,
 
         invalidateOnRefresh: true,
+
+        snap: {
+          snapTo: 1 / (count - 1),
+          duration: { min: 0.12, max: 0.24 },
+          delay: 0.08,
+          inertia: false,
+          ease: 'power1.inOut'
+        },
 
         onRefreshInit: cacheProjectSize,
 
@@ -459,22 +493,16 @@ function initProjectStory() {
            CURRENT BACKGROUND
         ================================================= */
 
-        .to(
-          backgroundImages[index],
-          {
-            scale: 1.035,
-            duration: 0.72
-          },
-          segment
-        )
+        .to(backgroundImages[index], { scale: 1, duration: 0.28 }, segment)
 
         .to(
           backgrounds[index],
           {
             autoAlpha: 0,
-            duration: 0.46
+            yPercent: -2.5,
+            duration: 0.38
           },
-          segment + 0.22
+          segment + 0.34
         )
 
         /* ================================================
@@ -493,18 +521,19 @@ function initProjectStory() {
           backgrounds[index + 1],
           {
             autoAlpha: 1,
-            duration: 0.54
+            duration: 0.46
           },
-          segment + 0.16
+          segment + 0.3
         )
 
         .to(
           backgroundImages[index + 1],
           {
             scale: 1,
-            duration: 0.82
+            yPercent: 0,
+            duration: 0.58
           },
-          segment + 0.12
+          segment + 0.26
         )
 
         /* ================================================
@@ -515,16 +544,12 @@ function initProjectStory() {
           infos[index],
           {
             autoAlpha: 0,
-
-            x: isMobile
-              ? -8
-              : -16,
-
-            y: -10,
+            y: -30,
+            clipPath: 'inset(0% 0% 100% 0%)',
 
             duration: 0.30
           },
-          segment + 0.02
+          segment + 0.28
         )
 
         /* ================================================
@@ -535,12 +560,12 @@ function initProjectStory() {
           infos[index + 1],
           {
             autoAlpha: 1,
-            x: 0,
             y: 0,
+            clipPath: 'inset(0% 0% 0% 0%)',
 
-            duration: 0.42
+            duration: 0.46
           },
-          segment + 0.28
+          segment + 0.5
         );
 
       /* ================================================
@@ -636,6 +661,8 @@ function initProjectStory() {
     ------------------------------------------------------- */
 
     return () => {
+      arrivalTrigger.kill();
+
       if (timeline.scrollTrigger) {
         timeline.scrollTrigger.kill();
       }
@@ -721,12 +748,27 @@ function initProjectStory() {
       const viewport = $('.stack-viewport');
       const track = $('#stackTrack');
       const progress = $('#stackProgress');
-      if (!section || !pin || !viewport || !track || !progress) return undefined;
+      const current = $('#stackCurrent');
+      if (!section || !pin || !viewport || !track || !progress || !current) return undefined;
 
       const measureDistance = () => Math.max(0, track.scrollWidth - viewport.clientWidth);
-      const getEndDistance = () => Math.max(window.innerHeight, measureDistance());
+      const getEndDistance = () => Math.max(window.innerHeight * 0.82, measureDistance() * 0.82);
+      const panels = $$('.stack-panel', track);
       gsap.set(track, { x: 0, force3D: true });
       gsap.set(progress, { scaleX: 0, transformOrigin: 'left center' });
+      gsap.set(panels, { autoAlpha: 0.6, scale: 0.965, force3D: true });
+      gsap.set(panels[0], { autoAlpha: 1, scale: 1 });
+
+      let activeIndex = -1;
+      const setActivePanel = index => {
+        if (index === activeIndex) return;
+        activeIndex = index;
+        current.textContent = String(index + 1).padStart(2, '0');
+        panels.forEach((panel, panelIndex) => {
+          gsap.to(panel, { autoAlpha: panelIndex === index ? 1 : 0.62, scale: panelIndex === index ? 1 : 0.965, duration: 0.28, overwrite: true });
+        });
+      };
+      setActivePanel(0);
 
       const timeline = gsap.to(track, {
         x: () => -measureDistance(),
@@ -739,14 +781,18 @@ function initProjectStory() {
           scrub: 0.55,
           anticipatePin: 1,
           invalidateOnRefresh: true,
-          onUpdate: self => gsap.set(progress, { scaleX: self.progress })
+          onUpdate: self => {
+            gsap.set(progress, { scaleX: self.progress });
+            setActivePanel(Math.min(panels.length - 1, Math.round(self.progress * (panels.length - 1))));
+          }
         }
       });
 
       return () => {
         if (timeline.scrollTrigger) timeline.scrollTrigger.kill();
         timeline.kill();
-        gsap.set([track, progress], { clearProps: 'all' });
+        current.textContent = '01';
+        gsap.set([track, progress, ...panels], { clearProps: 'all' });
       };
     };
 
@@ -779,7 +825,7 @@ function initProjectStory() {
         scrollTrigger: {
           trigger: section,
           start: 'top top',
-          end: '+=230%',
+          end: '+=155%',
           pin,
           scrub: 0.75,
           anticipatePin: 1,
@@ -809,9 +855,10 @@ function initProjectStory() {
   }
 
   function initReveals() {
-    const elements = $$('.reveal');
+    const principles = $$('.principle');
+    const elements = $$('.reveal').filter(element => !element.classList.contains('principle'));
     if (!state.gsapAvailable || reducedMotion.matches) {
-      elements.forEach(element => element.classList.add('is-visible'));
+      [...elements, ...principles].forEach(element => element.classList.add('is-visible'));
       return;
     }
 
@@ -822,6 +869,18 @@ function initProjectStory() {
         batch.forEach(element => element.classList.add('is-visible'));
         gsap.fromTo(batch, { autoAlpha: 0, y: 32 }, { autoAlpha: 1, y: 0, duration: 0.75, stagger: 0.08, ease: 'power3.out', overwrite: true });
       }
+    });
+
+    principles.forEach((principle, index) => {
+      gsap.fromTo(principle, { autoAlpha: 0, y: 40 }, {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.72,
+        delay: (index % 2) * 0.06,
+        ease: 'power3.out',
+        onStart: () => principle.classList.add('is-visible'),
+        scrollTrigger: { trigger: principle, start: 'top 86%', once: true }
+      });
     });
 
     $$('.section-heading .text-mask > span, .contact-title .text-mask > span').forEach(line => {
@@ -978,8 +1037,8 @@ function initProjectStory() {
       const moveY = gsap.quickTo(element, 'y', { duration: 0.35, ease: 'power3.out' });
       element.addEventListener('pointermove', event => {
         const bounds = element.getBoundingClientRect();
-        moveX((event.clientX - bounds.left - bounds.width / 2) * 0.12);
-        moveY((event.clientY - bounds.top - bounds.height / 2) * 0.12);
+        moveX(gsap.utils.clamp(-6, 6, (event.clientX - bounds.left - bounds.width / 2) * 0.12));
+        moveY(gsap.utils.clamp(-6, 6, (event.clientY - bounds.top - bounds.height / 2) * 0.12));
       }, { passive: true });
       element.addEventListener('pointerleave', () => { moveX(0); moveY(0); });
     });
@@ -1054,77 +1113,6 @@ function initProjectStory() {
     });
   }
 
-  function initParticles() {
-    const canvas = $('#bgCanvas');
-    if (!canvas || reducedMotion.matches) return;
-    const media = state.gsapAvailable ? gsap.matchMedia() : null;
-    if (media) state.matchMediaContexts.push(media);
-
-    const create = () => {
-      const context = canvas.getContext('2d', { alpha: true });
-      if (!context) return undefined;
-      let width = 0;
-      let height = 0;
-      let particles = [];
-      let frame = 0;
-      let running = false;
-      const ratio = Math.min(devicePixelRatio || 1, 1.5);
-      const particleColor = getComputedStyle(document.documentElement).getPropertyValue('--cyan').trim() || '#38D8FF';
-
-      const resize = () => {
-        width = innerWidth;
-        height = innerHeight;
-        canvas.width = Math.round(width * ratio);
-        canvas.height = Math.round(height * ratio);
-        context.setTransform(ratio, 0, 0, ratio, 0, 0);
-        const count = Math.min(42, Math.max(18, Math.round((width * height) / 34000)));
-        particles = Array.from({ length: count }, () => ({ x: Math.random() * width, y: Math.random() * height, vx: (Math.random() - 0.5) * 0.065, vy: (Math.random() - 0.5) * 0.065, radius: Math.random() * 0.75 + 0.3, alpha: Math.random() * 0.16 + 0.05 }));
-      };
-      const draw = () => {
-        if (!running) return;
-        context.clearRect(0, 0, width, height);
-        particles.forEach(particle => {
-          particle.x += particle.vx;
-          particle.y += particle.vy;
-          if (particle.x < -4) particle.x = width + 4;
-          if (particle.x > width + 4) particle.x = -4;
-          if (particle.y < -4) particle.y = height + 4;
-          if (particle.y > height + 4) particle.y = -4;
-          context.beginPath();
-          context.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-          context.globalAlpha = particle.alpha;
-          context.fillStyle = particleColor;
-          context.fill();
-        });
-        context.globalAlpha = 1;
-        frame = requestAnimationFrame(draw);
-      };
-      const start = () => { if (running || document.hidden) return; running = true; draw(); };
-      const stop = () => { running = false; cancelAnimationFrame(frame); };
-      let resizeFrame = 0;
-      const onResize = () => { cancelAnimationFrame(resizeFrame); resizeFrame = requestAnimationFrame(resize); };
-      const onVisibility = () => document.hidden ? stop() : start();
-      window.addEventListener('resize', onResize, { passive: true });
-      document.addEventListener('visibilitychange', onVisibility);
-      resize();
-      start();
-      state.particleController = { start, stop };
-
-      if (state.gsapAvailable) {
-        gsap.to(canvas, { opacity: 0.1, ease: 'none', scrollTrigger: { trigger: '.hero-story', start: 'top top', end: 'bottom top', scrub: true } });
-      }
-      return () => {
-        stop();
-        window.removeEventListener('resize', onResize);
-        document.removeEventListener('visibilitychange', onVisibility);
-        context.clearRect(0, 0, width, height);
-      };
-    };
-
-    if (media) media.add('(min-width: 1101px) and (min-height: 741px) and (prefers-reduced-motion: no-preference)', create);
-    else if (innerWidth > 1100 && innerHeight > 740) create();
-  }
-
   function initialize() {
     state.gsapAvailable = typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
     if (state.gsapAvailable) {
@@ -1133,7 +1121,7 @@ function initProjectStory() {
       ScrollTrigger.config({ limitCallbacks: true, ignoreMobileResize: true });
     }
 
-    initAccessibility();
+    initReducedMotion();
     initScrollProgress();
     initHeroStory();
     initPortraitInteraction();
@@ -1145,7 +1133,6 @@ function initProjectStory() {
     initCursor();
     initMagnetic();
     initProjectGlow();
-    initParticles();
     initResponsiveRefresh();
     initProjectImageRefresh();
 

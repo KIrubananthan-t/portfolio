@@ -15,6 +15,8 @@
   <meta name="twitter:description" content="Production web and mobile products built across the complete delivery lifecycle.">
   <link rel="canonical" href="https://kirubananthan-t.github.io/portfolio/">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" as="image" href="profile.png" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/projects/task-manager/dashboard.png" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -35,7 +37,6 @@
   </div>
 
   <div class="scroll-progress" aria-hidden="true"><span id="scrollProgress"></span></div>
-  <canvas id="bgCanvas" aria-hidden="true"></canvas>
   <div class="page-grid" aria-hidden="true"></div>
   <div class="noise-overlay" aria-hidden="true"></div>
   <div class="cursor-spotlight" id="cursorSpotlight" aria-hidden="true"></div>
@@ -63,8 +64,9 @@
       <div class="hero-pin">
         <div class="container hero-layout">
           <div class="hero-copy">
-            <div class="availability intro-item"><i aria-hidden="true"></i><span>Available for full-time opportunities</span></div>
+            <div class="availability intro-item"><i aria-hidden="true"></i><span>Open to full-time opportunities</span></div>
             <p class="hero-kicker intro-item"><span>Full-Stack Product Developer</span><i aria-hidden="true"></i><span>Chennai, India</span></p>
+            <p class="hero-role intro-item">Software Engineer — Full-Stack &amp; Backend</p>
 
             <div class="hero-message">
               <h1 class="hero-title hero-title-primary" id="hero-title">
@@ -80,8 +82,8 @@
             </div>
 
             <div class="hero-detail">
-              <p class="hero-summary">I build and ship real-world web and mobile products—from business workflows and SaaS platforms to mobile apps, CRM systems, payments, messaging integrations and production websites.</p>
-              <p class="hero-summary hero-summary-secondary">My work spans PHP, MySQL, JavaScript, Flutter, REST APIs, Meta integrations, automation, security and production deployment.</p>
+              <p class="hero-summary">I build and ship production web and mobile products across backend, frontend, APIs, databases, integrations and deployment.</p>
+              <p class="hero-summary hero-summary-secondary">From SaaS platforms and booking systems to mobile apps, CRM workflows and third-party integrations.</p>
               <div class="hero-actions">
                 <a class="button button-primary magnetic" href="#projects">View my work <span aria-hidden="true">↓</span></a>
                 <a class="button button-secondary magnetic" href="resume.pdf" target="_blank" rel="noopener noreferrer">Download resume <span aria-hidden="true">↗</span></a>
@@ -105,7 +107,7 @@
               <p class="portrait-index mono" aria-hidden="true">PRODUCT ENGINEER / 01</p>
 
               <div class="portrait-frame" id="portraitFrame">
-                <img id="portraitImage" src="profile.png" alt="Kirubananthan T, Full-Stack Product Developer" width="1086" height="1448" fetchpriority="high">
+                <img id="portraitImage" src="profile.png" alt="Kirubananthan T, Full-Stack Product Developer" width="1086" height="1448" fetchpriority="high" decoding="async">
                 <div class="portrait-caption"><span>Kirubananthan T</span><span>Chennai, India</span></div>
               </div>
 
@@ -114,7 +116,7 @@
               <span class="tech-label tech-js"><span class="tech-label-inner">JavaScript</span></span>
               <span class="tech-label tech-flutter"><span class="tech-label-inner">Flutter</span></span>
               <span class="tech-label tech-api"><span class="tech-label-inner">REST API</span></span>
-              <span class="tech-label tech-git"><span class="tech-label-inner">Git</span></span>
+              <span class="tech-label tech-git"><span class="tech-label-inner">TypeScript</span></span>
             </div>
           </div>
         </div>
@@ -153,16 +155,16 @@
           <div class="project-scene" aria-label="Selected projects">
             <div class="project-backgrounds" aria-hidden="true">
               <figure class="project-background is-active" data-project="01">
-                <img class="project-screenshot" src="assets/projects/spotmystudio/dashboard.png" alt="" width="1895" height="865" loading="eager" decoding="async">
+                <img class="project-screenshot" src="assets/projects/task-manager/dashboard.png" alt="" width="1892" height="906" loading="eager" fetchpriority="high" decoding="async">
               </figure>
               <figure class="project-background" data-project="02">
-                <img class="project-screenshot" src="assets/projects/meta-crm/dashboard.png" alt="" width="1080" height="2424" loading="lazy" decoding="async">
+                <img class="project-screenshot" src="assets/projects/spotmystudio/dashboard.png" alt="" width="1895" height="865" loading="lazy" decoding="async">
               </figure>
               <figure class="project-background" data-project="03">
-                <img class="project-screenshot" src="assets/projects/binbux/mobile.png" alt="" width="1080" height="2424" loading="lazy" decoding="async">
+                <img class="project-screenshot" src="assets/projects/meta-crm/dashboard.png" alt="" width="1080" height="2424" loading="lazy" decoding="async">
               </figure>
               <figure class="project-background" data-project="04">
-                <img class="project-screenshot" src="assets/projects/task-manager/dashboard.png" alt="" width="1892" height="906" loading="lazy" decoding="async">
+                <img class="project-screenshot" src="assets/projects/binbux/mobile.png" alt="" width="1080" height="2424" loading="lazy" decoding="async">
               </figure>
               <figure class="project-background" data-project="05">
                 <img class="project-screenshot" src="assets/projects/hr-system/dashboard.png" alt="" width="1887" height="866" loading="lazy" decoding="async">
@@ -171,33 +173,49 @@
 
             <div class="project-info-stack">
               <article class="project-info is-active" data-project="01">
-                <p class="project-info-index">01 / Flagship product</p>
-                <h3>SpotMyStudio</h3>
-                <p class="project-info-type">Production Studio Booking Marketplace</p>
-                <p class="project-info-description">Studio discovery, dynamic pricing, booking, verification, payments and business administration in one production platform.</p>
-                <ul class="project-info-stack-list" aria-label="SpotMyStudio stack">
-                  <li>PHP</li><li>MySQL</li><li>JavaScript</li><li>REST APIs</li><li>Razorpay</li><li>Google Maps</li>
+                <p class="project-info-index">01 / Flagship SaaS product</p>
+                <h3>Zentrow</h3>
+                <p class="project-info-type">Task &amp; Team Management SaaS</p>
+                <p class="project-info-description">A production SaaS platform for organization, project, task and team workflows used by 200+ users.</p>
+                <ul class="project-capabilities" aria-label="Zentrow capabilities">
+                  <li>Organization workspaces</li><li>Teams &amp; invitations</li><li>Owner / Admin / PM / Team Lead / Member permissions</li><li>Projects &amp; task assignment</li><li>Status, priority &amp; due dates</li><li>Scoped task visibility</li><li>Table / Board workflows</li><li>Smart filters</li><li>Task templates &amp; recurring work</li><li>Timers, manual entries &amp; history</li><li>Dashboards, reports &amp; exports</li><li>Secure sessions &amp; CSRF protection</li>
+                </ul>
+                <ul class="project-info-stack-list" aria-label="Zentrow stack">
+                  <li>PHP</li><li>MySQL</li><li>JavaScript</li><li>REST APIs</li><li>RBAC</li>
                 </ul>
                 <div class="project-info-actions">
-                  <a class="project-info-button magnetic" href="https://www.spotmystudio.com/" target="_blank" rel="noopener noreferrer">View Project <span aria-hidden="true">↗</span></a>
+                  <a class="project-info-button magnetic" href="https://zentrow.app/" target="_blank" rel="noopener noreferrer">View Project <span aria-hidden="true">↗</span></a>
                 </div>
               </article>
 
               <article class="project-info" data-project="02">
-                <p class="project-info-index">02 / Technical integration</p>
-                <h3>Meta Lead CRM</h3>
-                <p class="project-info-type">Facebook Lead Ads → CRM → Assignment</p>
-                <p class="project-info-description">Meta business assets connected to lead retrieval, assignment and follow-up workflows through a custom CRM integration.</p>
-                <ul class="project-info-stack-list" aria-label="Meta Lead CRM stack">
-                  <li>PHP</li><li>MySQL</li><li>JavaScript</li><li>Meta Graph API</li><li>OAuth</li>
+                <p class="project-info-index">02 / Production marketplace</p>
+                <h3>SpotMyStudio</h3>
+                <p class="project-info-type">Production Studio Booking Marketplace</p>
+                <p class="project-info-description">A production marketplace combining studio discovery, dynamic pricing, booking, verification, payments and business administration.</p>
+                <ul class="project-info-stack-list" aria-label="SpotMyStudio stack">
+                  <li>PHP</li><li>MySQL</li><li>JavaScript</li><li>REST APIs</li><li>Razorpay</li><li>Google Maps</li>
                 </ul>
+                <div class="project-info-actions"><a class="project-info-button magnetic" href="https://www.spotmystudio.com/" target="_blank" rel="noopener noreferrer">View Project <span aria-hidden="true">↗</span></a></div>
               </article>
 
               <article class="project-info" data-project="03">
-                <p class="project-info-index">03 / Mobile + web product</p>
+                <p class="project-info-index">03 / Lead management product</p>
+                <h3>Zentrow CRM / Meta Lead CRM</h3>
+                <p class="project-info-type">Meta Lead Ads &amp; Follow-up Workflows</p>
+                <p class="project-info-description">A lead-management CRM connecting Facebook and Instagram Meta Lead Ads with lead retrieval, assignment and follow-up workflows.</p>
+                <ul class="project-capabilities" aria-label="Zentrow CRM capabilities"><li>Meta OAuth</li><li>Meta Lead Ads</li><li>Lead retrieval</li><li>Lead assignment</li><li>Follow-up workflows</li><li>Role-based access</li><li>CRM dashboards</li><li>PHP/MySQL backend</li></ul>
+                <ul class="project-info-stack-list" aria-label="Zentrow CRM stack">
+                  <li>PHP</li><li>MySQL</li><li>JavaScript</li><li>Meta Graph API</li><li>OAuth</li><li>REST APIs</li>
+                </ul>
+                <div class="project-info-actions"><a class="project-info-button magnetic" href="https://crm.zentrow.app/" target="_blank" rel="noopener noreferrer">View Project <span aria-hidden="true">↗</span></a></div>
+              </article>
+
+              <article class="project-info" data-project="04">
+                <p class="project-info-index">04 / Mobile + backend product</p>
                 <h3>BinBux</h3>
-                <p class="project-info-type">Smart Scrap Pickup Platform</p>
-                <p class="project-info-description">A Flutter application with PHP and MySQL backend for authenticated scrap-pickup scheduling, validation and operations.</p>
+                <p class="project-info-type">Scrap Pickup Logistics Platform</p>
+                <p class="project-info-description">A Flutter mobile application with a PHP/MySQL REST backend for pickup scheduling, validation and operational workflows.</p>
                 <ul class="project-info-stack-list" aria-label="BinBux stack">
                   <li>Flutter</li><li>Dart</li><li>PHP</li><li>MySQL</li><li>REST APIs</li>
                 </ul>
@@ -207,52 +225,37 @@
                 </div>
               </article>
 
-              <article class="project-info" data-project="04">
-                <p class="project-info-index">04 / SaaS productivity</p>
-                <h3>Zentrow</h3>
-                <p class="project-info-type">Project &amp; Team Workflow Platform</p>
-                <p class="project-info-description">Role-based organization, project, task, communication and reporting workflows currently used by 100+ active users across 5 organizations.</p>
-                <ul class="project-info-stack-list" aria-label="Zentrow stack">
-                  <li>PHP</li><li>MySQL</li><li>JavaScript</li><li>REST APIs</li>
-                </ul>
-                <div class="project-info-actions">
-                  <a class="project-info-button magnetic" href="https://zentrow.app/" target="_blank" rel="noopener noreferrer">View Project <span aria-hidden="true">↗</span></a>
-                </div>
-              </article>
-
               <article class="project-info" data-project="05">
-                <p class="project-info-index">05 / Internal operations</p>
-                <h3>HR Management</h3>
-                <p class="project-info-type">Employee Operations Platform</p>
-                <p class="project-info-description">Internal HR workflows for employees, attendance, leave approvals and secure payslip delivery.</p>
-                <ul class="project-info-stack-list" aria-label="HR system stack">
-                  <li>PHP</li><li>MySQL</li><li>JavaScript</li>
-                </ul>
+                <p class="project-info-index">05 / Additional delivery</p>
+                <h3>Other Production Systems</h3>
+                <p class="project-info-type">Business Applications &amp; Production Support</p>
+                <p class="project-info-description">Production work across HR management systems, business websites, WordPress platforms, API integrations, hosting migrations and production troubleshooting.</p>
+                <ul class="project-info-stack-list" aria-label="Other production systems"><li>HR systems</li><li>WordPress</li><li>API integrations</li><li>Migrations</li><li>Production support</li></ul>
               </article>
             </div>
 
             <div class="project-preview-groups" aria-hidden="true">
               <div class="project-preview-group is-active" data-project="01">
-                <figure class="project-preview"><img src="assets/projects/meta-crm/dashboard.png" alt="" width="1080" height="2424"><figcaption><span>02</span><strong>Meta Lead CRM</strong></figcaption></figure>
-                <figure class="project-preview"><img src="assets/projects/binbux/mobile.png" alt="" width="1080" height="2424"><figcaption><span>03</span><strong>BinBux</strong></figcaption></figure>
-                <figure class="project-preview"><img src="assets/projects/task-manager/dashboard.png" alt="" width="1892" height="906"><figcaption><span>04</span><strong>Zentrow</strong></figcaption></figure>
+                <figure class="project-preview"><img src="assets/projects/spotmystudio/dashboard.png" alt="" width="1895" height="865" loading="lazy" decoding="async"><figcaption><span>02</span><strong>SpotMyStudio</strong></figcaption></figure>
+                <figure class="project-preview"><img src="assets/projects/meta-crm/dashboard.png" alt="" width="1080" height="2424" loading="lazy" decoding="async"><figcaption><span>03</span><strong>Zentrow CRM</strong></figcaption></figure>
+                <figure class="project-preview"><img src="assets/projects/binbux/mobile.png" alt="" width="1080" height="2424" loading="lazy" decoding="async"><figcaption><span>04</span><strong>BinBux</strong></figcaption></figure>
               </div>
               <div class="project-preview-group" data-project="02">
-                <figure class="project-preview"><img src="assets/projects/binbux/mobile.png" alt="" width="1080" height="2424"><figcaption><span>03</span><strong>BinBux</strong></figcaption></figure>
-                <figure class="project-preview"><img src="assets/projects/task-manager/dashboard.png" alt="" width="1892" height="906"><figcaption><span>04</span><strong>Zentrow</strong></figcaption></figure>
-                <figure class="project-preview"><img src="assets/projects/hr-system/dashboard.png" alt="" width="1887" height="866"><figcaption><span>05</span><strong>HR Management</strong></figcaption></figure>
+                <figure class="project-preview"><img src="assets/projects/meta-crm/dashboard.png" alt="" width="1080" height="2424" loading="lazy" decoding="async"><figcaption><span>03</span><strong>Zentrow CRM</strong></figcaption></figure>
+                <figure class="project-preview"><img src="assets/projects/binbux/mobile.png" alt="" width="1080" height="2424" loading="lazy" decoding="async"><figcaption><span>04</span><strong>BinBux</strong></figcaption></figure>
+                <figure class="project-preview"><img src="assets/projects/hr-system/dashboard.png" alt="" width="1887" height="866" loading="lazy" decoding="async"><figcaption><span>05</span><strong>Other systems</strong></figcaption></figure>
               </div>
               <div class="project-preview-group" data-project="03">
-                <figure class="project-preview"><img src="assets/projects/task-manager/dashboard.png" alt="" width="1892" height="906"><figcaption><span>04</span><strong>Zentrow</strong></figcaption></figure>
-                <figure class="project-preview"><img src="assets/projects/hr-system/dashboard.png" alt="" width="1887" height="866"><figcaption><span>05</span><strong>HR Management</strong></figcaption></figure>
+                <figure class="project-preview"><img src="assets/projects/binbux/mobile.png" alt="" width="1080" height="2424" loading="lazy" decoding="async"><figcaption><span>04</span><strong>BinBux</strong></figcaption></figure>
+                <figure class="project-preview"><img src="assets/projects/hr-system/dashboard.png" alt="" width="1887" height="866" loading="lazy" decoding="async"><figcaption><span>05</span><strong>Other systems</strong></figcaption></figure>
               </div>
               <div class="project-preview-group" data-project="04">
-                <figure class="project-preview"><img src="assets/projects/hr-system/dashboard.png" alt="" width="1887" height="866"><figcaption><span>05</span><strong>HR Management</strong></figcaption></figure>
+                <figure class="project-preview"><img src="assets/projects/hr-system/dashboard.png" alt="" width="1887" height="866" loading="lazy" decoding="async"><figcaption><span>05</span><strong>Other systems</strong></figcaption></figure>
               </div>
               <div class="project-preview-group" data-project="05">
-                <figure class="project-preview"><img src="assets/projects/task-manager/dashboard.png" alt="" width="1892" height="906"><figcaption><span>04</span><strong>Zentrow</strong></figcaption></figure>
-                <figure class="project-preview"><img src="assets/projects/binbux/mobile.png" alt="" width="1080" height="2424"><figcaption><span>03</span><strong>BinBux</strong></figcaption></figure>
-                <figure class="project-preview"><img src="assets/projects/meta-crm/dashboard.png" alt="" width="1080" height="2424"><figcaption><span>02</span><strong>Meta Lead CRM</strong></figcaption></figure>
+                <figure class="project-preview"><img src="assets/projects/task-manager/dashboard.png" alt="" width="1892" height="906" loading="lazy" decoding="async"><figcaption><span>01</span><strong>Zentrow</strong></figcaption></figure>
+                <figure class="project-preview"><img src="assets/projects/spotmystudio/dashboard.png" alt="" width="1895" height="865" loading="lazy" decoding="async"><figcaption><span>02</span><strong>SpotMyStudio</strong></figcaption></figure>
+                <figure class="project-preview"><img src="assets/projects/meta-crm/dashboard.png" alt="" width="1080" height="2424" loading="lazy" decoding="async"><figcaption><span>03</span><strong>Zentrow CRM</strong></figcaption></figure>
               </div>
             </div>
           </div>
@@ -315,16 +318,15 @@
         </div>
         <div class="stack-viewport">
           <div class="stack-track" id="stackTrack">
-            <article class="stack-panel"><span class="mono">01</span><h3>Backend</h3><p>PHP · MySQL · REST APIs · Authentication · Sessions · Database Design · Business Logic</p><small>Reliable server-side foundations for real operational workflows.</small></article>
-            <article class="stack-panel"><span class="mono">02</span><h3>Frontend</h3><p>JavaScript ES6+ · HTML5 · CSS3 · jQuery · Bootstrap</p><small>Responsive, usable interfaces connected to working product logic.</small></article>
-            <article class="stack-panel"><span class="mono">03</span><h3>Mobile</h3><p>Flutter · Dart · Android Development</p><small>Mobile product delivery with API-driven application flows.</small></article>
-            <article class="stack-panel"><span class="mono">04</span><h3>APIs &amp; Integrations</h3><p>Meta Graph API · OAuth · Razorpay · Google Maps API · SMS Integrations · PHPMailer · SMTP</p><small>Third-party services integrated into complete business journeys.</small></article>
-            <article class="stack-panel"><span class="mono">05</span><h3>Security &amp; Architecture</h3><p>RBAC · OTP · CSRF · Sessions · Prepared Statements · Permission Systems · Validation · Transaction-Safe Workflows</p><small>Practical controls designed into the product architecture.</small></article>
-            <article class="stack-panel"><span class="mono">06</span><h3>DevOps &amp; Delivery</h3><p>Git · Postman · VS Code · Android Studio · XAMPP · cPanel · VPS · CyberPanel · Hostinger · Cloudways · SSL · DNS</p><small>From local development through hosting, deployment and production support.</small></article>
-            <article class="stack-panel"><span class="mono">07</span><h3>WordPress</h3><p>WordPress · Elementor · Elementor Pro · WooCommerce · Custom CSS · Website Migration · Plugin Troubleshooting</p><small>A secondary delivery capability for production business websites.</small></article>
+            <article class="stack-panel"><span class="mono">01</span><h3>Backend</h3><p>PHP · MySQL · REST APIs · Authentication · RBAC · Sessions · Database Design · Business Logic</p><small>Secure server-side foundations for production workflows.</small></article>
+            <article class="stack-panel"><span class="mono">02</span><h3>Frontend</h3><p>JavaScript ES6+ · TypeScript · HTML5 · CSS3 · Bootstrap · jQuery</p><small>Responsive interfaces connected to complete product logic.</small></article>
+            <article class="stack-panel"><span class="mono">03</span><h3>Mobile</h3><p>Flutter · Dart · Android</p><small>API-driven mobile products, testing and deployment support.</small></article>
+            <article class="stack-panel"><span class="mono">04</span><h3>Integrations</h3><p>Meta Graph API · OAuth · Razorpay · Google Maps · SMTP · PHPMailer · Business messaging APIs</p><small>Third-party services integrated into complete business journeys.</small></article>
+            <article class="stack-panel"><span class="mono">05</span><h3>Production Delivery</h3><p>Git · GitHub · Postman · VPS · Linux hosting · cPanel · CyberPanel · Hostinger · SSL · DNS · Deployment · Migration · Production debugging</p><small>Delivery from local development through production support.</small></article>
+            <article class="stack-panel"><span class="mono">06</span><h3>Working Exposure</h3><p>Node.js · Modern TypeScript tooling</p><small>Practical exposure alongside a PHP/MySQL product engineering core.</small></article>
           </div>
         </div>
-        <div class="stack-progress container" aria-hidden="true"><span>01</span><i><b id="stackProgress"></b></i><span>07</span></div>
+        <div class="stack-progress container" aria-hidden="true"><span id="stackCurrent">01</span><i><b id="stackProgress"></b></i><span>06</span></div>
       </div>
     </section>
 
@@ -336,15 +338,8 @@
           <p>Production website delivery supports my product engineering work—it does not define its limits.</p>
         </header>
 
-        <div class="metric-strip reveal" aria-label="Supported portfolio metrics">
-          <article><strong>10+</strong><span>Production WordPress websites</span></article>
-          <article><strong>50+</strong><span>Pages in largest corporate website</span></article>
-          <article><strong>100+</strong><span>BinBux downloads</span></article>
-          <article><strong>15+</strong><span>HR system users</span></article>
-        </div>
-
         <div class="delivery-layout">
-          <article class="delivery-copy reveal"><p>I have designed, developed, migrated and maintained more than 10 WordPress websites for real businesses.</p><p>My experience includes a large 50+ page corporate website requiring structured navigation, reusable design systems, responsive layouts and production deployment.</p></article>
+          <article class="delivery-copy reveal"><p>I design, develop, migrate and maintain production business websites and WordPress platforms.</p><p>This work includes structured navigation, reusable design systems, responsive layouts, integrations and production deployment.</p></article>
           <div class="delivery-capabilities reveal">
             <span>WordPress</span><span>Elementor</span><span>Elementor Pro</span><span>Responsive Design</span><span>Custom CSS</span><span>Corporate Websites</span><span>WooCommerce</span><span>Reusable Headers / Footers</span><span>Plugin Troubleshooting</span><span>Website Migration</span><span>Hosting Migration</span><span>SSL</span><span>DNS</span><span>Performance Troubleshooting</span><span>WordPress Recovery</span><span>Plugin / Core Compatibility</span>
           </div>
@@ -357,22 +352,20 @@
       <div class="experience-pin">
         <div class="container experience-stage">
           <header class="experience-heading"><p class="eyebrow">05 / Experience</p><h2 id="experience-title">Building in <span>production.</span></h2></header>
-          <div class="experience-date" aria-hidden="true"><div class="date-window"><div class="date-reel" id="experienceDateReel"><span>Current</span><span>2025</span><span>2024</span></div></div></div>
+          <div class="experience-date" aria-hidden="true"><div class="date-window"><div class="date-reel" id="experienceDateReel"><span>2025—Now</span><span>2025</span><span>2023—24</span></div></div></div>
           <div class="experience-rail" aria-hidden="true"><i><b id="experienceProgress"></b></i><span id="experienceDot"></span></div>
           <div class="experience-slides">
             <article class="experience-item is-first">
-              <div class="experience-period"><span>Current</span><small>Chennai, India</small></div>
-              <div class="experience-copy"><p class="current-label">Current role</p><h3>Full-Stack Developer</h3><h4>Pandssa Web Media</h4><ul>
-                <li>Developing custom PHP/MySQL business applications and production web platforms.</li><li>Building and maintaining REST APIs and role-based business workflows.</li><li>Integrating payments, SMS, PHPMailer / SMTP and application notifications.</li><li>Developing external API integrations, including the Meta/Facebook Lead CRM workflow.</li><li>Delivering WordPress websites and resolving production issues.</li><li>Handling deployment, hosting migration, SSL, DNS, server and website maintenance.</li>
-              </ul><div class="experience-tags"><span>PHP</span><span>MySQL</span><span>REST APIs</span><span>Integrations</span><span>Production Delivery</span></div></div>
+              <div class="experience-period"><span>April 2025 — Present</span><small>Chennai, India</small></div>
+              <div class="experience-copy"><p class="current-label">Current role</p><h3>Full-Stack Web Developer</h3><h4>Pandssa Web Media</h4><p>Develop and maintain business websites, WordPress solutions, PHP/MySQL applications, CRM systems, REST API integrations, hosting deployments, migrations and mobile-connected applications for business clients.</p><div class="experience-tags"><span>PHP</span><span>MySQL</span><span>REST APIs</span><span>Integrations</span><span>Production Delivery</span></div></div>
             </article>
             <article class="experience-item">
-              <div class="experience-period"><span>Jan — Mar 2025</span></div>
-              <div class="experience-copy"><h3>PHP Developer Intern</h3><h4>Qadiri IT</h4><ul><li>Built CRUD applications in core PHP with MySQL-backed data handling.</li><li>Worked on business logic, session management and server-side validation.</li><li>Supported daily development tasks and database operations in live workflows.</li></ul><div class="experience-tags"><span>PHP</span><span>MySQL</span><span>CRUD</span></div></div>
+              <div class="experience-period"><span>January 2025 — March 2025</span></div>
+              <div class="experience-copy"><h3>PHP Developer Intern</h3><h4>Qadiri IT</h4><p>Developed PHP/MySQL CRUD modules, database schemas, form validation and secure session-based workflows. Worked on backend debugging and improving application reliability.</p><div class="experience-tags"><span>PHP</span><span>MySQL</span><span>CRUD</span></div></div>
             </article>
             <article class="experience-item">
-              <div class="experience-period"><span>Aug 2024 — Jan 2025</span></div>
-              <div class="experience-copy"><h3>Flutter Developer Intern</h3><h4>Redcaso Solutions</h4><ul><li>Developed Flutter UI screens and assisted with app-side API integration.</li><li>Improved form validation, testing and bug resolution for mobile flows.</li><li>Strengthened practical understanding of app delivery and frontend quality.</li></ul><div class="experience-tags"><span>Flutter</span><span>Dart</span><span>REST API</span></div></div>
+              <div class="experience-period"><span>August 2023 — December 2024</span></div>
+              <div class="experience-copy"><h3>Flutter Developer</h3><h4>Redcaso Solutions</h4><p>Developed responsive Flutter apps, integrated REST APIs, performed Android debugging/testing, improved performance and supported deployment workflows.</p><div class="experience-tags"><span>Flutter</span><span>Dart</span><span>REST API</span></div></div>
             </article>
           </div>
         </div>
@@ -391,8 +384,8 @@
     <!-- 08 / CONTACT -->
     <section class="section contact-section" id="contact" aria-labelledby="contact-title">
       <div class="container">
-        <p class="contact-kicker reveal">Building products,<br><span>not just pages.</span></p>
-        <div class="contact-intro reveal"><p>I’m interested in Full-Stack Development opportunities where I can work on real products, integrations, automation and business systems.</p><p>I’m comfortable taking ownership across backend, frontend, APIs, databases, mobile applications and production deployment.</p></div>
+        <p class="contact-kicker reveal">Open to full-time<br><span>opportunities.</span></p>
+        <div class="contact-intro reveal"><p>I’m interested in full-stack, backend and product engineering roles where I can work on production applications, APIs, integrations, business workflows and scalable software systems.</p><p>Based in Chennai, Tamil Nadu, India. Open to relocation to Dubai / Abu Dhabi, UAE.</p></div>
         <h2 class="contact-title reveal" id="contact-title"><span class="text-mask"><span>Let’s build</span></span><span class="text-mask"><span>something</span></span><span class="text-mask"><span class="title-outline">useful.</span></span></h2>
         <div class="contact-grid reveal">
           <a class="contact-link magnetic" href="mailto:kirubathangam232@gmail.com"><span>Email</span><strong>kirubathangam232@gmail.com</strong><i aria-hidden="true">↗</i></a>
@@ -401,6 +394,7 @@
           <a class="contact-link magnetic" href="resume.pdf" target="_blank" rel="noopener noreferrer"><span>Resume</span><strong>View PDF</strong><i aria-hidden="true">↗</i></a>
           <a class="contact-link magnetic" href="tel:+918220772090"><span>Phone</span><strong>+91 8220772090</strong><i aria-hidden="true">↗</i></a>
           <div class="contact-link static"><span>Location</span><strong>Chennai, Tamil Nadu, India</strong></div>
+          <div class="contact-link static"><span>Relocation</span><strong>Dubai / Abu Dhabi, UAE</strong></div>
         </div>
       </div>
     </section>
