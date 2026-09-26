@@ -7,14 +7,16 @@ document.documentElement.classList.add('js');
   const $ = (selector, context = document) => context.querySelector(selector);
   const $$ = (selector, context = document) => Array.from(context.querySelectorAll(selector));
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const precisePointer = window.matchMedia('(min-width: 1101px) and (hover: hover) and (pointer: fine)');
+  const precisePointer = window.matchMedia('(min-width: 769px) and (hover: hover) and (pointer: fine)');
   const state = {
     gsapAvailable: false,
+    heroIntro: null,
+    particleController: null,
     cursorController: null,
     matchMediaContexts: []
   };
 
-  function initReducedMotion() {
+  function initAccessibility() {
     const exposeContent = () => {
       $$('.reveal').forEach(element => element.classList.add('is-visible'));
       if ($('#preloader')) $('#preloader').classList.add('is-done');
@@ -25,7 +27,12 @@ document.documentElement.classList.add('js');
       if (!event.matches) return;
       exposeContent();
       document.body.classList.remove('cursor-enabled');
+      if (state.particleController) state.particleController.stop();
       if (state.cursorController) state.cursorController.stop();
+      if (state.heroIntro) {
+        state.heroIntro.kill();
+        gsap.set('.hero-title-primary .text-mask > span', { clearProps: 'transform,opacity,visibility' });
+      }
     });
   }
 
@@ -46,7 +53,7 @@ document.documentElement.classList.add('js');
     }
 
     if (returning) document.documentElement.classList.add('returning');
-    const delay = returning ? 220 : 880;
+    const delay = returning ? 140 : 520;
     window.setTimeout(() => {
       preloader.classList.add('is-done');
       onComplete();
@@ -54,33 +61,217 @@ document.documentElement.classList.add('js');
   }
 
   function initHeroIntro() {
-    if (!state.gsapAvailable || reducedMotion.matches) return;
+    if (!state.gsapAvailable || reducedMotion.matches || window.scrollY > 10) return;
     const intro = gsap.timeline({ defaults: { ease: 'power4.out' } });
+    state.heroIntro = intro;
     intro
       .from('.intro-item:not(.portrait-stage)', { autoAlpha: 0, y: 24, duration: 0.8, stagger: 0.1 })
-      .from('.portrait-stage', { autoAlpha: 0, duration: 0.8 }, 0)
       .from('.hero-title-primary .text-mask > span', { yPercent: 110, duration: 0.95, stagger: 0.07 }, 0.08);
   }
 
-  function initHeroStory() {
+  function initHeroCinematicFrames() {
+    const canvas = $('#heroCinematicCanvas');
+    const section = $('.hero-story');
+    const pin = $('.hero-pin');
+    if (!canvas || !section || !pin) return;
     if (!state.gsapAvailable) return;
+
+    // The hero was re-cut from a 10s/24fps clip into a 12fps still-frame sequence
+    // (assets/video/frames/frame_001.webp … frame_120.webp). Scrubbing draws a
+    // frame straight onto <canvas> — there is no video decoder involved at all,
+    // so every scroll position is exact and instant in every browser.
+    // The source clip runs ~8s at 12fps (96 frames), but the last ~10 frames zoom into
+    // an in-shot mockup panel whose placeholder copy becomes legible — those frames were
+    // trimmed from the sequence entirely. We scrub across the remaining 86 clean frames,
+    // then hold the final one while the HTML "Selected Work" transition (0.90–1.0) plays.
+    const FRAME_COUNT = 86;
+    const framePath = index => `assets/video/frames/frame_${String(index + 1).padStart(3, '0')}.avif`;
+
     const media = gsap.matchMedia();
     state.matchMediaContexts.push(media);
-
-    media.add('(min-width: 1101px) and (min-height: 741px) and (prefers-reduced-motion: no-preference)', () => {
-      const section = $('.hero-story');
-      const pin = $('.hero-pin');
+    media.add('(min-width: 769px) and (min-height: 601px) and (min-aspect-ratio: 4/3) and (prefers-reduced-motion: no-preference)', () => {
       const primaryLines = $$('.hero-title-primary .text-mask > span');
       const secondary = $('.hero-title-secondary');
       const secondaryLines = $$('.hero-title-secondary .text-mask > span');
       const transition = $('.hero-transition');
       const transitionLines = $$('.hero-transition .text-mask > span');
-      const detail = $('.hero-detail');
-      const portrait = $('.portrait-stage');
-      const labels = $$('.tech-label');
-      if (!section || !pin || !secondary || !transition || !detail || !portrait) return undefined;
+      const summaries = $$('.hero-summary');
+      const overlay = $('.hero-cinematic-overlay');
+      const mediaLayer = $('.hero-cinematic');
+      if (!secondary || !transition || !overlay || !mediaLayer) return undefined;
 
-      gsap.set(detail, { autoAlpha: 0, y: 28 });
+      const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
+      if (!ctx) return undefined;
+      const images = new Array(FRAME_COUNT);
+      const playhead = { frame: 0 };
+      let disposed = false;
+      let ready = false;
+      let drawnFrame = -1;
+      const loading = new Array(FRAME_COUNT);
+      let backgroundCursor = 0;
+      let backgroundTimer = 0;
+      let resizeRaf = 0;
+      let resizeObserver;
+      const DPR_LIMIT = 1.5;
+      const FOCAL_X = 0.50;
+      const FOCAL_Y = 0.50;
+
+      const drawCover = img => {
+        const width = Math.max(1, canvas.clientWidth);
+        const height = Math.max(1, canvas.clientHeight);
+        const scale = Math.max(width / img.naturalWidth, height / img.naturalHeight);
+        const drawWidth = img.naturalWidth * scale;
+        const drawHeight = img.naturalHeight * scale;
+        const x = (width - drawWidth) * FOCAL_X;
+        const y = (height - drawHeight) * FOCAL_Y;
+
+        ctx.fillStyle = '#07090D';
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(img, x, y, drawWidth, drawHeight);
+      };
+
+      const drawFrame = index => {
+        if (index === drawnFrame) return true;
+        const img = images[index];
+        if (!img || !img.complete || !img.naturalWidth) return false;
+        drawCover(img);
+        drawnFrame = index;
+        return true;
+      };
+
+      // If the exact target frame hasn't decoded yet, show the closest frame that
+      // HAS loaded instead of leaving the canvas blank — scrubbing never flashes empty.
+      const nearestLoadedFrame = target => {
+        for (let offset = 0; offset <= FRAME_COUNT; offset++) {
+          const up = target + offset;
+          const down = target - offset;
+          if (up < FRAME_COUNT && images[up]?.complete && images[up].naturalWidth) return up;
+          if (down >= 0 && images[down]?.complete && images[down].naturalWidth) return down;
+        }
+        return -1;
+      };
+
+      const loadFrame = index => {
+        index = Math.max(0, Math.min(FRAME_COUNT - 1, index));
+        if (images[index]?.complete && images[index].naturalWidth) return Promise.resolve(images[index]);
+        if (loading[index]) return loading[index];
+
+        loading[index] = new Promise((resolve, reject) => {
+          const img = images[index] || new Image();
+          img.decoding = 'async';
+          if ('fetchPriority' in img) img.fetchPriority = index < 8 ? 'high' : 'auto';
+          img.onload = () => {
+            images[index] = img;
+            loading[index] = null;
+            if (index === 0) {
+              resizeCanvas();
+              drawFrame(0);
+              markReady();
+            } else if (Math.abs(index - playhead.frame) <= 1) {
+              applyPlayhead();
+            }
+            resolve(img);
+          };
+          img.onerror = error => {
+            loading[index] = null;
+            reject(error);
+          };
+          img.src = framePath(index);
+          images[index] = img;
+        });
+
+        return loading[index];
+      };
+
+      const applyPlayhead = () => {
+        if (disposed) return;
+        const target = Math.min(FRAME_COUNT - 1, Math.max(0, Math.round(playhead.frame)));
+        if (!drawFrame(target)) {
+          const fallback = nearestLoadedFrame(target);
+          if (fallback >= 0) drawFrame(fallback);
+          loadFrame(target).catch(() => {});
+        }
+
+        // Keep nearby frames decoded so reversing direction stays smooth.
+        [-3, -2, -1, 1, 2, 3].forEach(offset => {
+          const neighbor = target + offset;
+          if (neighbor >= 0 && neighbor < FRAME_COUNT) loadFrame(neighbor).catch(() => {});
+        });
+      };
+
+      const markReady = () => {
+        if (ready || disposed) return;
+        ready = true;
+        mediaLayer.classList.add('is-ready');
+      };
+
+      const resizeCanvas = () => {
+        resizeRaf = 0;
+        if (disposed) return;
+        const width = Math.max(1, canvas.clientWidth);
+        const height = Math.max(1, canvas.clientHeight);
+        const dpr = Math.min(window.devicePixelRatio || 1, DPR_LIMIT);
+        const targetWidth = Math.round(width * dpr);
+        const targetHeight = Math.round(height * dpr);
+
+        if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
+          canvas.width = targetWidth;
+          canvas.height = targetHeight;
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+        }
+
+        drawnFrame = -1;
+        applyPlayhead();
+      };
+
+      const scheduleResize = () => {
+        if (disposed || resizeRaf) return;
+        resizeRaf = requestAnimationFrame(resizeCanvas);
+      };
+
+      const preloadBackground = () => {
+        if (disposed || backgroundCursor >= FRAME_COUNT) return;
+        const batch = [];
+        let added = 0;
+        while (backgroundCursor < FRAME_COUNT && added < 10) {
+          const index = backgroundCursor++;
+          if (images[index]?.complete && images[index].naturalWidth) continue;
+          batch.push(loadFrame(index).catch(() => null));
+          added += 1;
+        }
+
+        Promise.allSettled(batch).finally(() => {
+          if (disposed || backgroundCursor >= FRAME_COUNT) return;
+          if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(preloadBackground, { timeout: 280 });
+          } else {
+            backgroundTimer = window.setTimeout(preloadBackground, 48);
+          }
+        });
+      };
+
+      const primeFrames = () => {
+        // First viewport motion gets priority. Sparse anchors across the sequence
+        // make fast scroll jumps graceful while the remaining frames fill in idle time.
+        const priority = new Set([0]);
+        for (let index = 1; index < Math.min(14, FRAME_COUNT); index += 1) priority.add(index);
+        for (let index = 16; index < FRAME_COUNT; index += 8) priority.add(index);
+        priority.add(FRAME_COUNT - 1);
+
+        Promise.allSettled(Array.from(priority, index => loadFrame(index).catch(() => null)))
+          .finally(() => {
+            if ('requestIdleCallback' in window) {
+              window.requestIdleCallback(preloadBackground, { timeout: 350 });
+            } else {
+              backgroundTimer = window.setTimeout(preloadBackground, 80);
+            }
+          });
+      };
+
+      section.classList.add('cinematic-active');
+      gsap.set(summaries, { autoAlpha: 0, y: 16 });
       gsap.set(secondary, { autoAlpha: 1, visibility: 'visible' });
       gsap.set(secondaryLines, { yPercent: 112 });
       gsap.set(transition, { autoAlpha: 0, visibility: 'visible' });
@@ -90,204 +281,165 @@ document.documentElement.classList.add('js');
         scrollTrigger: {
           trigger: section,
           start: 'top top',
-          end: '+=200%',
+          end: '+=220%',
           pin,
-          scrub: 0.8,
+          scrub: 0.25,
           anticipatePin: 1,
-          invalidateOnRefresh: true
+          invalidateOnRefresh: true,
+          onRefresh: applyPlayhead
         }
       });
-
       timeline
-        .to(detail, { autoAlpha: 1, y: 0, duration: 0.55, ease: 'power3.out' }, 0.05)
-        .to(labels, { y: index => index % 2 ? -10 : 9, x: index => index % 3 ? 4 : -5, stagger: 0.035, duration: 0.55 }, 0.25)
-        .to(portrait, { scale: 1.055, duration: 0.65, ease: 'power2.inOut' }, 0.48)
-        .to(detail, { autoAlpha: 0, y: -22, duration: 0.35 }, 0.9)
-        .to(primaryLines, { yPercent: -112, duration: 0.55, stagger: 0.045, ease: 'power3.inOut' }, 0.98)
-        .to(secondaryLines, { yPercent: 0, duration: 0.62, stagger: 0.05, ease: 'power4.out' }, 1.12)
-        .to('.availability, .hero-kicker, .hero-role', { autoAlpha: 0, y: -16, duration: 0.35 }, 1.2)
-        .to(portrait, { xPercent: 6, yPercent: 4, autoAlpha: 0.24, scale: 0.96, duration: 0.75 }, 1.65)
-        .to(secondaryLines, { yPercent: -112, duration: 0.55, stagger: 0.045, ease: 'power3.inOut' }, 1.7)
-        .to(transition, { autoAlpha: 1, duration: 0.2 }, 1.82)
-        .to(transitionLines, { yPercent: 0, duration: 0.72, stagger: 0.055, ease: 'power4.out' }, 1.88)
-        .to('.hero-scroll', { autoAlpha: 0, duration: 0.25 }, 2.05)
-        .to(transitionLines, { yPercent: -18, scale: 0.97, duration: 0.65, ease: 'power2.inOut' }, 2.55);
+        .to(playhead, { frame: FRAME_COUNT - 1, duration: 0.90, ease: 'none', onUpdate: applyPlayhead }, 0)
+        .to(summaries, { autoAlpha: 1, y: 0, duration: 0.12, stagger: 0.02 }, 0.25)
+        .to(summaries, { autoAlpha: 0, y: -12, duration: 0.10 }, 0.48)
+        .to(primaryLines, { yPercent: -112, duration: 0.14, stagger: 0.01, ease: 'power2.inOut' }, 0.48)
+        .to(secondaryLines, { yPercent: 0, duration: 0.16, stagger: 0.01, ease: 'power3.out' }, 0.50)
+        .to('.availability, .hero-kicker', { autoAlpha: 0, y: -12, duration: 0.08 }, 0.75)
+        .to(secondaryLines, { yPercent: -112, duration: 0.10, stagger: 0.008 }, 0.88)
+        .to(overlay, { opacity: 1, duration: 0.10 }, 0.90)
+        .to(canvas, { scale: 1.02, duration: 0.10, ease: 'none' }, 0.90)
+        .to(transition, { autoAlpha: 1, duration: 0.04 }, 0.92)
+        .to(transitionLines, { yPercent: 0, duration: 0.08, stagger: 0.005 }, 0.92)
+        .to('.hero-scroll', { autoAlpha: 0, duration: 0.06 }, 0.92);
+
+      if ('ResizeObserver' in window) {
+        resizeObserver = new ResizeObserver(scheduleResize);
+        resizeObserver.observe(pin);
+      } else {
+        window.addEventListener('resize', scheduleResize, { passive: true });
+      }
+
+      resizeCanvas();
+      primeFrames();
+      ScrollTrigger.refresh();
 
       return () => {
+        disposed = true;
+        cancelAnimationFrame(resizeRaf);
+        clearTimeout(backgroundTimer);
+        if (resizeObserver) resizeObserver.disconnect();
+        else window.removeEventListener('resize', scheduleResize);
         timeline.kill();
-        gsap.set([detail, secondary, transition, portrait, labels, primaryLines, secondaryLines, transitionLines], { clearProps: 'all' });
-      };
-    });
-
-
-  }
-
-  function initPortraitInteraction() {
-    if (!state.gsapAvailable) return;
-    const media = gsap.matchMedia();
-    state.matchMediaContexts.push(media);
-
-    media.add('(min-width: 1101px) and (min-height: 741px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)', () => {
-      const stage = $('#portraitStage');
-      const interactive = $('#portraitInteractive');
-      const frame = $('#portraitFrame');
-      const image = $('#portraitImage');
-      const aura = $('#portraitAura');
-      const labelInners = $$('.tech-label-inner', interactive);
-      if (!stage || !interactive || !frame || !image || !aura) return undefined;
-
-      let bounds = null;
-      const moveInteractiveX = gsap.quickTo(interactive, 'x', { duration: 0.55, ease: 'power3.out' });
-      const moveInteractiveY = gsap.quickTo(interactive, 'y', { duration: 0.55, ease: 'power3.out' });
-      const rotateX = gsap.quickTo(interactive, 'rotationX', { duration: 0.65, ease: 'power3.out' });
-      const rotateY = gsap.quickTo(interactive, 'rotationY', { duration: 0.65, ease: 'power3.out' });
-      const moveImageX = gsap.quickTo(image, 'x', { duration: 0.7, ease: 'power3.out' });
-      const moveImageY = gsap.quickTo(image, 'y', { duration: 0.7, ease: 'power3.out' });
-      const moveAuraX = gsap.quickTo(aura, 'x', { duration: 0.9, ease: 'power3.out' });
-      const moveAuraY = gsap.quickTo(aura, 'y', { duration: 0.9, ease: 'power3.out' });
-      const labelSetters = labelInners.map((label, index) => ({
-        x: gsap.quickTo(label, 'x', { duration: 0.6 + index * 0.035, ease: 'power3.out' }),
-        y: gsap.quickTo(label, 'y', { duration: 0.6 + index * 0.035, ease: 'power3.out' })
-      }));
-
-      const onEnter = () => { bounds = stage.getBoundingClientRect(); };
-      const onMove = event => {
-        if (!bounds) bounds = stage.getBoundingClientRect();
-        const normalizedX = ((event.clientX - bounds.left) / bounds.width - 0.5) * 2;
-        const normalizedY = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
-        moveInteractiveX(normalizedX * 4);
-        moveInteractiveY(normalizedY * 3);
-        rotateX(normalizedY * -2.5);
-        rotateY(normalizedX * 3.5);
-        moveImageX(normalizedX * -4);
-        moveImageY(normalizedY * -3.5);
-        moveAuraX(normalizedX * 7);
-        moveAuraY(normalizedY * 5);
-        interactive.style.setProperty('--shine-x', `${50 + normalizedX * 24}%`);
-        interactive.style.setProperty('--shine-y', `${42 + normalizedY * 22}%`);
-        labelSetters.forEach((setter, index) => {
-          const direction = index % 2 === 0 ? 1 : -1;
-          setter.x(normalizedX * direction * (2.5 + index * 0.35));
-          setter.y(normalizedY * -direction * (2 + index * 0.25));
-        });
-      };
-      const onLeave = () => {
-        bounds = null;
-        moveInteractiveX(0); moveInteractiveY(0); rotateX(0); rotateY(0);
-        moveImageX(0); moveImageY(0); moveAuraX(0); moveAuraY(0);
-        interactive.style.setProperty('--shine-x', '68%');
-        interactive.style.setProperty('--shine-y', '18%');
-        labelSetters.forEach(setter => { setter.x(0); setter.y(0); });
-      };
-
-      stage.addEventListener('pointerenter', onEnter, { passive: true });
-      stage.addEventListener('pointermove', onMove, { passive: true });
-      stage.addEventListener('pointerleave', onLeave, { passive: true });
-
-      return () => {
-        stage.removeEventListener('pointerenter', onEnter);
-        stage.removeEventListener('pointermove', onMove);
-        stage.removeEventListener('pointerleave', onLeave);
-        const animatedElements = [interactive, image, aura, ...labelInners];
-        gsap.killTweensOf(animatedElements);
-        gsap.set(animatedElements, { clearProps: 'transform' });
-        interactive.style.removeProperty('--shine-x');
-        interactive.style.removeProperty('--shine-y');
+        images.forEach(img => { if (img) img.src = ''; });
+        section.classList.remove('cinematic-active');
+        mediaLayer.classList.remove('is-ready');
+        gsap.set([...summaries, secondary, transition, overlay, canvas, ...primaryLines, ...secondaryLines, ...transitionLines, $('.availability'), $('.hero-kicker'), $('.hero-scroll')], { clearProps: 'all' });
       };
     });
   }
 
-
-function initProjectStory() {
+  function initProjectStory() {
     if (!state.gsapAvailable) return;
     const media = gsap.matchMedia();
     state.matchMediaContexts.push(media);
 
-    media.add('(min-width: 1101px) and (min-height: 741px) and (prefers-reduced-motion: no-preference)', () => {
+    media.add('(min-width: 769px) and (min-height: 601px) and (prefers-reduced-motion: no-preference)', () => {
       const section = $('.projects-story');
       const pin = $('.project-pin');
-      const slides = $$('.project-slide', section);
+      const slides = $$('.project-slide');
       const reel = $('#projectCounterReel');
       const progress = $('#projectProgress');
-      if (!section || !pin || slides.length < 2 || !reel || !progress) return undefined;
+      const steps = $$('#projectSteps span');
+      if (!section || !pin || slides.length !== 5 || !reel || !progress || steps.length !== slides.length) return undefined;
 
-      const count = slides.length;
-      const links = slides.map(slide => $$('a', slide));
-      const visuals = slides.map(slide => $('.project-visual', slide));
-      const screenshots = slides.map(slide => $('.project-screenshot', slide));
-      const titles = slides.map(slide => $('.project-copy h3', slide));
-      let activeIndex = -1;
-      let pinHeight = Math.max(window.innerHeight, pin.clientHeight);
+      const projectLinks = slides.map(slide => $$('a', slide));
+      let lastActiveIndex = -1;
 
-      const measure = () => { pinHeight = Math.max(window.innerHeight, pin.clientHeight); };
-      const setActive = index => {
-        if (index === activeIndex) return;
-        activeIndex = index;
+      const updateActiveProject = activeIndex => {
+        if (activeIndex === lastActiveIndex) return;
+        lastActiveIndex = activeIndex;
         slides.forEach((slide, slideIndex) => {
-          const active = slideIndex === index;
+          const active = slideIndex === activeIndex;
           slide.classList.toggle('is-active', active);
-          slide.setAttribute('aria-hidden', active ? 'false' : 'true');
           slide.style.pointerEvents = active ? 'auto' : 'none';
-          links[slideIndex].forEach(link => active ? link.removeAttribute('tabindex') : link.setAttribute('tabindex', '-1'));
+          projectLinks[slideIndex].forEach(link => active ? link.removeAttribute('tabindex') : link.setAttribute('tabindex', '-1'));
+        });
+        steps.forEach((step, stepIndex) => {
+          step.classList.toggle('is-active', stepIndex === activeIndex);
+          step.classList.toggle('is-complete', stepIndex < activeIndex);
         });
       };
 
-      slides.forEach((slide, index) => {
-        gsap.set(slide, { autoAlpha: index === 0 ? 1 : 0, y: index === 0 ? 0 : 38, scale: index === 0 ? 1 : 1.015, force3D: true });
-        if (visuals[index]) gsap.set(visuals[index], { x: index === 0 ? 0 : 26, force3D: true });
-        if (screenshots[index]) gsap.set(screenshots[index], { scale: 1.04, force3D: true });
-        if (titles[index]) gsap.set(titles[index], { clipPath: index === 0 ? 'inset(0% 0% 0% 0%)' : 'inset(0% 0% 100% 0%)' });
-      });
-      gsap.set(progress, { scaleX: 1 / count, transformOrigin: 'left center' });
-      gsap.set(reel, { yPercent: 0 });
-      setActive(0);
+      gsap.set(slides, { autoAlpha: 0, y: 14, scale: 1.08, filter: 'blur(3px)' });
+      gsap.set(slides[0], { autoAlpha: 1, y: 0, scale: 1, filter: 'blur(0px)' });
+      gsap.set(progress, { scaleX: 0.2 });
+      updateActiveProject(0);
 
       const timeline = gsap.timeline({
-        defaults: { ease: 'none' },
-        onUpdate: () => setActive(Math.min(count - 1, Math.max(0, Math.floor(timeline.time() + 0.5)))),
         scrollTrigger: {
           trigger: section,
           start: 'top top',
-          end: () => `+=${pinHeight * (count - 1) * 0.82}`,
+          end: () => `+=${Math.round((slides.length - 1) * window.innerHeight * 0.9)}`,
           pin,
-          scrub: 0.55,
+          scrub: 0.45,
           anticipatePin: 1,
           invalidateOnRefresh: true,
-          onRefreshInit: measure,
-          snap: {
-            snapTo: value => {
-              const duration = timeline.duration();
-              const stops = Array.from({ length: count }, (_, index) => index === count - 1 ? 1 : index / duration);
-              return gsap.utils.snap(stops, value);
-            },
-            duration: { min: 0.12, max: 0.24 }, delay: 0.16, inertia: false, ease: 'power1.inOut'
-          }
+          onUpdate: self => updateActiveProject(Math.min(slides.length - 1, Math.floor(self.animation.time() + 0.5)))
         }
       });
 
-      for (let index = 0; index < count - 1; index += 1) {
-        const segment = index;
+      slides.slice(1).forEach((slide, index) => {
+        const previous = slides[index];
+        const position = index;
+
+        // Keep the hand-off intentionally clean: the outgoing project becomes
+        // unreadable before the incoming project reaches readable opacity.
+        // This prevents screenshots and copy from washing into each other.
         timeline
-          .to(screenshots[index], { scale: 1, duration: 0.28 }, segment)
-          .to(slides[index], { autoAlpha: 0, y: -28, scale: 0.99, duration: 0.28, ease: 'power2.in' }, segment + 0.34)
-          .fromTo(slides[index + 1], { autoAlpha: 0, y: 30, scale: 1.015 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.36, ease: 'power3.out' }, segment + 0.45)
-          .fromTo(visuals[index + 1], { x: 24 }, { x: 0, duration: 0.38, ease: 'power3.out' }, segment + 0.46)
-          .fromTo(titles[index + 1], { clipPath: 'inset(0% 0% 100% 0%)', y: 18 }, { clipPath: 'inset(0% 0% 0% 0%)', y: 0, duration: 0.3, ease: 'power3.out' }, segment + 0.51)
-          .to(screenshots[index + 1], { scale: 1, duration: 0.4 }, segment + 0.45)
-          .to(reel, { yPercent: -20 * (index + 1), duration: 0.34, ease: 'power3.inOut' }, segment + 0.43)
-          .to(progress, { scaleX: (index + 2) / count, duration: 0.34, ease: 'power2.inOut' }, segment + 0.43);
-      }
-      timeline.to({ hold: 0 }, { hold: 1, duration: 0.34 }, count - 1);
+          .to(previous, {
+            autoAlpha: 0,
+            y: -10,
+            scale: 0.965,
+            filter: 'blur(2px)',
+            duration: 0.24,
+            ease: 'power2.in'
+          }, position + 0.04)
+          .fromTo(slide,
+            { autoAlpha: 0, y: 12, scale: 1.035, filter: 'blur(2px)' },
+            { autoAlpha: 1, y: 0, scale: 1, filter: 'blur(0px)', duration: 0.34, ease: 'power3.out' },
+            position + 0.30)
+          .to(reel, { yPercent: -20 * (index + 1), duration: 0.32, ease: 'power2.inOut' }, position + 0.27)
+          .to(progress, { scaleX: (index + 2) / slides.length, duration: 0.32, ease: 'power2.inOut' }, position + 0.27);
+      });
 
       return () => {
         timeline.kill();
-        links.flat().forEach(link => link.removeAttribute('tabindex'));
+        projectLinks.flat().forEach(link => link.removeAttribute('tabindex'));
         slides.forEach(slide => {
-          slide.removeAttribute('aria-hidden');
-          slide.style.removeProperty('pointer-events');
           slide.classList.remove('is-active');
+          slide.style.removeProperty('pointer-events');
         });
-        gsap.set([...slides, ...visuals.filter(Boolean), ...screenshots.filter(Boolean), ...titles.filter(Boolean), reel, progress], { clearProps: 'all' });
+        steps.forEach(step => step.classList.remove('is-active', 'is-complete'));
+        gsap.set([slides, reel, progress], { clearProps: 'all' });
+      };
+    });
+
+    media.add('(max-width: 768px) and (prefers-reduced-motion: no-preference)', () => {
+      const slides = $$('.project-slide');
+      if (slides.length !== 5) return undefined;
+
+      const tweens = slides.map(slide => gsap.fromTo(slide,
+        { autoAlpha: 0, y: 24 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.62,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: slide,
+            start: 'top 88%',
+            once: true
+          }
+        }
+      ));
+
+      return () => {
+        tweens.forEach(tween => {
+          tween.scrollTrigger?.kill();
+          tween.kill();
+        });
+        gsap.set(slides, { clearProps: 'all' });
       };
     });
   }
@@ -297,67 +449,71 @@ function initProjectStory() {
     const media = gsap.matchMedia();
     state.matchMediaContexts.push(media);
 
-    const createStackScene = () => {
+    media.add('(min-width: 769px) and (min-height: 601px) and (prefers-reduced-motion: no-preference)', () => {
       const section = $('.stack-story');
       const pin = $('.stack-pin');
-      const viewport = $('.stack-viewport');
       const track = $('#stackTrack');
       const progress = $('#stackProgress');
-      const current = $('#stackCurrent');
-      if (!section || !pin || !viewport || !track || !progress || !current) return undefined;
+      if (!section || !pin || !track || !progress) return undefined;
 
-      const measureDistance = () => Math.max(0, track.scrollWidth - viewport.clientWidth);
-      const getEndDistance = () => Math.max(window.innerHeight * 0.75, measureDistance() * 0.72);
-      const panels = $$('.stack-panel', track);
-      gsap.set(track, { x: 0, force3D: true });
-      gsap.set(progress, { scaleX: 0, transformOrigin: 'left center' });
-      gsap.set(panels, { autoAlpha: 0.64, scale: 0.975, force3D: true });
-      gsap.set(panels[0], { autoAlpha: 1, scale: 1 });
-
-      let activeIndex = -1;
-      const setActivePanel = index => {
-        if (index === activeIndex) return;
-        activeIndex = index;
-        current.textContent = String(index + 1).padStart(2, '0');
-        panels.forEach((panel, panelIndex) => {
-          panel.classList.toggle('is-active', panelIndex === index);
-          gsap.to(panel, { autoAlpha: panelIndex === index ? 1 : 0.64, scale: panelIndex === index ? 1 : 0.975, duration: 0.24, overwrite: true });
-        });
-      };
-      setActivePanel(0);
-
-      const timeline = gsap.to(track, {
-        x: () => -measureDistance(),
+      let distance = 0;
+      const measureDistance = () => { distance = Math.max(0, track.scrollWidth - window.innerWidth + 56); };
+      const setProgress = gsap.quickSetter(progress, 'scaleX');
+      measureDistance();
+      const tween = gsap.to(track, {
+        x: () => -distance,
         ease: 'none',
         scrollTrigger: {
           trigger: section,
           start: 'top top',
-          end: () => `+=${getEndDistance()}`,
+          end: () => `+=${distance}`,
           pin,
-          scrub: 0.55,
+          scrub: 0.7,
           anticipatePin: 1,
           invalidateOnRefresh: true,
-          onUpdate: self => {
-            gsap.set(progress, { scaleX: self.progress });
-            setActivePanel(Math.min(panels.length - 1, Math.round(self.progress * (panels.length - 1))));
-          }
+          onRefreshInit: measureDistance,
+          onUpdate: self => setProgress(self.progress)
         }
       });
 
       return () => {
-        if (timeline.scrollTrigger) timeline.scrollTrigger.kill();
-        timeline.kill();
-        current.textContent = '01';
-        panels.forEach(panel => panel.classList.remove('is-active'));
-        gsap.killTweensOf(panels);
-        gsap.set([track, progress, ...panels], { clearProps: 'all' });
+        tween.kill();
+        gsap.set([track, progress], { clearProps: 'all' });
       };
-    };
+    });
 
-    media.add(
-      '(min-width: 1101px) and (min-height: 741px) and (prefers-reduced-motion: no-preference)',
-      createStackScene
-    );
+    media.add('(max-width: 768px) and (prefers-reduced-motion: no-preference)', () => {
+      const section = $('.stack-story');
+      const pin = $('.stack-pin');
+      const track = $('#stackTrack');
+      const progress = $('#stackProgress');
+      if (!section || !pin || !track || !progress) return undefined;
+
+      let distance = 0;
+      const measureDistance = () => { distance = Math.max(0, track.scrollWidth - track.parentElement.clientWidth + 32); };
+      const setProgress = gsap.quickSetter(progress, 'scaleX');
+      measureDistance();
+      const tween = gsap.to(track, {
+        x: () => -distance,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: () => `+=${distance || 1200}`,
+          pin,
+          scrub: 0.42,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onRefreshInit: measureDistance,
+          onUpdate: self => setProgress(self.progress)
+        }
+      });
+
+      return () => {
+        tween.kill();
+        gsap.set([track, progress], { clearProps: 'all' });
+      };
+    });
   }
 
   function initExperienceTimeline() {
@@ -365,7 +521,7 @@ function initProjectStory() {
     const media = gsap.matchMedia();
     state.matchMediaContexts.push(media);
 
-    media.add('(min-width: 1101px) and (min-height: 741px) and (prefers-reduced-motion: no-preference)', () => {
+    media.add('(min-width: 769px) and (min-height: 601px) and (prefers-reduced-motion: no-preference)', () => {
       const section = $('.experience-story');
       const pin = $('.experience-pin');
       const items = $$('.experience-item');
@@ -383,7 +539,7 @@ function initProjectStory() {
         scrollTrigger: {
           trigger: section,
           start: 'top top',
-          end: '+=155%',
+          end: '+=230%',
           pin,
           scrub: 0.75,
           anticipatePin: 1,
@@ -409,66 +565,78 @@ function initProjectStory() {
       };
     });
 
+    media.add('(max-width: 768px) and (prefers-reduced-motion: no-preference)', () => {
+      const section = $('.experience-story');
+      const pin = $('.experience-pin');
+      const rail = $('.experience-rail');
+      const items = $$('.experience-item');
+      const reel = $('#experienceDateReel');
+      const progress = $('#experienceProgress');
+      const dot = $('#experienceDot');
+      if (!section || !pin || !rail || items.length !== 3 || !reel || !progress || !dot) return undefined;
 
+      let railDistance = 0;
+      let lastActiveIndex = -1;
+      const measureRailDistance = () => { railDistance = Math.max(0, rail.clientHeight - 12); };
+      const updateActiveItem = activeIndex => {
+        if (activeIndex === lastActiveIndex) return;
+        lastActiveIndex = activeIndex;
+        items.forEach((item, itemIndex) => {
+          item.style.pointerEvents = itemIndex === activeIndex ? 'auto' : 'none';
+        });
+      };
+      measureRailDistance();
+      gsap.set(items, { opacity: 0, y: 24 });
+      gsap.set(items[0], { opacity: 1, y: 0 });
+      updateActiveItem(0);
+
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: '+=260%',
+          pin,
+          scrub: 0.42,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onRefreshInit: measureRailDistance,
+          onUpdate: self => updateActiveItem(Math.min(items.length - 1, Math.floor(self.progress * items.length)))
+        }
+      });
+
+      items.slice(1).forEach((item, index) => {
+        const previous = items[index];
+        const position = index + 0.7;
+        timeline
+          .to(previous, { opacity: 0, y: -24, duration: 0.38 }, position)
+          .fromTo(item, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.48, ease: 'power3.out' }, position + 0.06)
+          .to(reel, { yPercent: -(100 / 3) * (index + 1), duration: 0.48, ease: 'power3.inOut' }, position)
+          .to(progress, { scaleY: (index + 1) / 2, duration: 0.48 }, position)
+          .to(dot, { y: () => railDistance * ((index + 1) / 2), duration: 0.48, ease: 'power3.inOut' }, position);
+      });
+
+      return () => {
+        timeline.kill();
+        items.forEach(item => item.style.removeProperty('pointer-events'));
+        gsap.set([items, reel, progress, dot], { clearProps: 'all' });
+      };
+    });
   }
 
   function initReveals() {
-    const principles = $$('.principle');
-    const profile = $('.engineering-profile');
-    const elements = $$('.reveal').filter(element => !element.classList.contains('principle') && element !== profile);
+    const elements = $$('.reveal');
     if (!state.gsapAvailable || reducedMotion.matches) {
-      [...elements, ...principles].forEach(element => element.classList.add('is-visible'));
+      elements.forEach(element => element.classList.add('is-visible'));
       return;
     }
 
-    const revealBatch = batch => {
-      const hidden = batch.filter(element => !element.classList.contains('is-visible'));
-      if (!hidden.length) return;
-      hidden.forEach(element => element.classList.add('is-visible'));
-      gsap.fromTo(hidden, { autoAlpha: 0, y: 32 }, { autoAlpha: 1, y: 0, duration: 0.75, stagger: 0.08, ease: 'power3.out', overwrite: true });
-    };
-
     ScrollTrigger.batch(elements, {
       start: 'top 88%',
-      onEnter: revealBatch,
-      onEnterBack: revealBatch
-    });
-
-    if (profile) {
-      const revealProfile = () => {
-        if (profile.classList.contains('is-visible')) return;
-        profile.classList.add('is-visible');
-        gsap.fromTo(profile, { autoAlpha: 0, y: 32 }, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power3.out', overwrite: true });
-      };
-      ScrollTrigger.create({
-        trigger: profile,
-        start: 'top 92%',
-        end: 'bottom 8%',
-        onEnter: revealProfile,
-        onEnterBack: revealProfile,
-        onUpdate: self => { if (self.isActive) revealProfile(); },
-        onRefresh: self => { if (self.isActive) revealProfile(); }
-      });
-      if ('IntersectionObserver' in window) {
-        const profileObserver = new IntersectionObserver(entries => {
-          if (!entries.some(entry => entry.isIntersecting)) return;
-          revealProfile();
-          profileObserver.disconnect();
-        }, { threshold: 0.01 });
-        profileObserver.observe(profile);
+      once: true,
+      onEnter: batch => {
+        batch.forEach(element => element.classList.add('is-visible'));
+        gsap.fromTo(batch, { autoAlpha: 0, y: 32 }, { autoAlpha: 1, y: 0, duration: 0.75, stagger: 0.08, ease: 'power3.out', overwrite: true });
       }
-    }
-
-    principles.forEach((principle, index) => {
-      gsap.fromTo(principle, { autoAlpha: 0, y: 40 }, {
-        autoAlpha: 1,
-        y: 0,
-        duration: 0.72,
-        delay: (index % 2) * 0.06,
-        ease: 'power3.out',
-        onStart: () => principle.classList.add('is-visible'),
-        scrollTrigger: { trigger: principle, start: 'top 86%', toggleActions: 'play none play none' }
-      });
     });
 
     $$('.section-heading .text-mask > span, .contact-title .text-mask > span').forEach(line => {
@@ -476,7 +644,7 @@ function initProjectStory() {
         yPercent: 108,
         duration: 0.9,
         ease: 'power4.out',
-        scrollTrigger: { trigger: line, start: 'top 90%', toggleActions: 'play none play none' }
+        scrollTrigger: { trigger: line, start: 'top 90%', once: true }
       });
     });
   }
@@ -571,8 +739,9 @@ function initProjectStory() {
     const dot = $('#cursorDot');
     const ring = $('#cursorRing');
     const spotlight = $('#cursorSpotlight');
-    if (!dot || !ring || !spotlight) return;
+    if (!dot || !ring || !spotlight || reducedMotion.matches || !precisePointer.matches) return;
 
+    document.body.classList.add('cursor-enabled');
     let mouseX = innerWidth / 2;
     let mouseY = innerHeight / 2;
     let ringX = mouseX;
@@ -580,7 +749,7 @@ function initProjectStory() {
     let lightX = mouseX;
     let lightY = mouseY;
     let frame = 0;
-    let running = false;
+    let running = true;
 
     const render = () => {
       if (!running) return;
@@ -593,18 +762,8 @@ function initProjectStory() {
       spotlight.style.transform = `translate3d(${lightX}px,${lightY}px,0) translate(-50%,-50%)`;
       frame = requestAnimationFrame(render);
     };
-    const start = () => {
-      if (running || document.hidden || reducedMotion.matches || !precisePointer.matches) return;
-      document.body.classList.add('cursor-enabled');
-      running = true;
-      render();
-    };
-    const stop = () => {
-      document.body.classList.remove('cursor-enabled');
-      running = false;
-      cancelAnimationFrame(frame);
-    };
-    const updateMotion = () => reducedMotion.matches || !precisePointer.matches ? stop() : start();
+    const start = () => { if (running) return; running = true; render(); };
+    const stop = () => { running = false; cancelAnimationFrame(frame); };
 
     window.addEventListener('pointermove', event => { mouseX = event.clientX; mouseY = event.clientY; }, { passive: true });
     $$('a, button, .project-glow').forEach(element => {
@@ -612,10 +771,8 @@ function initProjectStory() {
       element.addEventListener('mouseleave', () => ring.classList.remove('hover'));
     });
     document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
-    precisePointer.addEventListener('change', updateMotion);
-    reducedMotion.addEventListener('change', updateMotion);
     state.cursorController = { start, stop };
-    start();
+    render();
   }
 
   function initMagnetic() {
@@ -625,8 +782,8 @@ function initProjectStory() {
       const moveY = gsap.quickTo(element, 'y', { duration: 0.35, ease: 'power3.out' });
       element.addEventListener('pointermove', event => {
         const bounds = element.getBoundingClientRect();
-        moveX(gsap.utils.clamp(-6, 6, (event.clientX - bounds.left - bounds.width / 2) * 0.12));
-        moveY(gsap.utils.clamp(-6, 6, (event.clientY - bounds.top - bounds.height / 2) * 0.12));
+        moveX((event.clientX - bounds.left - bounds.width / 2) * 0.12);
+        moveY((event.clientY - bounds.top - bounds.height / 2) * 0.12);
       }, { passive: true });
       element.addEventListener('pointerleave', () => { moveX(0); moveY(0); });
     });
@@ -642,6 +799,7 @@ function initProjectStory() {
       }, { passive: true });
     });
   }
+
 
   function initResponsiveRefresh() {
     if (!state.gsapAvailable) return;
@@ -701,6 +859,116 @@ function initProjectStory() {
     });
   }
 
+  function initParticles() {
+    const canvas = $('#bgCanvas');
+    if (!canvas || reducedMotion.matches) return;
+    const media = state.gsapAvailable ? gsap.matchMedia() : null;
+    if (media) state.matchMediaContexts.push(media);
+
+    const create = () => {
+      const context = canvas.getContext('2d', { alpha: true });
+      if (!context) return undefined;
+      let width = 0;
+      let height = 0;
+      let particles = [];
+      let frame = 0;
+      let running = false;
+      const ratio = Math.min(devicePixelRatio || 1, 1.5);
+      const particleColor = getComputedStyle(document.documentElement).getPropertyValue('--cyan').trim() || '#38D8FF';
+
+      const resize = () => {
+        width = innerWidth;
+        height = innerHeight;
+        canvas.width = Math.round(width * ratio);
+        canvas.height = Math.round(height * ratio);
+        context.setTransform(ratio, 0, 0, ratio, 0, 0);
+        const count = Math.min(42, Math.max(18, Math.round((width * height) / 34000)));
+        particles = Array.from({ length: count }, () => ({ x: Math.random() * width, y: Math.random() * height, vx: (Math.random() - 0.5) * 0.065, vy: (Math.random() - 0.5) * 0.065, radius: Math.random() * 0.75 + 0.3, alpha: Math.random() * 0.16 + 0.05 }));
+      };
+      const draw = () => {
+        if (!running) return;
+        context.clearRect(0, 0, width, height);
+        particles.forEach(particle => {
+          particle.x += particle.vx;
+          particle.y += particle.vy;
+          if (particle.x < -4) particle.x = width + 4;
+          if (particle.x > width + 4) particle.x = -4;
+          if (particle.y < -4) particle.y = height + 4;
+          if (particle.y > height + 4) particle.y = -4;
+          context.beginPath();
+          context.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+          context.globalAlpha = particle.alpha;
+          context.fillStyle = particleColor;
+          context.fill();
+        });
+        context.globalAlpha = 1;
+        frame = requestAnimationFrame(draw);
+      };
+      const start = () => { if (running || document.hidden) return; running = true; draw(); };
+      const stop = () => { running = false; cancelAnimationFrame(frame); };
+      let resizeFrame = 0;
+      const onResize = () => { cancelAnimationFrame(resizeFrame); resizeFrame = requestAnimationFrame(resize); };
+      const onVisibility = () => document.hidden ? stop() : start();
+      window.addEventListener('resize', onResize, { passive: true });
+      document.addEventListener('visibilitychange', onVisibility);
+      resize();
+      start();
+      state.particleController = { start, stop };
+
+      if (state.gsapAvailable) {
+        gsap.to(canvas, { opacity: 0.1, ease: 'none', scrollTrigger: { trigger: '.hero-story', start: 'top top', end: 'bottom top', scrub: true } });
+      }
+      return () => {
+        stop();
+        window.removeEventListener('resize', onResize);
+        document.removeEventListener('visibilitychange', onVisibility);
+        context.clearRect(0, 0, width, height);
+      };
+    };
+
+    if (media) media.add('(min-width: 769px) and (min-height: 601px) and (prefers-reduced-motion: no-preference)', create);
+    else if (innerWidth > 768) create();
+  }
+
+  function initLazyThreeScenes() {
+    const section = $('.footer-playground');
+    if (!section || reducedMotion.matches) return;
+
+    const desktop = window.matchMedia('(min-width: 769px) and (prefers-reduced-motion: no-preference)');
+    let observer = null;
+    let loaded = false;
+
+    const loadModule = () => {
+      if (loaded || !desktop.matches) return;
+      loaded = true;
+      observer?.disconnect();
+      observer = null;
+      import('./three-scenes.js').catch(() => {
+        loaded = false;
+      });
+    };
+
+    const arm = () => {
+      if (loaded || observer || !desktop.matches) return;
+      observer = new IntersectionObserver(entries => {
+        if (!entries.some(entry => entry.isIntersecting)) return;
+        loadModule();
+      }, { rootMargin: '100% 0px', threshold: 0.01 });
+      observer.observe(section);
+    };
+
+    const onChange = event => {
+      if (event.matches) arm();
+      else {
+        observer?.disconnect();
+        observer = null;
+      }
+    };
+
+    desktop.addEventListener('change', onChange);
+    arm();
+  }
+
   function initialize() {
     state.gsapAvailable = typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
     if (state.gsapAvailable) {
@@ -709,20 +977,20 @@ function initProjectStory() {
       ScrollTrigger.config({ limitCallbacks: true, ignoreMobileResize: true });
     }
 
-    initReducedMotion();
+    initAccessibility();
+    initNavigation();
     initScrollProgress();
-    initHeroStory();
-    initPortraitInteraction();
+    initHeroCinematicFrames();
     initProjectStory();
     initStackScroll();
     initExperienceTimeline();
-    initNavigation();
     initReveals();
     initCursor();
     initMagnetic();
     initProjectGlow();
     initResponsiveRefresh();
     initProjectImageRefresh();
+    initLazyThreeScenes();
 
     const year = $('#currentYear');
     if (year) year.textContent = new Date().getFullYear();
