@@ -84,8 +84,12 @@ document.documentElement.classList.add('js');
 
     const media = gsap.matchMedia();
     state.matchMediaContexts.push(media);
-    media.add('(min-height: 601px) and (prefers-reduced-motion: no-preference)', () => {
-      const usePortraitSequence = window.innerWidth <= 768 || (window.innerWidth / Math.max(1, window.innerHeight)) < (4 / 3);
+    media.add({
+      desktop: '(min-width: 769px) and (min-aspect-ratio: 4/3)',
+      motion: '(prefers-reduced-motion: no-preference)'
+    }, context => {
+      if (!context.conditions.motion) return undefined;
+      const usePortraitSequence = !context.conditions.desktop;
       const framePath = index => usePortraitSequence
         ? `assets/video/frames/mobile/frame_${String(index + 1).padStart(3, '0')}.webp`
         : `assets/video/frames/desktop/frame_${String(index + 1).padStart(3, '0')}.webp`;
@@ -523,14 +527,15 @@ document.documentElement.classList.add('js');
     media.add('(min-width: 769px) and (min-height: 601px) and (prefers-reduced-motion: no-preference)', () => {
       const section = $('.experience-story');
       const pin = $('.experience-pin');
+      const rail = $('.experience-rail i');
       const items = $$('.experience-item');
       const reel = $('#experienceDateReel');
       const progress = $('#experienceProgress');
       const dot = $('#experienceDot');
-      if (!section || !pin || items.length !== 3 || !reel || !progress || !dot) return undefined;
+      if (!section || !pin || !rail || items.length !== 3 || !reel || !progress || !dot) return undefined;
 
       let dotDistance = 0;
-      const measureDotDistance = () => { dotDistance = Math.max(0, pin.clientHeight - 165); };
+      const measureDotDistance = () => { dotDistance = rail.clientHeight; };
       measureDotDistance();
       gsap.set(items, { autoAlpha: 0, y: 34 });
       gsap.set(items[0], { autoAlpha: 1, y: 0 });
@@ -576,7 +581,7 @@ document.documentElement.classList.add('js');
 
       let railDistance = 0;
       let lastActiveIndex = -1;
-      const measureRailDistance = () => { railDistance = Math.max(0, rail.clientHeight - 12); };
+      const measureRailDistance = () => { railDistance = rail.querySelector('i').clientHeight; };
       const updateActiveItem = activeIndex => {
         if (activeIndex === lastActiveIndex) return;
         lastActiveIndex = activeIndex;
@@ -695,6 +700,7 @@ document.documentElement.classList.add('js');
           trigger: section,
           start: 'top 52%',
           end: 'bottom 15%',
+          refreshPriority: -1,
           onEnter: () => updateActiveLink(section.id),
           onEnterBack: () => updateActiveLink(section.id),
           onRefresh: self => { if (self.isActive) updateActiveLink(section.id); }
