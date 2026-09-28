@@ -78,9 +78,9 @@ document.documentElement.classList.add('js');
 
     // Responsive cinematic sequences: the desktop/landscape hero uses the cropped
     // 16:9 WebP sequence, while phones and portrait tablets use the cropped 9:16
-    // WebP sequence generated from the new Flow clip. Both contain 86 scroll frames
+    // WebP sequence generated from the new Flow clip. Both contain 120 scroll frames
     // so the same GSAP story timing works across orientations.
-    const FRAME_COUNT = 86;
+    const FRAME_COUNT = 120;
 
     const media = gsap.matchMedia();
     state.matchMediaContexts.push(media);
