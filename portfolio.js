@@ -76,20 +76,19 @@ document.documentElement.classList.add('js');
     if (!canvas || !section || !pin) return;
     if (!state.gsapAvailable) return;
 
-    // The hero was re-cut from a 10s/24fps clip into a 12fps still-frame sequence
-    // (assets/video/frames/frame_001.webp … frame_120.webp). Scrubbing draws a
-    // frame straight onto <canvas> — there is no video decoder involved at all,
-    // so every scroll position is exact and instant in every browser.
-    // The source clip runs ~8s at 12fps (96 frames), but the last ~10 frames zoom into
-    // an in-shot mockup panel whose placeholder copy becomes legible — those frames were
-    // trimmed from the sequence entirely. We scrub across the remaining 86 clean frames,
-    // then hold the final one while the HTML "Selected Work" transition (0.90–1.0) plays.
-    const FRAME_COUNT = 86;
-    const framePath = index => `assets/video/frames/frame_${String(index + 1).padStart(3, '0')}.avif`;
+    // Responsive cinematic sequences: the desktop/landscape hero uses the cropped
+    // 16:9 WebP sequence, while phones and portrait tablets use the cropped 9:16
+    // WebP sequence generated from the new Flow clip. Both contain 120 scroll frames
+    // so the same GSAP story timing works across orientations.
+    const FRAME_COUNT = 120;
 
     const media = gsap.matchMedia();
     state.matchMediaContexts.push(media);
-    media.add('(min-width: 769px) and (min-height: 601px) and (min-aspect-ratio: 4/3) and (prefers-reduced-motion: no-preference)', () => {
+    media.add('(min-height: 601px) and (prefers-reduced-motion: no-preference)', () => {
+      const usePortraitSequence = window.innerWidth <= 768 || (window.innerWidth / Math.max(1, window.innerHeight)) < (4 / 3);
+      const framePath = index => usePortraitSequence
+        ? `assets/video/frames/mobile/frame_${String(index + 1).padStart(3, '0')}.webp`
+        : `assets/video/frames/desktop/frame_${String(index + 1).padStart(3, '0')}.webp`;
       const primaryLines = $$('.hero-title-primary .text-mask > span');
       const secondary = $('.hero-title-secondary');
       const secondaryLines = $$('.hero-title-secondary .text-mask > span');
