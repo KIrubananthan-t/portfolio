@@ -340,13 +340,21 @@ document.documentElement.classList.add('js');
     media.add('(min-width: 769px) and (min-height: 601px) and (prefers-reduced-motion: no-preference)', () => {
       const section = $('.projects-story');
       const pin = $('.project-pin');
+      const heading = section && $('.stage-heading', section);
       const slides = $$('.project-slide');
       const reel = $('#projectCounterReel');
       const progress = $('#projectProgress');
       const steps = $$('#projectSteps span');
-      if (!section || !pin || slides.length !== 5 || !reel || !progress || steps.length !== slides.length) return undefined;
+      if (!section || !pin || !heading || slides.length !== 5 || !reel || !progress || steps.length !== slides.length) return undefined;
 
-      const projectLinks = slides.map(slide => $$('a', slide));
+      const measureProjectLayout = () => {
+        const headingBottom = heading.getBoundingClientRect().bottom - pin.getBoundingClientRect().top;
+        pin.style.setProperty('--project-heading-bottom', `${headingBottom}px`);
+        pin.style.setProperty('--project-content-top', `${headingBottom + (window.innerWidth <= 1100 ? 40 : 24)}px`);
+      };
+      measureProjectLayout();
+
+      const projectLinks = slides.map(slide => $$('a, summary', slide));
       let lastActiveIndex = -1;
 
       const updateActiveProject = activeIndex => {
@@ -378,6 +386,7 @@ document.documentElement.classList.add('js');
           scrub: 0.45,
           anticipatePin: 1,
           invalidateOnRefresh: true,
+          onRefreshInit: measureProjectLayout,
           onUpdate: self => updateActiveProject(Math.min(slides.length - 1, Math.floor(self.animation.time() + 0.5)))
         }
       });
@@ -408,6 +417,8 @@ document.documentElement.classList.add('js');
 
       return () => {
         timeline.kill();
+        pin.style.removeProperty('--project-heading-bottom');
+        pin.style.removeProperty('--project-content-top');
         projectLinks.flat().forEach(link => link.removeAttribute('tabindex'));
         slides.forEach(slide => {
           slide.classList.remove('is-active');

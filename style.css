@@ -415,7 +415,7 @@ a.text-link:hover { border-color: var(--cyan); color: var(--cyan); }
 /* Pinned project layout only when GSAP is available. */
 @media (min-width: 769px) and (min-height: 601px) {
   .gsap-ready .project-stage { height: 100svh; min-height: 640px; }
-  .gsap-ready .project-slides { position: absolute; top: 9.7rem; right: 0; bottom: 2rem; left: 0; padding: 0; }
+  .gsap-ready .project-slides { position: absolute; top: var(--project-content-top, 12rem); right: 0; bottom: 2rem; left: 0; padding: 0; }
   .gsap-ready .project-slide { position: absolute; inset: 0; padding: 0; will-change: transform, opacity; backface-visibility: hidden; }
   .gsap-ready .project-slide:not(.is-first) { visibility: hidden; opacity: 0; }
 }
@@ -966,4 +966,78 @@ a.text-link:hover { border-color: var(--cyan); color: var(--cyan); }
   .cinematic-active .hero-message { min-height: 0; margin-bottom: .75rem; }
   .cinematic-active .hero-summary { font-size: .7rem; }
   .cinematic-active .hero-actions .button { grid-column: auto; padding-inline: .6rem; font-size: .65rem; }
+}
+
+/* Engineering evidence uses the existing type, colors and section rhythm. */
+.hero-value { color: var(--text-primary); font-weight: 600; }
+.proof-section { position: relative; padding-block: 2.5rem; border-top: 1px solid var(--border); background: var(--bg-secondary); }
+.proof-section .eyebrow { margin-bottom: 1.5rem; }
+.proof-strip { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1.5rem; margin: 0; }
+.proof-strip > div { display: flex; min-width: 0; flex-direction: column-reverse; justify-content: end; gap: .5rem; padding-left: 1.25rem; border-left: 1px solid var(--border); }
+.proof-strip dt { color: var(--text-secondary); font: .62rem/1.6 var(--font-mono); }
+.proof-strip dd { margin: 0; color: var(--accent-light); font: 500 clamp(2rem, 3.5vw, 3.4rem)/1.1 var(--font-mono); letter-spacing: -.06em; }
+.proof-strip dd span { color: var(--text-muted); font-size: .8rem; letter-spacing: 0; }
+.project-copy > .project-ownership { padding-left: .75rem; border-left: 1px solid var(--project-accent); font-size: .65rem; line-height: 1.6; }
+.project-ownership > span { display: block; margin-bottom: .2rem; color: var(--project-accent); font: .5rem var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
+.project-title-descriptor { display: block; margin-top: .6rem; color: var(--project-accent); font: 500 clamp(.85rem, 1.2vw, 1.1rem)/1.4 var(--font-sans); letter-spacing: 0; }
+.project-evidence { display: grid; gap: .6rem; margin: 0 0 .9rem; padding-block: .75rem; border-block: 1px solid var(--border); }
+.project-evidence dt { margin-bottom: .15rem; color: var(--project-accent); font: .5rem var(--font-mono); letter-spacing: .05em; text-transform: uppercase; }
+.project-evidence dd { margin: 0; color: var(--text-secondary); font-size: .65rem; line-height: 1.55; }
+.engineering-notes { margin-bottom: .9rem; border-block: 1px solid var(--border); }
+.engineering-notes summary { padding-block: .65rem; color: var(--project-accent); cursor: pointer; font: .6rem var(--font-mono); }
+.engineering-notes ul { display: grid; gap: .35rem; padding: 0 .25rem .75rem 1rem; color: var(--text-secondary); font-size: .65rem; }
+.case-study-link { display: block; width: fit-content; margin-bottom: .8rem; color: var(--project-accent); font-size: .7rem; text-underline-offset: .25rem; }
+.case-study-section { background: var(--bg); }
+.case-study-heading { margin-bottom: clamp(2.5rem, 5vw, 5rem); }
+.case-study-heading h2 { margin-block: 1rem; font-size: clamp(2.6rem, 5.8vw, 6rem); font-weight: 600; line-height: .98; letter-spacing: -.065em; }
+.case-study-heading > p:last-child { color: var(--text-secondary); font: .72rem var(--font-mono); }
+.case-study-layout { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+.case-study-copy { display: grid; gap: 1.75rem; }
+.case-study-note { padding-top: 1rem; border-top: 1px solid var(--border); }
+.case-study-note h3 { margin-bottom: .65rem; color: var(--accent-light); font: .65rem var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
+.case-study-note p, .case-study-note li { color: var(--text-secondary); font-size: .9rem; line-height: 1.75; }
+.case-study-note ul { display: grid; gap: .4rem; padding-left: 1rem; }
+.architecture-panel { min-width: 0; margin: 0; padding: clamp(1.25rem, 3vw, 2.5rem); border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-secondary); }
+.architecture-panel h3 { margin-top: .65rem; font-size: clamp(1.5rem, 2.2vw, 2.2rem); font-weight: 500; letter-spacing: -.04em; }
+.architecture-flow { display: grid; gap: 0; margin: 1.75rem 0 0; padding: 0; list-style: none; }
+.architecture-node { display: block; padding: .8rem; border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-secondary); background: var(--surface); font: .7rem/1.6 var(--font-mono); text-align: center; overflow-wrap: anywhere; }
+.architecture-arrow { display: block; padding-block: .25rem; color: var(--accent-light); text-align: center; }
+.architecture-database { border-color: color-mix(in srgb, var(--accent-light) 35%, var(--border)); color: var(--accent-light); }
+.architecture-tables { margin: 1rem .8rem 0; padding: 0; list-style: none; }
+.architecture-tables li { position: relative; padding: .35rem 0 .35rem 1.5rem; border-left: 1px solid var(--border); color: var(--text-secondary); font: .7rem/1.6 var(--font-mono); }
+.architecture-tables li::before { content: ""; position: absolute; top: 50%; left: 0; width: 1rem; height: 1px; background: var(--border); }
+.architecture-tables li:last-child { border-left-color: transparent; }
+.architecture-tables li:last-child::after { content: ""; position: absolute; top: 0; left: -1px; height: 50%; border-left: 1px solid var(--border); }
+.case-study-result { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem 2rem; margin-top: 3rem; padding: 1.5rem 0; border-block: 1px solid var(--border); }
+.case-study-result p { display: flex; align-items: baseline; flex-wrap: wrap; gap: .75rem; margin-top: .65rem; }
+.case-study-result strong { color: var(--accent-light); font: 500 clamp(2.8rem, 5vw, 4.5rem)/1 var(--font-mono); letter-spacing: -.06em; }
+.case-study-result p > span { color: var(--text-secondary); font: .65rem var(--font-mono); text-transform: uppercase; }
+.case-study-result > .live-dot { font: .65rem var(--font-mono); }
+.booking-preview { margin-top: 3rem; padding: clamp(1.25rem, 3vw, 2.5rem); border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-secondary); }
+.booking-preview h3 { margin-top: .75rem; font-size: clamp(1.5rem, 3vw, 2.5rem); line-height: 1.15; font-weight: 500; letter-spacing: -.04em; }
+.booking-flow { display: flex; flex-wrap: wrap; gap: .6rem .8rem; margin: 1.5rem 0; padding: 0; list-style: none; }
+.booking-flow li { display: flex; align-items: center; gap: .8rem; color: var(--text-secondary); font: .65rem/1.6 var(--font-mono); }
+.booking-flow li:not(:last-child)::after { content: "→"; color: var(--spotmystudio); }
+.booking-preview > p { max-width: 65ch; color: var(--text-secondary); font-size: .8rem; line-height: 1.7; }
+
+@media (min-width: 769px) and (min-height: 601px) and (prefers-reduced-motion: no-preference) {
+  .gsap-ready .project-slide { min-height: 0; }
+  .gsap-ready .project-copy { max-height: 100%; overflow-y: auto; padding: .25rem .65rem .25rem .1rem; scrollbar-width: thin; scrollbar-color: var(--project-accent) transparent; }
+}
+
+@media (max-width: 900px) {
+  .proof-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.75rem 1rem; }
+  .case-study-layout { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (min-width: 769px) and (max-width: 1100px) and (min-height: 601px) {
+  .gsap-ready .project-counter { top: calc(var(--project-heading-bottom, 9rem) + .5rem); left: 0; }
+}
+
+@media (max-width: 480px) {
+  .proof-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .proof-strip > div { padding-left: .75rem; }
+  .proof-strip dt { font-size: .56rem; }
+  .case-study-heading h2 { font-size: clamp(2.2rem, 9vw, 2.8rem); }
+  .case-study-result { align-items: start; flex-direction: column; }
 }
